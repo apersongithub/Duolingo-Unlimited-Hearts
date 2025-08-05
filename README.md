@@ -32,7 +32,7 @@ There are no prequistes all you need is the extension, no premium tier or school
 
 # FAQ
 ### Normal FAQ:
-- This isn't working!11!! 😡
+- Why isn't this working!11!! 😡
     - Reload your page..
 - Will I get banned?
     - No.
