@@ -16,6 +16,8 @@ https://github.com/apersongithub/Duolingo-Unlimited-Hearts/releases
 
 This just came out so I'm going to try to get it on the firefox extension store.
 
+There are no prequistes all you need is the extension, no premium tier, school etc.
+
 ## Firefox <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Firefox_logo%2C_2019.svg/1200px-Firefox_logo%2C_2019.svg.png" width="20px">
 - Download the latest extension for firefox in the releases tab
 - Go to about:debugging
@@ -34,6 +36,8 @@ This just came out so I'm going to try to get it on the firefox extension store.
     - No.
 - Is this safe?
     - Yes, this script changes only **two lines** of code which are only responsible for hearts.
+- Is this all free
+    - Yes but you can support me but clicking on the extension.
 ### Dev FAQ:
 - Why is the modified app-*.js obfuscated?
     - The original app-*.js is obfuscated there is nothing I can do about this. Everything else is open source.
