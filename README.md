@@ -20,15 +20,15 @@ There are no prequistes all you need is the extension, no premium tier or school
 
 ## Firefox <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Firefox_logo%2C_2019.svg/1200px-Firefox_logo%2C_2019.svg.png" width="20px">
 - Download the latest extension for firefox in the releases tab
-- Go to about:debugging
-- Click Load Temporary Add-on
-- Select the .zip/.xpi file
+- Click continue installation
+- ✅
 
 ## Chrome <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Google_Chrome_icon_(September_2014).svg/1200px-Google_Chrome_icon_(September_2014).svg.png" width="20px">
 - Download the latest extension for chrome **(mv3)** in the releases tab
 - Go to chrome://extensions
 - Enable Developer mode
-- Drag the zip from youre file explorer onto the extensions page 
+- Drag the zip from youre file explorer onto the extensions page
+- ✅
 
 # FAQ
 ### Normal FAQ:
