@@ -53,6 +53,7 @@ There are no prequistes all you need is the extension, no premium tier or school
 - How can I reproduce this?
     - Contact me and I will show you I don't want this getting patched because I'm not maintaining this 💀.
 - Why is the modified app-*.js not in this repository.
-    - Trying to keep things from getting patched and im too lazy to change the urls in the extension again. (you can find it easily)
-
+    - Trying to keep things from getting patched and im too lazy to change the urls in the extension again. (you can find it easily).
+- Why doesn't the extension just modify my personal app-*.js instead of using yours which could have a virus and secret code?!?!😱😱
+    - Good question, that was a thought but I don't know how to make that into an extension if you want to do it contact me. This was just the easiest and most practical route by just replacing it with my prebuilt one.
 <a href="https://www.buymeacoffee.com/aperson" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
