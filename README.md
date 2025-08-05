@@ -32,11 +32,13 @@ There are no prequistes all you need is the extension, no premium tier or school
 
 # FAQ
 ### Normal FAQ:
+- This isn't working!11!! 😡
+    - Reload your page..
 - Will I get banned?
     - No.
 - Is this safe?
     - Yes, this script changes only **two lines** of code which are only responsible for hearts.
-- Is this all free
+- Is this all free?
     - Yes but you can support me but clicking on the extension.
 ### Dev FAQ:
 - Why is the modified app-*.js obfuscated?
