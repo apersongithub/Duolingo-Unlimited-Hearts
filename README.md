@@ -2,6 +2,7 @@
 <img src="https://d35aaqx5ub95lt.cloudfront.net/images/hearts/fa8debbce8d3e515c3b08cb10271fbee.svg" width="200px">
 This took a day to figure out enjoy lol.
 
+⚠**For educational purposes only**⚠
 
 # What this script does 
 > [!IMPORTANT]
@@ -40,6 +41,10 @@ There are no prequistes all you need is the extension, no premium tier or school
     - Yes, this script changes only **two lines** of code which are only responsible for hearts.
 - Is this all free?
     - Yes but you can support me but clicking on the extension.
+- How do I do this on my iPhone or Android device?
+    - There are plenty of modded APKs and IPAs out there that allows you to get premium for free. Do some reasearch.
+    - Another option is using kiwi browser for android or orion browser for iphone to install the extension.
+      - I haven't tested this and won't maintain it for those browsers if it works or not.
 ### Dev FAQ:
 - Why is the modified app-*.js obfuscated?
     - The original app-*.js is obfuscated there is nothing I can do about this. Everything else is open source.
