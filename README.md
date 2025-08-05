@@ -56,6 +56,6 @@ There are no prequistes all you need is the extension, no premium tier or school
     - Trying to keep things from getting patched and im too lazy to change the urls in the extension again. (you can find it easily).
 - Why doesn't the extension just modify my personal app-*.js instead of using yours which could have a virus and secret code?!?!😱😱
     - Good question, that was a thought but I don't know how to make that into an extension if you want to do it contact me. This was just the easiest and most practical route by just replacing it with my prebuilt one.
-           - Also its a webpack chunk and i think it will only work on sites with the webpack source map aka duolingo.com. + look at the extension permissions.
+        - Also its a webpack chunk and i think it will only work on sites with the webpack source map aka duolingo.com. + look at the extension permissions.
 
 <a href="https://www.buymeacoffee.com/aperson" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
