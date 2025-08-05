@@ -1,0 +1,36 @@
+{
+  "manifest_version": 2,
+  "name": "Duolingo Unlimited Hearts",
+  "version": "1.0",
+  "description": "Gives unlimited hearts in Duolingo for free",
+  "icons": {
+    "16": "images/icon16.png",
+    "48": "images/icon48.png",
+    "128": "images/icon128.png"
+  },
+  "browser_action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "images/icon16.png",
+      "48": "images/icon48.png",
+      "128": "images/icon128.png"
+    }
+  },
+  "permissions": [
+    "webRequest",
+    "webRequestBlocking",
+    "*://d35aaqx5ub95lt.cloudfront.net/*",
+    "*://*.duolingo.com/*",
+    "*://raw.githubusercontent.com/*"
+  ],
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.duolingo.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
