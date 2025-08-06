@@ -1,13 +1,15 @@
 # Duolingo Unlimited Hearts Extension
 <img src="https://d35aaqx5ub95lt.cloudfront.net/images/hearts/fa8debbce8d3e515c3b08cb10271fbee.svg" width="200px">
-This took a day to figure out enjoy lol.
 
+This took a day to figure out enjoy lol.
+ 
 ⚠**For educational purposes only**⚠
 
-# What this script does 
+[**I probably wont maintain this**]
+
+
+# Basics of what this extension does 
 > [!IMPORTANT]
-> **I probably wont maintain this**
-> 
 > - This script blocks a file on duolingo's server called app-*.js
 > - In that file there is some local code that allows me to enable unlimited hearts
 > - So what I do is replace it with a modified version which essentially patches it
@@ -57,5 +59,16 @@ There are no prequistes all you need is the extension, no premium tier or school
 - Why doesn't the extension just modify my personal app-*.js instead of using yours which could have a virus and secret code?!?!😱😱
     - Good question, that was a thought but I don't know how to make that into an extension if you want to do it contact me. This was just the easiest and most practical route by just replacing it with my prebuilt one.
     - Also its a webpack chunk and i think it will only work on sites with the webpack source map aka duolingo.com + look at the extension permissions.
+
+
+### This extension's required permissions for core functionality and why:
+
+- Access your data for sites in the **duolingo.com** domain (Needed to modify the website/add the patch)
+
+- Access your data for **d35aaqx5ub95lt.cloudfront.net** (This is where the unpatched app-*.js is hosted. Needed to block network requests from one specific file.)
+
+- Access your data for **raw.githubusercontent.com** (Fetches the modified app-*.js to replace the unpatched one from the cloudfront server.)
+
+# Support Me
 
 <a href="https://www.buymeacoffee.com/aperson" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
