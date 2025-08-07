@@ -33,17 +33,17 @@
 
 
 # <img src="https://d35aaqx5ub95lt.cloudfront.net/images/profile/48b8884ac9d7513e65f3a2b54984c5c4.svg" width="30px"> Frequently Asked Questions
-## General FAQ
+### General FAQ
 
 | **Question** | **Answer** |
 |--------------|------------|
 | Why isn't this working!??11!! 😡 | Reload your page. |
 | Does this follow TOS? | [In my opinion, yes](https://www.duolingo.com/guidelines#:~:text=Script%20or%20cheat,may%20be%20removed.). This is all on the client so there is no effect on the system. |
 | Is this safe? | Yes, this script changes only **two lines** of code which are only responsible for hearts. |
-| Is this all free? | Yes, but feel free to [support me](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/?tab=readme-ov-file#support-me). |
+| Is this all free? | Yes, but feel free to [support me](https://www.buymeacoffee.com/aperson). |
 | How do I do this on my iPhone or Android device? | - There are plenty of modded APKs and IPAs out there that allow you to get premium for free. Do some research.<br>- Another option is using **Kiwi Browser** (Android) or **Orion Browser** (iPhone) to install the extension.|
 
-## Developer FAQ
+### Developer FAQ
 
 | **Question** | **Answer** |
 |--------------|------------|
@@ -53,6 +53,6 @@
 | Why isn't the modified `app-*.js` in this repository? | Trying to avoid patches and honestly, I'm too lazy to change the URLs in the extension again. Its in a public repos-(You can find it easily if you're reading this anyways). |
 | Why doesn't the extension just modify my personal `app-*.js` instead of using yours which could have a virus and secret code?!?! 😱 | Good question. That was considered, but I don’t know how to make that into an extension. Make a pull request if you want to try. This was just the easiest and most practical route.<br>Also, it's a **webpack chunk**, and I think it only works on sites with the webpack source map — i.e., only **duolingo.com**. Check the extension permissions too. This is **NOT** malicious. |
 
-## <img src="https://d35aaqx5ub95lt.cloudfront.net/images/gems/45c14e05be9c1af1d7d0b54c6eed7eee.svg" width="20px"> Support Me
+# <img src="https://d35aaqx5ub95lt.cloudfront.net/images/gems/45c14e05be9c1af1d7d0b54c6eed7eee.svg" width="20px"> Support Me
 
 <a href="https://www.buymeacoffee.com/aperson" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
