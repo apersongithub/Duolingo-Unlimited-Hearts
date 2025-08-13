@@ -15,7 +15,7 @@
 | **Data Access**                          | **Why?**                                                               | **Duolingo Server?** |
 |-----------------------------------------|-------------------------------------------------------------------------|----------------------|
 | `duolingo.com`                          | Needed to modify the website and apply the patch.                         | ✅ Yes               |
-| `d35aaqx5ub95lt.cloudfront.net`         | Hosts the original unpatched `app-*.js`; must tempoblock requests to this.    | ✅ Yes               |
+| `d35aaqx5ub95lt.cloudfront.net`         | Hosts the original unpatched `app-*.js`; must modify requests for this.    | ✅ Yes               |
 | `raw.githubusercontent.com`             | Get's the version number of the extension for the icon popup to see if updates are available.          | ❌ No                |
 
 
