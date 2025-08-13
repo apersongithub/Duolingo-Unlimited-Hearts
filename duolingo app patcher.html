@@ -20,7 +20,7 @@
 
 <script>
 function transformCode(code) {
-  // 1) Replace only => "free" or => 'free' with => "schools"
+  // 1) Replace only '=> "free"' with '=> "schools"'
   code = code.replace(/=>\s*(['"])free\1/g, '=> "schools"');
 
   // 2) Append "free" to ["schools","beta course","revenue paused"]
