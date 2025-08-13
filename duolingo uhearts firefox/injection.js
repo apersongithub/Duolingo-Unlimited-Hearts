@@ -1,8 +1,4 @@
-// injection.js - runs in page context
-// Listens for window.postMessage from content script with { source: 'ext-injector', url, patchedCode? }
-// If patchedCode is present it will execute that. Otherwise it will fetch the URL itself (page-context fetch),
-// patch, and attempt to inject via blob or new Function. It posts back the result { source: 'ext-injector-result', url, ok }.
-
+// injection.js - runs in page context; fallback fetch+patch+inject if needed.
 (function () {
   if (window.__EXT_PATCH_INJECTED__) return;
   window.__EXT_PATCH_INJECTED__ = true;
@@ -23,7 +19,7 @@
       const original = await res.text();
       const patched = patchCode(original);
 
-      // try blob injection
+      // try blob injection first
       try {
         const blob = new Blob([patched], { type: 'application/javascript' });
         const blobUrl = URL.createObjectURL(blob);
@@ -60,9 +56,8 @@
     if (d && d.source === 'ext-injector' && d.url) {
       let ok = false;
       if (d.patchedCode) {
-        // execute patchedCode directly
         try {
-          // try blob creation first
+          // try blob
           try {
             const blob = new Blob([d.patchedCode], { type: 'application/javascript' });
             const blobUrl = URL.createObjectURL(blob);
@@ -75,7 +70,6 @@
               : (document.head || document.documentElement).appendChild(s);
             ok = true;
           } catch (bErr) {
-            // fallback to new Function
             const fn = new Function(d.patchedCode + "\n//# sourceURL=patched-app.js");
             fn();
             ok = true;
@@ -87,7 +81,6 @@
         window.postMessage({ source: 'ext-injector-result', url: d.url, ok }, '*');
         return;
       } else {
-        // no patched code provided: attempt to fetch/patch/run in page context
         ok = await fetchPatchAndRun(d.url);
         window.postMessage({ source: 'ext-injector-result', url: d.url, ok }, '*');
         return;
@@ -95,33 +88,5 @@
     }
   }, false);
 
-  // signal ready if useful
   window.postMessage({ source: 'ext-injector-ready' }, '*');
 })();
-
-// exploit_banner_injector.js
-const script = document.createElement('script');
-script.textContent = `
-(function() {
-  const originalAppend = Element.prototype.appendChild;
-  Element.prototype.appendChild = function(child) {
-    try {
-      if (child.classList && child.classList.contains("vp1gi")) {
-        child.innerHTML = \`
-          Exploit found by apersongithub
-          <div style="margin-top:10px;">
-            <a href="https://www.buymeacoffee.com/aperson" target="_blank">
-              <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"
-                   alt="Buy Me A Coffee"
-                   style="height: 60px !important; width: 217px !important;">
-            </a>
-          </div>
-        \`;
-      }
-    } catch (e) {}
-    return originalAppend.call(this, child);
-  };
-})();
-`;
-(document.head || document.documentElement).appendChild(script);
-script.remove();
