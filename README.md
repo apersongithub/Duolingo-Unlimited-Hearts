@@ -60,7 +60,7 @@
 | How can I reproduce this? | Find your `app-*.js` download and open 'duolingo app.js patcher.html' and put it through. Then use firefox or chrome local overrides and point it towards the output you got from the html file. |
 | Why isn't the modified `app-*.js` in this repository? | It is all done locally. It only fetches the github for the version number. |
 | Why is the code slightly differen't for each browser? | Firefox and Chrome do not have equal extension support. |
-| What happened to the chrome mv2 version of this extension? | I decided to remove it as as major browsers don't support it anymore. Use mv3. |
+| What happened to the chrome mv2 version of this extension? | I decided to remove it as major browsers don't support it anymore. Use mv3. |
 
 # <img src="https://d35aaqx5ub95lt.cloudfront.net/images/gems/45c14e05be9c1af1d7d0b54c6eed7eee.svg" width="20px"> Support Me
 
