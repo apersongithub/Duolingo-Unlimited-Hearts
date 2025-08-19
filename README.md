@@ -38,7 +38,7 @@
 |--------------|------------|
 | Why do I see a white screen and nothing else? | You are likely using an older version (v1.0) of the extension. If not, create an issue. |
 | Why isn't this working!??11!! 😡 | Reload your page. |
-| Does this work if I have [energy](https://duolingo.fandom.com/wiki/Energy) and not hearts? | Probably not but feel free to try. If it has a similar code-structure to hearts then I might be able to implement unlimited energy into this extension. Unfortunately this could take a while as I don't have an account with energy to test/find an exploit. |
+| Does this work if I have [energy](https://duolingo.fandom.com/wiki/Energy) and not hearts? | Energy is a mobile app only feature, go to the last question for more info. |
 | Does this follow TOS? | [In my opinion, yes](https://www.duolingo.com/guidelines#:~:text=Script%20or%20cheat,may%20be%20removed.). This is all on the client so there is no effect on the system. |
 | Is this safe? | Yes, this script changes only **two lines** of code which are only responsible for hearts. |
 | Is this all free? | Yes, but feel free to [support me](https://www.buymeacoffee.com/aperson). |
