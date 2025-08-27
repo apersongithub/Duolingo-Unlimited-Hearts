@@ -1,5 +1,5 @@
 > [!IMPORTANT] 
-> ❗KEEP A LOOKOUT FOR THE NEXT UPDATE RELEASING THIS WEEK WHICH WILL INCLUDE ALL PREMIUM FEATURES❗
+> ❗KEEP A LOOKOUT FOR THE NEXT UPDATE RELEASING 8/27/25 WHICH WILL INCLUDE ALL PREMIUM FEATURES❗
 # <img src="https://d35aaqx5ub95lt.cloudfront.net/images/hearts/fa8debbce8d3e515c3b08cb10271fbee.svg" width="25px"> Extension Overview
 > For **educational purposes** only, obviously.
 >
