@@ -1,24 +1,5 @@
 {
   "version": "2.12",
   "releaseDate": "2025-08-28",
-  "changes": {
-    "added": [
-      "New speech recognition support in Firefox",
-      "Improved SVG height scaling",
-      "Automatic app.js patching for updated builds"
-    ],
-    "fixed": [
-      "Scrolling issue caused by read-only object properties",
-      "WebSocket connection network errors",
-      "Firefox extension background service worker problem"
-    ],
-    "changed": [
-      "Regex replacement for user object patching",
-      "Migration to Manifest V3 with multi-script injection"
-    ],
-    "removed": [
-      "Deprecated proxy patching method"
-    ]
-  },
   "notes": "This release improves cross-browser compatibility and stabilizes webpack patching."
 }
