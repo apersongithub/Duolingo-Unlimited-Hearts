@@ -1,24 +1,22 @@
-> [!IMPORTANT] 
-> ❗THIS PAGE IS SORT OF OUTDATED DUE TO v3.0 WILL BE UPDATED SOON❗
-> 
-> Previously known as Duolingo Unlimited Hearts < Duolingo Max
-# <img src="https://d35aaqx5ub95lt.cloudfront.net/images/hearts/fa8debbce8d3e515c3b08cb10271fbee.svg" width="25px"> Extension Overview
+# <img src="https://d35aaqx5ub95lt.cloudfront.net/images/max/9f30dad6d7cc6723deeb2bd9e2f85dd8.svg" width="25px"> Extension Overview
 > For **educational purposes** only, obviously.
 >
 > And I probably wont maintain this..
 > 
 > This took a day to figure out enjoy lol.
+> 
+> ***Previously known as Duolingo Unlimited Hearts***
 
 
 
 ## Gist
 > [!IMPORTANT]  
-> The following domains are accessed for patching Duolingo's web app. Each serves a specific purpose:
+> The following domains are accessed for patching Duolingo. Each domain serves a specific purpose:
 
 | **Data Access**                          | **Why?**                                                               | **Duolingo Server?** |
 |-----------------------------------------|-------------------------------------------------------------------------|----------------------|
 | `duolingo.com`                          | Needed to modify the website and apply the patch.                         | ✅ Yes               |
-| `d35aaqx5ub95lt.cloudfront.net`         | Hosts the original unpatched `app-*.js`; must modify requests for this.    | ✅ Yes               |
+| `d35aaqx5ub95lt.cloudfront.net`         | Hosts the original unpatched webpack chunk files. Ex: `app-*.js`; must modify requests for these.    | ✅ Yes               |
 | `raw.githubusercontent.com`             | Get's the version number of the extension for the icon popup to see if updates are available.          | ❌ No                |
 
 
@@ -39,13 +37,13 @@
 
 | **Question** | **Answer** |
 |--------------|------------|
-| Why do I see a white screen and nothing else? | You are likely using an older version (v1.0) of the extension. If not, create an issue. |
+| Why do I see a white screen and nothing else? | You are likely using an older version of the extension. If not, create an issue. |
 | Why isn't this working!??11!! 😡 | Reload your page. |
 | Does this follow TOS? | [In my opinion, yes](https://www.duolingo.com/guidelines#:~:text=Script%20or%20cheat,may%20be%20removed.). This is all on the client so there is no effect on the system. |
-| Is this safe? | Yes, this script changes only **two lines** of code which are only responsible for hearts. |
+| Is this safe? | Yes, this script is open soucre and only changes a few lines of code which are solely responsible for the paid features. |
 | Is this all free? | Yes, but feel free to [support me](https://www.buymeacoffee.com/aperson). |
-| Why do I still have unlimited hearts after uninstalling the extension? | This will only happen on **Firefox** because the `app-*.js` is cached temporarily. If you want it gone you would need to: clear your site data for duolingo.com, close all duolingo tabs, and log back in to duolingo in a new tab. I wouldn't recommend deleting the extension to use the cached version because when duolingo updates (about every week) the cached version won't work.|
-| How do I know if the extension needs to update? | You can click on the extension icon and it will show a popup with the version number. It will tell you if the extension requires updates or not based on a fetched version number from this respository. |
+| Why do I still have Duolingo Max after uninstalling the extension? | This will only happen on **Firefox** because the patched files are cached temporarily. If you want it gone you would need to: clear your site data for duolingo.com, close all duolingo tabs, and log back in to duolingo in a new tab. You can also just wait until the site updates which brings me to my next point——I wouldn't recommend deleting the extension to use the cached version because when duolingo updates (about every week) the cached version won't work and it will be reverted to normal.|
+| How do I know if the extension needs to update? | You can either click on the extension icon or just wait until it notifies you. It will show a popup with the version number. It will tell you if the extension requires updates or not based on a fetched version number from this respository. |
 | Does this work if I have [energy](https://duolingo.fandom.com/wiki/Energy) and not hearts? | Energy is a mobile app only feature, go to the last question for more info. |
 | How do I do this on my Apple (iPhone/iPad) or Android device? | - **Android**: You would first need to enable [Install unknown apps](https://www.wikihow.com/Allow-Apps-from-Unknown-Sources-on-Android) for the app you install the APK from. There are plenty of modded APKs available that unlock premium features. These can be found on various forums and third-party app stores. Do your research and be cautious about what you install.<br> Another option is using the **Firefox Browser**, which supports [imported extensions](https://blog.mozilla.org/addons/2020/09/29/expanded-extension-support-in-firefox-for-android-nightly/) similar to enabling developer mode on the desktop version of Chrome. This extension already has support for Firefox through the [Mozilla Add-ons Store](https://addons.mozilla.org/en-US/firefox/addon/duolingo-unlimited-hearts/) natively without debug mode. Other Android browsers that support extensions *may* also work.<br><br>- **Apple (iPhone/iPad)**: Modded IPAs do exist, but installing them requires **sideloading**, which means manually installing apps outside the App Store. This typically involves tools like [SideStore](https://sidestore.io/) **(Recommended)**, or a jailbroken device. If you plan on using SideStore I also recommend looking into [LiveContainer](https://github.com/LiveContainer/LiveContainer) because of apple's sideloaded app limits. Do your research and be cautious about what you install. <br><br>*Although these steps are somewhat tedious, the ability to download a wide range of modded apps more than makes up for the work—whether you're using an Android or Apple device. Think of the apps you use that have annoying ads or paywalled features...👀*|
 
@@ -59,11 +57,11 @@
 
 | **Question** | **Answer** |
 |--------------|------------|
-| Why is the modified `app-*.js` obfuscated? | The original `app-*.js` is obfuscated — there's nothing I can do. |
-| How can I reproduce this? | Find your `app-*.js` download and open 'duolingo app.js patcher.html' and put it through. Then use firefox or chrome local overrides and point it towards the output you got from the html file. |
-| Why isn't the modified `app-*.js` in this repository? | It is all done locally. It only fetches the github for the version number. |
+| Why is the modified patched files obfuscated? | The originals are also obfuscated because they are webpack chunks — there's nothing I can do. |
+| How can I reproduce this? | Find your required webpack chunks then download and open 'duolingo app.js patcher.html' and put it through. Then use firefox or chrome local overrides and point it towards the output you got from the html file. |
+| Why aren't the modified patched files in this repository? | It is all done locally. It only fetches the github for the version number and a little other stuff. |
 | Why is the code slightly differen't for each browser? | Firefox and Chrome do not have equal extension support. |
-| What happened to the chrome mv2 version of this extension? | I decided to remove it as major browsers don't support it anymore. Use mv3. |
+| What happened to the chrome mv2 version of this extension? | I decided to remove it as major browsers don't support it anymore. |
 
 # <img src="https://d35aaqx5ub95lt.cloudfront.net/images/gems/45c14e05be9c1af1d7d0b54c6eed7eee.svg" width="20px"> Support Me
 
