@@ -1,0 +1,30 @@
+8/24/25
+Make into extension
+see if variables work with older versions to ensure compaitibility (prob check diffs)
+technically the app.js does not need modification you can just intercept user info
+note: some of the js files arent loaded until later 
+possible lite version
+(there are three ways to get unlimited hearts now)
+
+8/25/25
+what needs to be fixed
+scrolling (already fixed but regressed)
+mistakes hub
+word hub
+microphone on firefox (already fixed before but regressed)
+
+8/26/25
+maybe change app.js to work for minified (it does but make it more stable)
+small other changes maybe (alert on duolingo site when major update needed (FOR example 2.0 jump to 3.0)
+make a testing website to test js files / future proofing
+let firefox users know they have to enable something in about:config to get speaking lessons.
+thats pretty much it and its ready for release
+speaking broke again on firefox
+variables can have 2 letters
+
+8/27/25
+add alert if major version jump
+tell firefox users to enable something in about:config for speaking lessons let them know its buggy so it isnt recommended.
+
+8/28/25
+publish extension lol
