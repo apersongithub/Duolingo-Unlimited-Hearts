@@ -1,5 +1,5 @@
 > [!IMPORTANT] 
-> ❗KEEP A LOOKOUT FOR THE NEXT UPDATE RELEASING 8/27/25 WHICH WILL INCLUDE ALL PREMIUM FEATURES❗
+> ❗THIS PAGE IS SORT OF OUTDATED DUE TO v3.0 WILL BE UPDATED SOON❗
 # <img src="https://d35aaqx5ub95lt.cloudfront.net/images/hearts/fa8debbce8d3e515c3b08cb10271fbee.svg" width="25px"> Extension Overview
 > For **educational purposes** only, obviously.
 >
