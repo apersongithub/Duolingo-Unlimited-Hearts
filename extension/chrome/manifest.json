@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Duolingo Unlimited Hearts",
-  "description": "Gives unlimited hearts in Duolingo for free",
-  "version": "2.0",
+  "name": "Duolingo Max",
+  "description": "Gives Duolingo Max features for free",
+  "version": "3.0",
   "icons": {
     "16": "/images/icon16.png",
     "48": "/images/icon48.png",
@@ -13,18 +13,19 @@
     "scripting"
   ],
   "host_permissions": [
+    "https://*.duolingo.com/*",
     "https://d35aaqx5ub95lt.cloudfront.net/*",
-    "https://raw.githubusercontent.com/*",
-    "https://*.duolingo.com/*"
+    "https://raw.githubusercontent.com/*"
   ],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "type": "module"
   },
   "content_scripts": [
     {
       "matches": [
-        "https://d35aaqx5ub95lt.cloudfront.net/*",
-        "https://*.duolingo.com/*"
+        "https://*.duolingo.com/*",
+        "https://d35aaqx5ub95lt.cloudfront.net/*"
       ],
       "js": [
         "content_script.js",
@@ -45,13 +46,14 @@
     {
       "resources": [
         "injection.js",
+        "page_hook.js",
         "popup.js",
         "popup.css",
         "exploit_banner.js"
       ],
       "matches": [
-        "https://d35aaqx5ub95lt.cloudfront.net/*",
-        "https://*.duolingo.com/*"
+        "https://*.duolingo.com/*",
+        "https://d35aaqx5ub95lt.cloudfront.net/*"
       ]
     }
   ]

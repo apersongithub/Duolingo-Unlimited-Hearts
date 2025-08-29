@@ -1,36 +1,48 @@
-// content_script.js (Firefox) - remove integrity/crossorigin attributes early,
-// observe future script tags, and act as a fallback coordinator.
+// content_script.js (Firefox MV2)
+// Changes:
+// - Do NOT block any scripts. Let background.js patch responses at network level
+//   for app-*.js and 7220/6150/4370.
+// - Remove integrity/crossorigin/nonce early so SRI doesn't block patched responses.
+// - Keep observing dynamically added scripts to strip SRI.
 
-const APP_REGEX = /(^|\/)app-[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)?\.js(?:\?.*)?$/i;
+const SCRIPT_RE = /(^|\/)(app|7220|6150|4370)[^/]*\.js(\?.*)?$/i;
 
-function removeIntegrityAttrs(node) {
+function stripSriAttrs(node) {
   try {
-    if (node.hasAttribute && node.src && APP_REGEX.test(node.src)) {
+    if (!node || node.tagName !== 'SCRIPT') return;
+    const src = node.src || '';
+    if (SCRIPT_RE.test(src)) {
       if (node.hasAttribute('integrity')) node.removeAttribute('integrity');
       if (node.hasAttribute('crossorigin')) node.removeAttribute('crossorigin');
+      if (node.hasAttribute('nonce')) node.removeAttribute('nonce');
     }
-  } catch (e) {
-    // ignore
-  }
+  } catch {}
 }
 
-// scan existing script tags at document_start
-try {
+// Strip SRI from existing scripts ASAP
+(function scanAndStrip() {
   const scripts = Array.from(document.getElementsByTagName('script'));
-  for (const s of scripts) removeIntegrityAttrs(s);
-} catch (e) { console.error(e); }
+  for (const sc of scripts) stripSriAttrs(sc);
+})();
 
-// observe future script insertions to remove integrity attributes early
-const mo = new MutationObserver(mutations => {
+// Observe for dynamically added scripts and strip SRI
+const observer = new MutationObserver((mutations) => {
   for (const m of mutations) {
-    for (const node of m.addedNodes) {
-      if (node && node.tagName === 'SCRIPT') removeIntegrityAttrs(node);
+    for (const node of m.addedNodes || []) {
+      if (node && node.tagName === 'SCRIPT') {
+        stripSriAttrs(node);
+      }
     }
   }
 });
-mo.observe(document.documentElement || document, { childList: true, subtree: true });
+observer.observe(document.documentElement || document, { childList: true, subtree: true });
 
-// If filterResponseData works, the background filter will do the rewrite.
-// But keep the fallback: if background can't fetch/patch, injection.js can fetch/patch in page context.
-// We don't remove the original script tags here; the filter will handle replacement.
-// For older Firefox or edge cases, the injector may be used by other flows implemented elsewhere.
+// Optional: inject page_hook.js as a lightweight safety net to strip SRI even if CSP blocks content script early.
+(function injectPageHook() {
+  if (document.getElementById('__ext_page_hook__')) return;
+  const s = document.createElement('script');
+  s.id = '__ext_page_hook__';
+  s.src = chrome.runtime.getURL('page_hook.js');
+  s.async = false;
+  (document.documentElement || document.head || document).appendChild(s);
+})();

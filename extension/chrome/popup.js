@@ -10,12 +10,17 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await response.json();
       const latestVersion = data.version;
 
-      if (compareVersions(currentVersion, latestVersion) >= 0) {
+      const cmp = compareVersions(currentVersion, latestVersion);
+
+      if (cmp === 0) {
         statusEl.textContent = `Version: ✅ Up to date (v${currentVersion})`;
-        statusEl.style.color = "green";
+        statusEl.style.color = "#28df28";
+      } else if (cmp < 0) {
+        statusEl.textContent = `Version: ⚠️ Update available, check GitHub! Current: v${currentVersion}, Latest: v${latestVersion}`;
+        statusEl.style.color = "#df2828ff";
       } else {
-        statusEl.textContent = `Version: ⚠️ Update available check github! Current: v${currentVersion}, Latest: v${latestVersion}`;
-        statusEl.style.color = "red";
+        statusEl.textContent = `Version: 🧪 Beta version detected (v${currentVersion}), Latest stable: v${latestVersion}`;
+        statusEl.style.color = "#2878df";
       }
     } catch (err) {
       console.error("Version check failed:", err);
