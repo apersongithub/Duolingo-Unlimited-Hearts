@@ -1,5 +1,5 @@
 {
   "version": "2.12",
   "releaseDate": "2025-08-28",
-  "notes": "This release improves cross-browser compatibility and stabilizes webpack patching."
+  "releaseNotes": "This release improves cross-browser compatibility and stabilizes webpack patching."
 }
