@@ -1,1 +1,8 @@
-{ "version": "2.1" }
+{
+  "version": "2.12",
+  "releaseDate": "2025-08-28",
+  "releaseNotes": "This release improves cross-browser compatibility and stabilizes webpack patching.",
+  "EXTENSION_NAME": "Duolingo Max Extension",
+  "EXTENSION_URL": "https://github.com/apersongithub/Duolingo-Unlimited-Hearts/",
+  "BANNER": "<div class='thPiC'><img class='_1xOxM' src='https://raw.githubusercontent.com/apersongithub/Duolingo-Unlimited-Hearts/refs/heads/main/extras/icon.svg' style='border-radius:100px'></div><div class='_3jiBp'><h4 class='qyEhl'>Duolingo Max Extension</h4><span class='_3S2Xa'>Created by <a href='https://github.com/apersongithub' target='_blank' style='color:#07b3ec'>apersongithub</a></span></div><div class='_36kJA'><div style='margin-top:10px'><a href='https://www.buymeacoffee.com/aperson' target='_blank'><button class='_1ursp _2V6ug _2paU5 _3gQUj _7jW2t rdtAy'><span class='_9lHjd' style='color:#d7d62b'>☕ Buy me a coffee</span></button></a></div></div>"
+}
