@@ -1,5 +1,7 @@
 {
   "version": "2.12",
   "releaseDate": "2025-08-28",
-  "releaseNotes": "This release improves cross-browser compatibility and stabilizes webpack patching."
+  "releaseNotes": "This release improves cross-browser compatibility and stabilizes webpack patching.",
+  "EXTENSION_NAME": "Duolingo Max Extension",
+  "EXTENSION_URL": "https://github.com/apersongithub/Duolingo-Unlimited-Hearts/"
 }
