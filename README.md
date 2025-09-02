@@ -25,7 +25,7 @@
 > [!NOTE]
 > - **NOW AVAILABLE ON THE** [Mozilla Add-ons Store](https://addons.mozilla.org/en-US/firefox/addon/duolingo-unlimited-hearts/)
 >   - Supports Firefox for Android
-> - If we get some donations, I’ll be able to get a developer license and post it on the **Chrome Web Store**
+> - If we get **1** more donation, I’ll be able to get a developer license and post it on the **Chrome Web Store**
 
 | **Browser** | **Installation Steps** |
 |-------------|------------------------|
