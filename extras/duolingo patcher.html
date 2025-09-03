@@ -313,8 +313,17 @@ document.getElementById('transformBtn').addEventListener('click', () => {
   link.href = url;
   
   const fileInput = document.getElementById('fileInput');
-  const originalFilename = fileInput.files[0] ? fileInput.files[0].name : 'modified.js';
-  link.download = originalFilename; // Use the original filename for the download
+  let downloadName;
+
+  if (fileInput.files.length > 0) {
+    // If a file was selected, use its original name
+    downloadName = fileInput.files[0].name;
+  } else {
+    // If code was pasted, name the file based on the patch type
+    downloadName = `${patchType}.js`;
+  }
+  
+  link.download = downloadName;
 
   link.style.display = 'inline-block';
   link.textContent = `Download ${link.download}`;
