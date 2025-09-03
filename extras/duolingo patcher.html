@@ -1,0 +1,323 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Duolingo Max Patcher</title>
+<style>
+  body { font-family: Arial, sans-serif; padding: 20px; background: #f4f4f4; }
+  h1, h2 { text-align: center; }
+  h2 { font-weight: normal; font-size: 1em; color: #555; margin-top: -10px; }
+  textarea { width: 100%; height: 250px; font-family: monospace; margin-bottom: 10px; box-sizing: border-box; }
+  pre { background: #222; color: #0f0; padding: 10px; white-space: pre-wrap; height: 250px; overflow-y: auto; box-sizing: border-box;}
+  button, select { font-size: 1.1em; padding: 10px 15px; cursor: pointer; vertical-align: middle; }
+  a { font-size: 1.1em; padding: 10px 15px; vertical-align: middle; }
+  .container { max-width: 900px; margin: 0 auto; }
+  .controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Duolingo Max Patcher</h1>
+  <h2>Select a specific patch</h2>
+  <div class="controls">
+    <input type="file" id="fileInput" accept=".js">
+    <select id="patchSelector">
+      <option value="app">App.js</option>
+      <option value="7220">Chunk 7220.js</option>
+      <option value="6150">Chunk 6150.js</option>
+      <option value="4370">Chunk 4370.js</option>
+    </select>
+    <button id="transformBtn">Apply Patch</button>
+  </div>
+  <br>
+  <a id="downloadLink" style="display:none;">Download Modified File</a>
+  <br><br>
+  <textarea id="inputArea" placeholder="// Paste or open a JS file to be patched..."></textarea>
+  <pre id="outputArea">(no output yet)</pre>
+  <p style="text-align: center; margin-top: 20px; font-weight: bold; color: #333;">Once you've patched all files listed, send the output to chrome or firefox local overrides.</p>
+</div>
+
+<script>
+/**
+ * Main orchestrator function.
+ * Applies a selected patch or all patches to the input code.
+ * @param {string} code The original JavaScript code.
+ * @param {string} patchType The key for the patch to apply ('all', 'app', '7220', etc.).
+ */
+function transformCode(code, patchType) {
+  switch (patchType) {
+    case 'app':
+      return patchApp(code);
+    case '7220':
+      return patch7220(code);
+    case '6150':
+      return patch6150(code);
+    case '4370':
+      return patch4370(code);
+    default:
+      alert('Unknown patch type');
+  }
+}
+
+// --- PART 1: app*.js Patches ---
+function patchApp(code) {
+  // --- Patch e.items ---
+  code = code.replace(
+    /([A-Za-z_$][\w$]*)\s*=\s*e\s*=>\s*e\.items(?!\s*[\.\[(])\s*(?=[,;)}]|$)/g,
+    `$1=e=>({...e.items,inventory:{...e.items.inventory,gold_subscription:{itemName:"gold_subscription",subscriptionInfo:{vendor:"STRIPE",renewing:true,isFamilyPlan:true,expectedExpiration:9999999999000}}}})`
+  );
+  // --- Patch e.user ---
+  code = code.replace(
+    /([A-Za-z_$][\w$]*)\s*=\s*e\s*=>\s*e\.user(?!\s*[\.\[(])\s*(?=[,;)}]|$)/g,
+    `$1=(()=>{let lu=null,lpu=null;return e=>{const cu=e.user;if(cu===lu)return lpu;lu=cu;lpu={...cu,hasPlus:true};return lpu;};})()`
+  );
+  // --- Patch SpeechRecognition check ---
+  code = code.replace(
+    /([A-Za-z_$][\w$]*)\s*=\s*!!window\.webkitSpeechRecognition\s*&&\s*\(\s*[A-Za-z_$][\w$]*\.Z\.chrome\s*\|\|\s*[A-Za-z_$][\w$]*\.Z\.edgeSupportedSpeaking\s*\)/g,
+    (_, v) => `${v} = !!(window.SpeechRecognition || window.webkitSpeechRecognition)`
+  );
+  return code;
+}
+
+
+// --- PART 2: Other Chunk Patches ---
+function patch7220(code) {
+  code = code.replace(/isDisabled:\s*!0\s*,/g, "isDisabled: false,");
+  code = code.replace(/isDisabled:!0,/g, "isDisabled: false,");
+  code = code.replace(/showSuperBadge:\s*!e\s*,/g, "showSuperBadge: false,");
+  code = code.replace(/showSuperBadge:!e,/g, "showSuperBadge: false,");
+  code = code.replace(/e\s*=>\s*e\.user\.hasPlus/g, "e => !e.user.hasPlus");
+  return code;
+}
+
+function patch6150(code) {
+  const TARGET_ROUTE = '/mistakes-review';
+  let out = code;
+  let cursor = 0;
+  while (true) {
+    const pushDot = out.indexOf('.push(', cursor);
+    if (pushDot === -1) break;
+    let p = pushDot + '.push('.length;
+    while (p < out.length && /\s/.test(out[p])) p++;
+    const quote = out[p];
+    if (quote !== '"' && quote !== "'") { cursor = pushDot + 1; continue; }
+    const qch = quote;
+    let q = p + 1;
+    let arg = null;
+    while (q < out.length) {
+      if (out[q] === '\\') { q += 2; continue; }
+      if (out[q] === qch) { arg = out.slice(p + 1, q); break; }
+      q++;
+    }
+    if (arg !== TARGET_ROUTE) { cursor = pushDot + 1; continue; }
+    const routerVar = findIdentifierBeforeDot(out, pushDot);
+    if (!routerVar) { cursor = pushDot + 1; continue; }
+    const onKeyPos = out.lastIndexOf('onButtonClick', pushDot);
+    if (onKeyPos === -1) { cursor = pushDot + 1; continue; }
+    const afterOn = onKeyPos + 'onButtonClick'.length;
+    const colonPos = out.indexOf(':', afterOn);
+    if (colonPos === -1 || colonPos > pushDot) { cursor = pushDot + 1; continue; }
+    let braceStart = out.indexOf('{', colonPos);
+    if (braceStart === -1 || braceStart > pushDot) { cursor = pushDot + 1; continue; }
+    const braceEnd = findMatchingBrace(out, braceStart);
+    if (braceEnd === -1 || braceEnd < pushDot) { cursor = pushDot + 1; continue; }
+    let replaceFrom = onKeyPos;
+    let replaceTo = braceEnd;
+    let commaAfter = '';
+    if (out[replaceTo + 1] === ',') {
+      commaAfter = ',';
+      replaceTo = replaceTo + 1;
+    }
+    const replacement = `onButtonClick:()=>{${routerVar}.push("${TARGET_ROUTE}");}${commaAfter}`;
+    const originalSnippet = out.slice(replaceFrom, replaceTo + 1);
+    const minimalForm = `onButtonClick:()=>{${routerVar}.push("${TARGET_ROUTE}");}${commaAfter}`;
+    if (originalSnippet === minimalForm || originalSnippet === `onButtonClick:()=>{${routerVar}.push('${TARGET_ROUTE}');}${commaAfter}`) {
+      cursor = replaceTo + 1;
+      continue;
+    }
+    out = out.slice(0, replaceFrom) + replacement + out.slice(replaceTo + 1);
+    cursor = replaceFrom + replacement.length;
+  }
+  return out;
+}
+
+function patch4370(code) {
+  const TARGET_ROUTE = '/practice-hub/words/practice';
+  let out = code;
+  let cursor = 0;
+  while (true) {
+    const pushDot = out.indexOf('.push(', cursor);
+    if (pushDot === -1) break;
+    let p = pushDot + '.push('.length;
+    while (p < out.length && /\s/.test(out[p])) p++;
+    const quote = out[p];
+    if (quote !== '"' && quote !== "'") { cursor = pushDot + 1; continue; }
+    const qch = quote;
+    let q = p + 1;
+    let arg = null;
+    while (q < out.length) {
+      if (out[q] === '\\') { q += 2; continue; }
+      if (out[q] === qch) { arg = out.slice(p + 1, q); break; }
+      q++;
+    }
+    if (arg !== TARGET_ROUTE) { cursor = pushDot + 1; continue; }
+    const routerVar = findIdentifierBeforeDot(out, pushDot);
+    if (!routerVar) { cursor = pushDot + 1; continue; }
+    const onKeyPos = out.lastIndexOf('onButtonClick', pushDot);
+    if (onKeyPos === -1) { cursor = pushDot + 1; continue; }
+    const afterOn = onKeyPos + 'onButtonClick'.length;
+    const colonPos = out.indexOf(':', afterOn);
+    if (colonPos === -1 || colonPos > pushDot) { cursor = pushDot + 1; continue; }
+    let braceStart = out.indexOf('{', colonPos);
+    if (braceStart === -1 || braceStart > pushDot) { cursor = pushDot + 1; continue; }
+    const braceEnd = findMatchingBrace(out, braceStart);
+    if (braceEnd === -1 || braceEnd < pushDot) { cursor = pushDot + 1; continue; }
+    let replaceFrom = onKeyPos;
+    let replaceTo = braceEnd;
+    let objStart = -1, objEnd = -1;
+    const scanLimit = 2000;
+    const leftBound = Math.max(0, replaceFrom - scanLimit);
+    for (let j = replaceFrom - 1; j >= leftBound; j--) {
+      if (out[j] === '{') {
+        const match = findMatchingBrace(out, j);
+        if (match !== -1 && match >= replaceTo) { objStart = j; objEnd = match; break; }
+      } else if (out[j] === ';' || out[j] === '(') {
+        if (replaceFrom - j > 200) break;
+      }
+    }
+    if (objStart !== -1) {
+      const res = removeDisabledInObject(out, objStart, objEnd, replaceFrom, replaceTo);
+      if (res.removed) {
+        out = res.out;
+        replaceFrom = res.replaceFrom;
+        replaceTo = res.replaceTo;
+      }
+    }
+    let commaAfter = '';
+    if (out[replaceTo + 1] === ',') {
+      commaAfter = ',';
+      replaceTo = replaceTo + 1;
+    }
+    const originalSnippet = out.slice(replaceFrom, replaceTo + 1);
+    const minimalForm = `onButtonClick:()=>{${routerVar}.push("${TARGET_ROUTE}");}${commaAfter}`;
+    if (originalSnippet === minimalForm || originalSnippet === `onButtonClick:()=>{${routerVar}.push('${TARGET_ROUTE}');}${commaAfter}`) {
+      cursor = replaceTo + 1;
+      continue;
+    }
+    const replacement = `onButtonClick:()=>{${routerVar}.push("${TARGET_ROUTE}");}${commaAfter}`;
+    out = out.slice(0, replaceFrom) + replacement + out.slice(replaceTo + 1);
+    cursor = replaceFrom + replacement.length;
+  }
+  out = out.replace(/,\s*,/g, ',').replace(/\{\s*,/g, '{');
+  return out;
+}
+
+// --- Helper Functions ---
+function findIdentifierBeforeDot(str, dotPos) {
+  let i = dotPos - 1;
+  while (i >= 0 && /\s/.test(str[i])) i--;
+  if (i < 0 || !/[A-Za-z0-9_$]/.test(str[i])) return null;
+  let end = i;
+  while (i >= 0 && /[A-Za-z0-9_$]/.test(str[i])) i--;
+  return str.slice(i + 1, end + 1);
+}
+
+function findMatchingBrace(str, braceStart) {
+  let depth = 0;
+  for (let k = braceStart; k < str.length; k++) {
+    const ch = str[k];
+    if (ch === '{') {
+      depth++;
+    } else if (ch === '}') {
+      depth--;
+      if (depth === 0) return k;
+    } else if (ch === '"' || ch === "'" || ch === '`') {
+      const qc = ch;
+      k++;
+      while (k < str.length) {
+        if (str[k] === '\\') { k += 2; continue; }
+        if (str[k] === qc) break;
+        k++;
+      }
+    } else if (ch === '/') {
+      const next = str[k + 1];
+      if (next === '/') {
+        k += 2;
+        while (k < str.length && str[k] !== '\n') k++;
+      } else if (next === '*') {
+        k += 2;
+        while (k + 1 < str.length && !(str[k] === '*' && str[k + 1] === '/')) k++;
+        k += 1;
+      }
+    }
+  }
+  return -1;
+}
+
+function removeDisabledInObject(currentOut, objStart, objEnd, replaceFrom, replaceTo) {
+  const objStr = currentOut.slice(objStart, objEnd + 1);
+  let m = objStr.match(/disabled\s*:\s*!\s*([A-Za-z_$][\w$]*)\s*,/);
+  let relIndex = -1;
+  let matchLen = 0;
+  if (m) {
+    relIndex = objStr.indexOf(m[0]);
+    matchLen = m[0].length;
+  } else {
+    m = objStr.match(/,\s*disabled\s*:\s*!\s*([A-Za-z_$][\w$]*)\s*/);
+    if (m) {
+      relIndex = objStr.indexOf(m[0]);
+      matchLen = m[0].length;
+    } else {
+      m = objStr.match(/^\s*\{\s*disabled\s*:\s*!\s*([A-Za-z_$][\w$]*)\s*\}\s*$/);
+      if (m) {
+        relIndex = 0;
+        matchLen = objStr.length;
+      }
+    }
+  }
+  if (relIndex === -1) return { out: currentOut, replaceFrom, replaceTo, removed: false };
+  const absIdx = objStart + relIndex;
+  const newOut = currentOut.slice(0, absIdx) + currentOut.slice(absIdx + matchLen);
+  const removedLen = matchLen;
+  if (absIdx < replaceFrom) replaceFrom -= removedLen;
+  if (absIdx <= replaceTo) replaceTo -= removedLen;
+  const cleanStart = Math.max(0, absIdx - 40);
+  const cleanEnd = Math.min(newOut.length, absIdx + 40);
+  const before = newOut.slice(0, cleanStart);
+  const mid = newOut.slice(cleanStart, cleanEnd).replace(/,\s*,/g, ',').replace(/\{\s*,/g, '{');
+  const after = newOut.slice(cleanEnd);
+  return { out: before + mid + after, replaceFrom, replaceTo, removed: true };
+}
+
+// --- UI Event Listeners ---
+document.getElementById('fileInput').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    document.getElementById('inputArea').value = ev.target.result;
+  };
+  reader.readAsText(file);
+});
+
+document.getElementById('transformBtn').addEventListener('click', () => {
+  const original = document.getElementById('inputArea').value;
+  const patchType = document.getElementById('patchSelector').value;
+  const modified = transformCode(original, patchType);
+  document.getElementById('outputArea').textContent = modified;
+
+  const blob = new Blob([modified], { type: 'application/javascript' });
+  const url = URL.createObjectURL(blob);
+  const link = document.getElementById('downloadLink');
+  link.href = url;
+  
+  const fileInput = document.getElementById('fileInput');
+  const originalFilename = fileInput.files[0] ? fileInput.files[0].name.replace('.js', '') : 'modified';
+  link.download = `${originalFilename}.${patchType}.patched.js`;
+
+  link.style.display = 'inline-block';
+  link.textContent = `Download ${link.download}`;
+});
+</script>
+</body>
+</html>
