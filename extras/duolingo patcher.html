@@ -40,9 +40,9 @@
 <script>
 /**
  * Main orchestrator function.
- * Applies a selected patch or all patches to the input code.
+ * Applies a selected patch to the input code.
  * @param {string} code The original JavaScript code.
- * @param {string} patchType The key for the patch to apply ('all', 'app', '7220', etc.).
+ * @param {string} patchType The key for the patch to apply ('app', '7220', etc.).
  */
 function transformCode(code, patchType) {
   switch (patchType) {
@@ -56,6 +56,7 @@ function transformCode(code, patchType) {
       return patch4370(code);
     default:
       alert('Unknown patch type');
+      return code; // Return original code if patch type is unknown
   }
 }
 
@@ -312,8 +313,8 @@ document.getElementById('transformBtn').addEventListener('click', () => {
   link.href = url;
   
   const fileInput = document.getElementById('fileInput');
-  const originalFilename = fileInput.files[0] ? fileInput.files[0].name.replace('.js', '') : 'modified';
-  link.download = `${originalFilename}.${patchType}.js`;
+  const originalFilename = fileInput.files[0] ? fileInput.files[0].name : 'modified.js';
+  link.download = originalFilename; // Use the original filename for the download
 
   link.style.display = 'inline-block';
   link.textContent = `Download ${link.download}`;
