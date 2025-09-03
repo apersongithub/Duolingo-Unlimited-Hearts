@@ -58,7 +58,7 @@
 | **Question** | **Answer** |
 |--------------|------------|
 | Why is the modified patched files obfuscated? | The originals are also obfuscated because they are webpack chunks — there's nothing I can do. |
-| How can I reproduce this? | Find your required webpack chunks/files then download and open '[duolingo patcher.html](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/blob/main/extras/duolingo%20patcher.html)' and put it through. Then use firefox or chrome local overrides and point it towards the output you got from the html file. |
+| How can I reproduce this? | Find your required webpack chunks/files then download and open '[duolingo patcher.html](https://html-preview.github.io/?url=https://raw.githubusercontent.com/apersongithub/Duolingo-Unlimited-Hearts/refs/heads/main/extras/duolingo%20patcher.html)' and put it through. Then use firefox or chrome local overrides and point it towards the output you got from the html file. |
 | Why aren't the modified patched files in this repository? | It is all done locally. It only fetches the github for the version number and a little other stuff. |
 | Why is the code slightly differen't for each browser? | Firefox and Chrome do not have equal extension support. |
 | What happened to the chrome mv2 version of this extension? | I decided to remove it as major browsers don't support it anymore. |
