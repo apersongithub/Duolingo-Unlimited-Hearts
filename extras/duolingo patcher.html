@@ -313,7 +313,7 @@ document.getElementById('transformBtn').addEventListener('click', () => {
   
   const fileInput = document.getElementById('fileInput');
   const originalFilename = fileInput.files[0] ? fileInput.files[0].name.replace('.js', '') : 'modified';
-  link.download = `${originalFilename}.${patchType}.patched.js`;
+  link.download = `${originalFilename}.${patchType}.js`;
 
   link.style.display = 'inline-block';
   link.textContent = `Download ${link.download}`;
