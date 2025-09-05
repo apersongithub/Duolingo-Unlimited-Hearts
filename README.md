@@ -1,9 +1,5 @@
 # <img src="https://d35aaqx5ub95lt.cloudfront.net/images/max/9f30dad6d7cc6723deeb2bd9e2f85dd8.svg" width="25px"> Extension Overview
 > For **educational purposes** only, obviously.
->
-> And I probably wont maintain this..
-> 
-> This took a day to figure out enjoy lol.
 > 
 > ***Previously known as Duolingo Unlimited Hearts***
 
@@ -17,7 +13,7 @@
 |-----------------------------------------|-------------------------------------------------------------------------|----------------------|
 | `duolingo.com`                          | Needed to modify the website and apply the patch.                         | ✅ Yes               |
 | `d35aaqx5ub95lt.cloudfront.net`         | Hosts the original unpatched webpack chunk files. Ex: `app-*.js`; must modify requests for these.    | ✅ Yes               |
-| `raw.githubusercontent.com`             | Get's the version number of the extension for the icon popup to see if updates are available.          | ❌ No                |
+| `raw.githubusercontent.com`             | Get's the [extension-version.json](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/blob/main/extension-version.json) which includes the version number, update log, and external html for my buymeacoffee banner.         | ❌ No                |
 
 
 ## Installation Process
@@ -29,8 +25,8 @@
 
 | **Browser** | **Installation Steps** |
 |-------------|------------------------|
-| <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/Google_Chrome_icon_%28February_2022%29.svg" width="20px"> <img src="https://upload.wikimedia.org/wikipedia/commons/9/98/Microsoft_Edge_logo_%282019%29.svg" width="20px"> <img src="https://brave.com/static-assets/images/brave-logo-sans-text.svg" width="18px"> <img src="https://upload.wikimedia.org/wikipedia/commons/4/49/Opera_2015_icon.svg" width="20px"> | - Download the latest **Chrome (mv3)** extension from the [GitHub Releases](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/releases)<br>- Go to `chrome://extensions`<br>- Enable **Developer mode** (top right)<br>- Drag and drop the ZIP file onto the extensions page<br>- ✅ You're all set! |
-| <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Firefox_logo%2C_2019.svg/1200px-Firefox_logo%2C_2019.svg.png" width="20px"> <img src="https://c.clc2l.com/c/thumbnail96webp/t/t/o/tor-browser-QaPeUi.png" width="20px"> <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/LibreWolf_icon.svg" width="20px"> <img src="https://www.waterfox.net/_astro/waterfox.aA4DFn78.svg" width="20px"> | **Recommended:** Install directly from the [Mozilla Add-ons Store](https://addons.mozilla.org/en-US/firefox/addon/duolingo-unlimited-hearts/)<br>- ⭐ Rate the addon<br>- ✅ You're all set!<br><br>**Manual Option:**<br>- Download the latest **Firefox** extension from the [GitHub Releases](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/releases)<br>- Click **Continue Installation** when prompted<br>- ✅ You're all set! |
+| <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/Google_Chrome_icon_%28February_2022%29.svg" width="20px"> <img src="https://upload.wikimedia.org/wikipedia/commons/9/98/Microsoft_Edge_logo_%282019%29.svg" width="20px"> <img src="https://brave.com/static-assets/images/brave-logo-sans-text.svg" width="18px"> <img src="https://upload.wikimedia.org/wikipedia/commons/4/49/Opera_2015_icon.svg" width="20px"> | - Download the latest **Chrome (mv3)** extension from the [GitHub Releases](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/releases)<br>- Go to `chrome://extensions`<br>- Enable **Developer mode** (top right)<br>- Drag and drop the ZIP file onto the extensions page<br>- ✅ Done |
+| <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Firefox_logo%2C_2019.svg/1200px-Firefox_logo%2C_2019.svg.png" width="20px"> <img src="https://c.clc2l.com/c/thumbnail96webp/t/t/o/tor-browser-QaPeUi.png" width="20px"> <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/LibreWolf_icon.svg" width="20px"> <img src="https://www.waterfox.net/_astro/waterfox.aA4DFn78.svg" width="20px"> | **Recommended:** Install directly from the [Mozilla Add-ons Store](https://addons.mozilla.org/en-US/firefox/addon/duolingo-unlimited-hearts/)<br>- ⭐ Rate the addon<br>- ✅ Done<br><br>**Manual Option:**<br>- Download the latest **Firefox** extension from the [GitHub Releases](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/releases)<br>- Click **Continue Installation** when prompted<br>- ✅ Done |
 
 # <img src="https://d35aaqx5ub95lt.cloudfront.net/images/profile/48b8884ac9d7513e65f3a2b54984c5c4.svg" width="30px"> Frequently Asked Questions
 ### General FAQ
@@ -38,9 +34,8 @@
 | **Question** | **Answer** |
 |--------------|------------|
 | Why do I see a white screen and nothing else? | You are likely using an older version of the extension. If not, create an issue. |
-| Why isn't this working!??11!! 😡 | Reload your page. |
 | Does this follow TOS? | [In my opinion, yes](https://www.duolingo.com/guidelines#:~:text=Script%20or%20cheat,may%20be%20removed.). This is all on the client so there is no effect on the system. |
-| Is this safe? | Yes, this script is open soucre and only changes a few lines of code which are solely responsible for the paid features. |
+| Is this safe? | Yes, this extension is open soucre and only changes a few lines of code which are solely responsible for the paid features. |
 | Is this all free? | Yes, but feel free to [support me](https://www.buymeacoffee.com/aperson). |
 | Why do I still have Duolingo Max after uninstalling the extension? | This will only happen on **Firefox** because the patched files are cached temporarily. If you want it gone you would need to: clear your site data for duolingo.com, close all duolingo tabs, and log back in to duolingo in a new tab. You can also just wait until the site updates which brings me to my next point——I wouldn't recommend deleting the extension to use the cached version because when duolingo updates (about every week) the cached version won't work and it will be reverted to normal.|
 | How do I know if the extension needs to update? | You can either click on the extension icon or just wait until it notifies you. It will show a popup with the version number. It will tell you if the extension requires updates or not based on a fetched version number from this respository. |
@@ -57,11 +52,12 @@
 
 | **Question** | **Answer** |
 |--------------|------------|
-| Why is the modified patched files obfuscated? | The originals are also obfuscated because they are webpack chunks — there's nothing I can do. |
+| Why is the modified patched files minified/bundled? | The unpatched files are also minified because they are [webpack chunks](https://webpack.js.org/) — there's nothing I can do. |
 | How can I reproduce this? | Find your required webpack chunks/files then open '[duolingo patcher.html](https://html-preview.github.io/?url=https://raw.githubusercontent.com/apersongithub/Duolingo-Unlimited-Hearts/refs/heads/main/extras/duolingo%20patcher.html)' and put it through. Then download the newly patched files and use firefox or chrome local overrides to point it towards the patched files you just downloaded. |
-| Why aren't the modified patched files in this repository? | It is all done locally. It only fetches the github for the version number and a little other stuff. |
-| Why is the code slightly differen't for each browser? | Firefox and Chrome do not have equal extension support. |
+| Why aren't the modified patched files in this repository? | It is all done locally. It only fetches the github for the [extension-version.json](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/blob/main/extension-version.json). |
+| Why is the code slightly differen't for each browser? | Firefox and Chrome do not have equal extension support. I try my best to keep code parity between both browsers. |
 | What happened to the chrome mv2 version of this extension? | I decided to remove it as major browsers don't support it anymore. |
+| Will this always be open source? | Yes, this will **never** be closed source. |
 
 # <img src="https://d35aaqx5ub95lt.cloudfront.net/images/gems/45c14e05be9c1af1d7d0b54c6eed7eee.svg" width="20px"> Support Me
 
