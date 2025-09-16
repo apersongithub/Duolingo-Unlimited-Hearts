@@ -9,8 +9,7 @@
     "128": "/images/icon128.png"
   },
   "permissions": [
-    "storage",
-    "scripting"
+    "storage"
   ],
   "host_permissions": [
     "https://*.duolingo.com/*",
