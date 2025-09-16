@@ -21,12 +21,12 @@
 > [!NOTE]
 > - **NOW AVAILABLE ON THE** [Mozilla Add-ons Store](https://addons.mozilla.org/en-US/firefox/addon/duolingo-unlimited-hearts/)
 >   - Supports Firefox for Android
-> - If we get **1** more donation, I’ll be able to get a developer license and post it on the **Chrome Web Store**
+> - We are currently awaiting review for the **Chrome Web Store**
 
 | **Browser** | **Installation Steps** |
 |-------------|------------------------|
 | <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/Google_Chrome_icon_%28February_2022%29.svg" width="20px"> <img src="https://upload.wikimedia.org/wikipedia/commons/9/98/Microsoft_Edge_logo_%282019%29.svg" width="20px"> <img src="https://brave.com/static-assets/images/brave-logo-sans-text.svg" width="18px"> <img src="https://upload.wikimedia.org/wikipedia/commons/4/49/Opera_2015_icon.svg" width="20px"> | - Download the latest **Chrome (mv3)** extension from the [GitHub Releases](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/releases)<br>- Go to `chrome://extensions`<br>- Enable **Developer mode** (top right)<br>- Drag and drop the ZIP file onto the extensions page<br>- ✅ Done |
-| <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Firefox_logo%2C_2019.svg/1200px-Firefox_logo%2C_2019.svg.png" width="20px"> <img src="https://c.clc2l.com/c/thumbnail96webp/t/t/o/tor-browser-QaPeUi.png" width="20px"> <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/LibreWolf_icon.svg" width="20px"> <img src="https://www.waterfox.net/_astro/waterfox.aA4DFn78.svg" width="20px"> | **Recommended:** Install directly from the [Mozilla Add-ons Store](https://addons.mozilla.org/en-US/firefox/addon/duolingo-unlimited-hearts/)<br>- ⭐ Rate the addon<br>- ✅ Done<br><br>**Manual Option:**<br>- Download the latest **Firefox** extension from the [GitHub Releases](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/releases)<br>- Click **Continue Installation** when prompted<br>- ✅ Done |
+| <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Firefox_logo%2C_2019.svg/1200px-Firefox_logo%2C_2019.svg.png" width="20px"> <img src="https://c.clc2l.com/c/thumbnail96webp/t/t/o/tor-browser-QaPeUi.png" width="20px"> <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/LibreWolf_icon.svg" width="20px"> <img src="https://www.waterfox.net/_astro/waterfox.aA4DFn78.svg" width="20px"> | **Recommended:** Install directly from the [Mozilla Add-ons Store](https://addons.mozilla.org/en-US/firefox/addon/duolingo-unlimited-hearts/)<br> - ✅ Done<br>- ⭐ Rate the addon<br><br>**Manual Option:**<br>- Download the latest **Firefox** extension from the [GitHub Releases](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/releases)<br>- Click **Continue Installation** when prompted<br>- ✅ Done |
 
 # <img src="https://d35aaqx5ub95lt.cloudfront.net/images/profile/48b8884ac9d7513e65f3a2b54984c5c4.svg" width="30px"> Frequently Asked Questions
 ### General FAQ
@@ -35,7 +35,7 @@
 |--------------|------------|
 | Why do I see a white screen and nothing else? | You are likely using an older version of the extension. If not, create an issue. |
 | Does this follow TOS? | [In my opinion, yes](https://www.duolingo.com/guidelines#:~:text=Script%20or%20cheat,may%20be%20removed.). This is all on the client so there is no effect on the system. |
-| Is this safe? | Yes, this extension is open soucre and only changes a few lines of code which are solely responsible for the paid features. |
+| Is this safe? | Yes, this extension is open source and only changes a few lines of code which are solely responsible for the paid features. |
 | Is this all free? | Yes, but feel free to [support me](https://www.buymeacoffee.com/aperson). |
 | Why do I still have Duolingo Max after uninstalling the extension? | This will only happen on **Firefox** because the patched files are cached temporarily. If you want it gone you would need to: clear your site data for duolingo.com, close all duolingo tabs, and log back in to duolingo in a new tab. You can also just wait until the site updates which brings me to my next point——I wouldn't recommend deleting the extension to use the cached version because when duolingo updates (about every week) the cached version won't work and it will be reverted to normal.|
 | How do I know if the extension needs to update? | You can either click on the extension icon or just wait until it notifies you. It will show a popup with the version number. It will tell you if the extension requires updates or not based on a fetched version number from this respository. |
