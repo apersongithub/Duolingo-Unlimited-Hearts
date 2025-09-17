@@ -21,7 +21,7 @@
 > [!NOTE]
 > - **NOW AVAILABLE ON THE** [Mozilla Add-ons Store](https://addons.mozilla.org/en-US/firefox/addon/duolingo-unlimited-hearts/), [Chrome Web Store](https://chromewebstore.google.com/detail/duolingo-max/jkcaeflmchplggcelmodjobeakgmhmdb)
 >   - Supports Firefox for Android
->   - *Keep in mind that these extension stores may take upto a week to update on your browser due to the reviewal process and your browsers' extension update cycle (By default it is within a week)*
+>   - *Keep in mind that these extension stores may take upto a week to provide an extension update on your browser due to the reviewal process and your browsers' extension update cycle (By default it is within a week)*
 
 | **Browser** | **Installation Steps** |
 |-------------|------------------------|
