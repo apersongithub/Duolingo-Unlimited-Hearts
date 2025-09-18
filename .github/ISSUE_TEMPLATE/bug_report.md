@@ -37,5 +37,5 @@ Answer: Yes or No
 **Additional context**
 Add any other context about the problem here.
 
-**Upload Patched/Unpatched files (Needed for debugging)**
-Ex: app*.js 7220*.js
+**Upload Patched and Unpatched files (Needed for debugging)**
+Ex: app*.js, 7220*.js, etc
