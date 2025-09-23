@@ -36,7 +36,7 @@
 | Why do I see a white screen and nothing else? | You are likely using an older version of the extension. If not, create an issue. |
 | Does this follow TOS? | [In my opinion, yes](https://www.duolingo.com/guidelines#:~:text=Script%20or%20cheat,may%20be%20removed.). This is all on the client so there is no effect on the system. |
 | Is this safe? | Yes, this extension is open source and only changes a few lines of code which are solely responsible for the paid features. |
-| Is this all free? | Yes, but feel free to [support me](https://www.buymeacoffee.com/aperson). |
+| Is this all free? | Yes, but feel free to [support me](https://www.paypal.com/paypalme/luv4rent). |
 | Why do I still have Duolingo Max after uninstalling the extension? | This will only happen on **Firefox** because the patched files are cached temporarily. If you want it gone you would need to: clear your site data for duolingo.com, close all duolingo tabs, and log back in to duolingo in a new tab. You can also just wait until the site updates which brings me to my next point——I wouldn't recommend deleting the extension to use the cached version because when duolingo updates (about every week) the cached version won't work and it will be reverted to normal.|
 | How do I know if the extension needs to update? | You can either click on the extension icon or just wait until it notifies you. It will show a popup with the version number. It will tell you if the extension requires updates or not based on a fetched version number from this respository. |
 | Does this work if I have [energy](https://duolingo.fandom.com/wiki/Energy) and not hearts? | Energy is a mobile app only feature, go to the last question for more info. |
