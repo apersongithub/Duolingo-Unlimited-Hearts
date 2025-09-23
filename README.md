@@ -59,8 +59,9 @@
 | What happened to the chrome mv2 version of this extension? | I decided to remove it as major browsers don't support it anymore. |
 | Will this always be open source? | Yes, this will **never** be closed source. |
 
-# <img src="https://d35aaqx5ub95lt.cloudfront.net/images/gems/45c14e05be9c1af1d7d0b54c6eed7eee.svg" width="20px"> Support Me (Paypal is preferred)
+# <img src="https://d35aaqx5ub95lt.cloudfront.net/images/gems/45c14e05be9c1af1d7d0b54c6eed7eee.svg" width="20px"> Support Me
 
-<a href="https://www.paypal.com/paypalme/luv4rent" target="_blank"><img src="https://raw.githubusercontent.com/apersongithub/Duolingo-Unlimited-Hearts/refs/heads/main/extras/paypal.png" alt="Paypal Me" style="height: 140px !important;width: 217px !important;" ></a>
+| ⭐ PayPal (Preferred) | Buy Me a Coffee |
+|--------|----------------|
+| <a href="https://www.paypal.com/paypalme/luv4rent" target="_blank"><img src="https://raw.githubusercontent.com/apersongithub/Duolingo-Unlimited-Hearts/refs/heads/main/extras/paypal.png" alt="Paypal Me" style="height: 140px !important;width: 217px !important;"></a> | <a href="https://www.buymeacoffee.com/aperson" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;"></a> |
 
-<a href="https://www.buymeacoffee.com/aperson" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
