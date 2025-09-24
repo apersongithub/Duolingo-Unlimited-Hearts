@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Extension Options</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 15px;
+      background: #f9f9f9;
+      color: #222;
+    }
+    h1 {
+      font-size: 1.4em;
+    }
+    .section {
+      margin-bottom: 20px;
+      padding: 10px;
+      background: #fff;
+      border-radius: 6px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin: 6px 0;
+    }
+    input[type="number"] {
+      width: 70px;
+      margin-left: 8px;
+    }
+    button {
+      padding: 8px 16px;
+      margin-top: 10px;
+      border: none;
+      background: #4caf50;
+      color: white;
+      font-weight: bold;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #45a049;
+    }
+    .status {
+      margin-top: 10px;
+      color: green;
+      font-size: 0.9em;
+    }
+    .btn-reset {
+      margin-left: 8px;
+      background: #d9534f;
+    }
+
+    /* Dark mode support */
+    @media (prefers-color-scheme: dark) {
+      body {
+        background: #181a1b;
+        color: #e0e0e0;
+      }
+      .section {
+        background: #232526;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+      }
+      input[type="number"], input[type="checkbox"] {
+        background: #232526;
+        color: #e0e0e0;
+        border: 1px solid #444;
+      }
+      button {
+        background: #388e3c;
+        color: #fff;
+      }
+      button:hover {
+        background: #2e7031;
+      }
+      .btn-reset {
+        background: #b52a26;
+      }
+      .status {
+        color: #7fff7f;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Notification Settings</h1>
+
+  <div class="section">
+    <label>
+      <input type="checkbox" id="enableNotifications">
+      Enable Notifications
+    </label>
+  </div>
+
+  <div class="section">
+    <h2>Ignore Duration for Major Updates</h2>
+    <label>Weeks: <input type="number" id="majorWeeks" min="0"></label>
+    <label>Days: <input type="number" id="majorDays" min="0"></label>
+    <label>Hours: <input type="number" id="majorHours" min="0"></label>
+    <label>Minutes: <input type="number" id="majorMinutes" min="0"></label>
+  </div>
+
+  <div class="section">
+    <h2>Ignore Duration for Minor Updates</h2>
+    <label>Weeks: <input type="number" id="minorWeeks" min="0"></label>
+    <label>Days: <input type="number" id="minorDays" min="0"></label>
+    <label>Hours: <input type="number" id="minorHours" min="0"></label>
+    <label>Minutes: <input type="number" id="minorMinutes" min="0"></label>
+  </div>
+
+  <div>
+    <button id="save">Save</button>
+    <button id="reset" class="btn-reset">Reset to defaults</button>
+  </div>
+  <div id="status" class="status"></div>
+
+  <script src="options.js"></script>
+</body>
+</html>

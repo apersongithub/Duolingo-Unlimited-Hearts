@@ -4,10 +4,27 @@
       font-family: Arial, sans-serif;
       text-align: center;
       width: 250px;
-      background-color: #161f24;
-      border-radius: 12px; /* Rounded popup edges */
+      background-color: #181a1b;
+      border-radius: 12px;
       box-sizing: border-box;
     }
+
+    /* Light theme */
+    @media (prefers-color-scheme: light) {
+      body {
+        background-color: #f5f6fa;
+        color: #181a1b;
+      }
+    }
+
+    /* Dark theme */
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: #181a1b;
+        color: #fff;
+      }
+    }
+
     h1 {
       font-size: 16px;
       margin-bottom: 10px;
@@ -17,7 +34,7 @@
       margin-bottom: 10px;
     }
     .bmc-button img {
-      border-radius: 10px; /* Rounded Buy Me a Coffee button */
+      border-radius: 10px;
     }
     .github-button {
       display: inline-block;
@@ -26,10 +43,38 @@
       background-color: #ff7c00;
       color: #ffffff;
       text-decoration: none;
-      border-radius: 10px; /* Rounded GitHub button */
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    .issue-button {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 10px 15px;
+      background-color: red;
+      color: #ffffff;
+      text-decoration: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    .options-button {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 10px 15px;
+      background-color: #3d46b5;
+      color: #ffffff;
+      text-decoration: none;
+      border-radius: 10px;
       font-size: 14px;
       font-weight: bold;
     }
     .github-button:hover {
-      background-color: #ff7c00;
+      background-color: #e06600;
+    }
+    .issue-button:hover {
+      background-color: darkred;
+    }
+    .options-button:hover {
+      background-color: #2c3187;
     }

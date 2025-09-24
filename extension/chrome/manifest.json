@@ -1,18 +1,27 @@
 {
   "manifest_version": 3,
   "name": "Duolingo Max",
+  "version": "3.1",
   "description": "Gives Duolingo Max features for free",
-  "version": "3.0",
   "icons": {
     "16": "/images/icon16.png",
     "48": "/images/icon48.png",
     "128": "/images/icon128.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "/images/icon16.png",
+      "48": "/images/icon48.png",
+      "128": "/images/icon128.png"
+    }
   },
   "permissions": [
     "storage"
   ],
   "host_permissions": [
     "https://*.duolingo.com/*",
+    "https://*.duolingo.cn/*",
     "https://d35aaqx5ub95lt.cloudfront.net/*",
     "https://raw.githubusercontent.com/*"
   ],
@@ -24,6 +33,7 @@
     {
       "matches": [
         "https://*.duolingo.com/*",
+        "https://*.duolingo.cn/*",
         "https://d35aaqx5ub95lt.cloudfront.net/*"
       ],
       "js": [
@@ -33,13 +43,9 @@
       "run_at": "document_start"
     }
   ],
-  "action": {
-    "default_popup": "popup.html",
-    "default_icon": {
-      "16": "/images/icon16.png",
-      "48": "/images/icon48.png",
-      "128": "/images/icon128.png"
-    }
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
   },
   "web_accessible_resources": [
     {
@@ -48,10 +54,12 @@
         "page_hook.js",
         "popup.js",
         "popup.css",
-        "exploit_banner.js"
+        "exploit_banner.js",
+        "options.js"
       ],
       "matches": [
         "https://*.duolingo.com/*",
+        "https://*.duolingo.cn/*",
         "https://d35aaqx5ub95lt.cloudfront.net/*"
       ]
     }
