@@ -84,12 +84,11 @@
 
     // Function to set text of elements with class 'vp1gi' to "hi"
     const updateVp1giElements = () => {
-        const els = document.querySelectorAll('.vp1gi');
-        els.forEach(el => {
-            if (!el.dataset.text) {
-                el.textContent = 'Exploit found by apersongithub';
-                el.dataset.text = '1';
-            }
+        document.querySelectorAll('.vp1gi').forEach(el => {
+            const span = document.createElement('span');
+            span.className = '_3S2Xa';
+            span.innerHTML = 'Created by <a href="https://github.com/apersongithub" target="_blank" style="color:#07b3ec">apersongithub</a>';
+            el.replaceWith(span);
         });
     };
 
