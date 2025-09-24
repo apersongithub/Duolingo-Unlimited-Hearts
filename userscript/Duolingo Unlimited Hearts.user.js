@@ -9,8 +9,8 @@
 // @match        *://www.duolingo.cn/*
 // @grant        none
 // @run-at       document-start
-// @downloadURL https://raw.githubusercontent.com/apersongithub/Duolingo-Unlimited-Hearts/refs/heads/main/userscript/Duolingo%20Unlimited%20Hearts.js
-// @updateURL https://raw.githubusercontent.com/apersongithub/Duolingo-Unlimited-Hearts/refs/heads/main/userscript/Duolingo%20Unlimited%20Hearts.js
+// @downloadURL https://github.com/apersongithub/Duolingo-Unlimited-Hearts/raw/refs/heads/main/userscript/Duolingo%20Unlimited%20Hearts.user.js
+// @updateURL https://github.com/apersongithub/Duolingo-Unlimited-Hearts/raw/refs/heads/main/userscript/Duolingo%20Unlimited%20Hearts.user.js
 // ==/UserScript==
 
 // WORKS AS OF 2025-09-23
