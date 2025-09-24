@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Duolingo Unlimited Hearts
 // @icon         https://d35aaqx5ub95lt.cloudfront.net/images/hearts/fa8debbce8d3e515c3b08cb10271fbee.svg
-// @namespace    http://tampermonkey.net/
-// @version      1.8
+// @namespace    https://tampermonkey.net/
+// @version      1.9
 // @description  Intercepts and modifies fetch Duolingo's API responses for user data with caching support.
 // @author       apersongithub
 // @match        *://www.duolingo.com/*
@@ -130,14 +130,14 @@
             textWrap.className = '_2uCBj';
             const titleDiv = document.createElement('div');
             titleDiv.className = '_3Kmn9';
-            titleDiv.textContent = 'Get Duoingo Max Extension';
+            titleDiv.textContent = 'Duoingo Max Extension';
             textWrap.appendChild(titleDiv);
 
             const subWrap = document.createElement('div');
             subWrap.className = 'k5zYn';
             const subDiv = document.createElement('div');
             subDiv.className = '_3l5Lz zfGJk';
-            subDiv.textContent = 'Check Out';
+            subDiv.textContent = 'Get IT free';
             subWrap.appendChild(subDiv);
 
             wrapper.appendChild(imgWrap);
