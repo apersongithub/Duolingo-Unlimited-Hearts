@@ -1,4 +1,4 @@
-# <img src="https://d35aaqx5ub95lt.cloudfront.net/images/max/9f30dad6d7cc6723deeb2bd9e2f85dd8.svg" width="25px"> Extension Overview
+# <img src="https://d35aaqx5ub95lt.cloudfront.net/images/max/9f30dad6d7cc6723deeb2bd9e2f85dd8.svg" width="25px"> Duolingo Max
 > For **educational purposes** only, obviously.
 > 
 > ***Previously known as Duolingo Unlimited Hearts***
