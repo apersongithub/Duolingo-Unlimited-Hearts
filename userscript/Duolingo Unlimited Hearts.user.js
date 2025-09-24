@@ -2,7 +2,7 @@
 // @name         Duolingo Unlimited Hearts
 // @icon         https://d35aaqx5ub95lt.cloudfront.net/images/hearts/fa8debbce8d3e515c3b08cb10271fbee.svg
 // @namespace    http://tampermonkey.net/
-// @version      1.2
+// @version      1.3
 // @description  Intercepts and modifies fetch Duolingo's API responses for user data with caching support.
 // @author       apersongithub
 // @match        *://www.duolingo.com/*
@@ -78,7 +78,7 @@
             };
         })();
     `;
-    
+
     document.documentElement.appendChild(script);
     script.remove();
 
@@ -97,6 +97,12 @@
         const donateButton = document.createElement('button');
         // Add a custom class 'donate-button-custom' to easily identify our button
         donateButton.className = '_1ursp _2V6ug _2paU5 _3gQUj _7jW2t rdtAy donate-button-custom';
+
+        // --- NEW: Add the click event listener ---
+        donateButton.addEventListener('click', () => {
+            window.open('https://github.com/apersongithub/Duolingo-Unlimited-Hearts/tree/main?tab=readme-ov-file#-support-me', '_blank');
+        });
+        // --- END NEW ---
 
         // 3. Create the span with the text
         const buttonText = document.createElement('span');
