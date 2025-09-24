@@ -2,10 +2,10 @@
 // @name         Duolingo Unlimited Hearts
 // @icon         https://d35aaqx5ub95lt.cloudfront.net/images/hearts/fa8debbce8d3e515c3b08cb10271fbee.svg
 // @namespace    http://tampermonkey.net/
-// @version      1.2
+// @version      1.0
 // @description  Intercepts and modifies fetch API responses for user data.
 // @author       apersongithub
-// @match        *://www.duolingo.com/*
+// @match        *://www.duolingo.*/*
 // @grant        none
 // @run-at       document-start
 // ==/UserScript==
