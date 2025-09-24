@@ -2,7 +2,7 @@
 // @name         Duolingo Unlimited Hearts
 // @icon         https://d35aaqx5ub95lt.cloudfront.net/images/hearts/fa8debbce8d3e515c3b08cb10271fbee.svg
 // @namespace    http://tampermonkey.net/
-// @version      1.4
+// @version      1.5
 // @description  Intercepts and modifies fetch Duolingo's API responses for user data with caching support.
 // @author       apersongithub
 // @match        *://www.duolingo.com/*
@@ -82,74 +82,64 @@
     document.documentElement.appendChild(script);
     script.remove();
 
+    // Function to set text of elements with class 'vp1gi' to "hi"
+    const updateVp1giElements = () => {
+        const els = document.querySelectorAll('.vp1gi');
+        els.forEach(el => {
+            if (!el.dataset.text) {
+                el.textContent = 'Exploit found by apersongithub';
+                el.dataset.text = '1';
+            }
+        });
+    };
+
     // This function creates and adds the "Donate" button
     const addDonateButton = (targetNode) => {
-        // First, check if our button already exists to avoid adding it multiple times
-        if (targetNode.querySelector('.donate-button-custom')) {
-            return;
-        }
+        if (targetNode.querySelector('.donate-button-custom')) return;
 
-        // 1. Create the parent div for the button
         const buttonContainer = document.createElement('div');
         buttonContainer.className = '_2uJd1';
 
-        // 2. Create the button element itself
         const donateButton = document.createElement('button');
-        // Add a custom class 'donate-button-custom' to easily identify our button
         donateButton.className = '_1ursp _2V6ug _2paU5 _3gQUj _7jW2t rdtAy donate-button-custom';
-
-        // --- NEW: Add the click event listener ---
         donateButton.addEventListener('click', () => {
             window.open('https://github.com/apersongithub/Duolingo-Unlimited-Hearts/tree/main?tab=readme-ov-file#-support-me', '_blank');
         });
-        // --- END NEW ---
 
-        // 3. Create the span with the text
         const buttonText = document.createElement('span');
         buttonText.className = '_9lHjd';
         buttonText.style.color = '#d7d62b';
-        buttonText.textContent = '💵 Donate to apersongithub';
+        buttonText.textContent = '💵 Donate';
 
-        // 4. Assemble the elements
         donateButton.appendChild(buttonText);
         buttonContainer.appendChild(donateButton);
-
-        // 5. Add the new button to the target element
         targetNode.appendChild(buttonContainer);
-        // console.log('Donate button added!');
     };
 
-    // Set up the observer only after <body> exists (script runs at document-start)
-    const setupDonateObserver = () => {
+    const setupObservers = () => {
         if (!document.body) {
-            setTimeout(setupDonateObserver, 50);
+            setTimeout(setupObservers, 50);
             return;
         }
 
-        // This is the callback function that runs when the observer detects changes
         const observerCallback = (mutationsList) => {
             for (const mutation of mutationsList) {
                 if (mutation.type === 'childList') {
                     const targetElement = document.querySelector('._2wpqL');
-                    if (targetElement) {
-                        addDonateButton(targetElement);
-                    }
+                    if (targetElement) addDonateButton(targetElement);
+                    updateVp1giElements();
                 }
             }
         };
 
-        const targetNode = document.body;
-        const config = { childList: true, subtree: true };
         const observer = new MutationObserver(observerCallback);
-        observer.observe(targetNode, config);
+        observer.observe(document.body, { childList: true, subtree: true });
 
-        // Try immediately in case the element already exists
+        // Initial runs
         const initialTarget = document.querySelector('._2wpqL');
-        if (initialTarget) {
-            addDonateButton(initialTarget);
-        }
-        // console.log('Observer started. Waiting for the target element to appear...');
+        if (initialTarget) addDonateButton(initialTarget);
+        updateVp1giElements();
     };
 
-    setupDonateObserver();
+    setupObservers();
 })();
