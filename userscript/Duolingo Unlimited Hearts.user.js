@@ -2,7 +2,7 @@
 // @name         Duolingo Unlimited Hearts
 // @icon         https://d35aaqx5ub95lt.cloudfront.net/images/hearts/fa8debbce8d3e515c3b08cb10271fbee.svg
 // @namespace    http://tampermonkey.net/
-// @version      1.7
+// @version      1.8
 // @description  Intercepts and modifies fetch Duolingo's API responses for user data with caching support.
 // @author       apersongithub
 // @match        *://www.duolingo.com/*
@@ -13,7 +13,11 @@
 // @updateURL https://github.com/apersongithub/Duolingo-Unlimited-Hearts/raw/refs/heads/main/userscript/Duolingo%20Unlimited%20Hearts.user.js
 // ==/UserScript==
 
-// WORKS AS OF 2025-09-23
+/*
+ * WORKS AS OF 2025-09-24
+ * Below this is the actual fetch interception and modification logic for Unlimited Hearts
+ */
+
 (function() {
     'use strict';
 
@@ -80,8 +84,7 @@
     `;
 
 /*
- * Above this code is the actual fetch interception and modification logic for Unlimited Hearts
- * Below this code adds buttons and attribution to the Duolingo Hearts UI
+ * Everything below this is only for adding buttons and attribution to the Duolingo Hearts UI
  */
 
     document.documentElement.appendChild(script);
