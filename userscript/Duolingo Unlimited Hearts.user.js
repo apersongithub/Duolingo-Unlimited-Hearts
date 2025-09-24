@@ -2,7 +2,7 @@
 // @name         Duolingo Unlimited Hearts
 // @icon         https://d35aaqx5ub95lt.cloudfront.net/images/hearts/fa8debbce8d3e515c3b08cb10271fbee.svg
 // @namespace    http://tampermonkey.net/
-// @version      1.3
+// @version      1.4
 // @description  Intercepts and modifies fetch Duolingo's API responses for user data with caching support.
 // @author       apersongithub
 // @match        *://www.duolingo.com/*
@@ -119,34 +119,37 @@
         // console.log('Donate button added!');
     };
 
-    // This is the callback function that runs when the observer detects changes
-    const observerCallback = (mutationsList, observer) => {
-        for (const mutation of mutationsList) {
-            if (mutation.type === 'childList') {
-                // Look for the specific container we want to modify
-                const targetElement = document.querySelector('._2wpqL');
-                if (targetElement) {
-                    addDonateButton(targetElement);
-                    // Optional: Once we've found and modified it, we can stop observing
-                    // observer.disconnect();
+    // Set up the observer only after <body> exists (script runs at document-start)
+    const setupDonateObserver = () => {
+        if (!document.body) {
+            setTimeout(setupDonateObserver, 50);
+            return;
+        }
+
+        // This is the callback function that runs when the observer detects changes
+        const observerCallback = (mutationsList) => {
+            for (const mutation of mutationsList) {
+                if (mutation.type === 'childList') {
+                    const targetElement = document.querySelector('._2wpqL');
+                    if (targetElement) {
+                        addDonateButton(targetElement);
+                    }
                 }
             }
+        };
+
+        const targetNode = document.body;
+        const config = { childList: true, subtree: true };
+        const observer = new MutationObserver(observerCallback);
+        observer.observe(targetNode, config);
+
+        // Try immediately in case the element already exists
+        const initialTarget = document.querySelector('._2wpqL');
+        if (initialTarget) {
+            addDonateButton(initialTarget);
         }
+        // console.log('Observer started. Waiting for the target element to appear...');
     };
 
-    // --- Observer Setup ---
-
-    // 1. Select the node that will be observed for mutations (the whole document body is a safe choice)
-    const targetNode = document.body;
-
-    // 2. Options for the observer (we want to watch for child elements being added or removed)
-    const config = { childList: true, subtree: true };
-
-    // 3. Create an observer instance linked to the callback function
-    const observer = new MutationObserver(observerCallback);
-
-    // 4. Start observing the target node for configured mutations
-    observer.observe(targetNode, config);
-
-    // console.log('Observer started. Waiting for the target element to appear...');
+    setupDonateObserver();
 })();
