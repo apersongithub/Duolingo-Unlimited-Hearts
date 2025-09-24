@@ -11,7 +11,7 @@
 
 | **Data Access**                          | **Why?**                                                               | **Duolingo Server?** |
 |-----------------------------------------|-------------------------------------------------------------------------|----------------------|
-| `duolingo.com`                          | Needed to modify the website and apply the patch.                         | ✅ Yes               |
+| `duolingo.com` `duolingo.cn`                          | Needed to modify the website and apply the patch.                         | ✅ Yes               |
 | `d35aaqx5ub95lt.cloudfront.net`         | Hosts the original unpatched webpack chunk files. Ex: `app-*.js`; must modify requests for these.    | ✅ Yes               |
 | `raw.githubusercontent.com`             | Get's the [extension-version.json](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/blob/main/extension-version.json) which includes the version number, update log, and external html for my buymeacoffee banner.         | ❌ No                |
 
