@@ -22,6 +22,7 @@
 > - **Available on** [Mozilla Add-ons Store](https://addons.mozilla.org/en-US/firefox/addon/duolingo-unlimited-hearts/), [Chrome Web Store](https://chromewebstore.google.com/detail/duolingo-max/jkcaeflmchplggcelmodjobeakgmhmdb), [Opera Addons Store](https://addons.opera.com/en/extensions/details/duolingo-max/)
 >   - Supports Firefox for Android
 >   - *Keep in mind that these extension stores may take upto a week to provide an extension update on your browser due to the reviewal process and your browsers' extension update cycle (By default it is within a week)*
+> - ❗**NEW** [Duolingo Unlimited Hearts Userscript](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/raw/refs/heads/main/userscript/Duolingo%20Unlimited%20Hearts.user.js) tested with Tampermonkey *(Doesn't include MAX Features)*
 
 | **Browser** | **Installation Steps** |
 |-------------|------------------------|
