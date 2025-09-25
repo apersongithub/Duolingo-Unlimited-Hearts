@@ -60,6 +60,7 @@
 | Why is the code slightly differen't for each browser? | Firefox and Chrome do not have equal extension support. I try my best to keep code parity between both browsers. |
 | What happened to the chrome mv2 version of this extension? | I decided to remove it as major browsers don't support it anymore. |
 | Will this always be open source? | Yes, this will **never** be closed source. |
+| How does the userscript work? | It's very simple, the script intercepts your duolingo "account" json data file. It then finds and sets the unlimited hearts object to true. |
 
 # <img src="https://d35aaqx5ub95lt.cloudfront.net/images/gems/45c14e05be9c1af1d7d0b54c6eed7eee.svg" width="20px"> Support Me
 
