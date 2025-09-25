@@ -2,7 +2,7 @@
 // @name         Duolingo Unlimited Hearts
 // @icon         https://d35aaqx5ub95lt.cloudfront.net/images/hearts/fa8debbce8d3e515c3b08cb10271fbee.svg
 // @namespace    https://tampermonkey.net/
-// @version      2.1
+// @version      2.3
 // @description  Intercepts and modifies fetch Duolingo's API responses for user data with caching support.
 // @author       apersongithub
 // @match        *://www.duolingo.com/*
@@ -147,7 +147,21 @@
             subWrap.className = 'k5zYn';
             const subDiv = document.createElement('div');
             subDiv.className = '_3l5Lz zfGJk';
-            subDiv.textContent = 'Get IT free';
+
+            const ua = (typeof navigator !== 'undefined' && navigator.userAgent) ? navigator.userAgent : '';
+            const isAndroid = /Android/i.test(ua);
+            const isMobile = /Mobi|Android|iPhone|iPad|iPod|Opera Mini|IEMobile/i.test(ua);
+
+            if (isAndroid) {
+                subDiv.textContent = 'get for firefox android or pc';
+                subDiv.style.color = '#07b3ec';
+            } else if (isMobile) {
+                subDiv.textContent = 'PC/ANDROID ONLY';
+                subDiv.style.color = 'red';
+            } else {
+                subDiv.textContent = 'Get IT free';
+            }
+
             subWrap.appendChild(subDiv);
 
             wrapper.appendChild(imgWrap);
