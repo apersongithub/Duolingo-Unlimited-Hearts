@@ -2,7 +2,7 @@
 // @name         Duolingo Unlimited Hearts
 // @icon         https://d35aaqx5ub95lt.cloudfront.net/images/hearts/fa8debbce8d3e515c3b08cb10271fbee.svg
 // @namespace    https://tampermonkey.net/
-// @version      2.3
+// @version      2.4
 // @description  Intercepts and modifies fetch Duolingo's API responses for user data with caching support.
 // @author       apersongithub
 // @match        *://www.duolingo.com/*
@@ -22,79 +22,97 @@
 (function() {
     'use strict';
 
-    const pageFn = function () {
-        function log(...args) { try { console.log('[Injected]', ...args); } catch (_) { } }
+  const pageFn = function() {
+    function log(...args){ try{ console.log('[Injected]', ...args); } catch(_){} }
 
-        // Primary approach: patch Response.prototype.json so any response parsed as JSON can be modified
-        try {
-            const origJson = Response.prototype.json;
-            Response.prototype.json = async function () {
-                try {
-                    const url = this.url || '';
-                    if (typeof url === 'string' && url.includes('/2017-06-30/users/')) {
-                        log('Response.json intercept ->', url);
-                        const text = await this.clone().text();
-                        let data;
-                        try { data = JSON.parse(text); } catch (_) { return origJson.apply(this, arguments); }
-                        if (data && typeof data === 'object' && data.health) {
-                            data.health.unlimitedHeartsAvailable = true;
-                            log('Modified health field in response JSON');
-                        }
-                        return data;
-                    }
-                } catch (e) { log('Response.json handler error', e); }
-                return origJson.apply(this, arguments);
-            };
-            log('Patched Response.prototype.json');
-        } catch (e) {
-            log('Failed to patch Response.prototype.json', e);
+    function applyPatches() {
+      // Patch Response.json
+      try {
+        if (!Response.prototype.json.__patched) {
+          const origJson = Response.prototype.json;
+          Response.prototype.json = async function() {
+            try {
+              const url = this.url || '';
+              if (url.includes('/2017-06-30/users/')) {
+                const text = await this.clone().text();
+                let data;
+                try { data = JSON.parse(text); } catch(_) { return origJson.apply(this, arguments); }
+                if (data && data.health) {
+                  data.health.unlimitedHeartsAvailable = true;
+                  log('Modified health in Response.json');
+                }
+                return data;
+              }
+            } catch(e) { log('json error', e); }
+            return origJson.apply(this, arguments);
+          };
+          Response.prototype.json.__patched = true;
+          log('Patched Response.json');
         }
+      } catch(e) { log('Failed to patch Response.json', e); }
 
-        // Fallback: also patch window.fetch in case some code expects a Response object replacement
-        try {
-            const origFetch = window.fetch;
-            if (origFetch) {
-                window.fetch = async function (url, init) {
-                    const res = await origFetch.apply(this, arguments);
-                    try {
-                        const u = (typeof url === 'string') ? url : (url && url.url) || '';
-                        if (typeof u === 'string' && u.includes('/2017-06-30/users/')) {
-                            log('fetch intercept ->', u);
-                            const text = await res.clone().text();
-                            let data = JSON.parse(text);
-                            if (data && data.health) data.health.unlimitedHeartsAvailable = true;
-                            const headers = {};
-                            res.headers.forEach((v, k) => headers[k] = v);
-                            return new Response(JSON.stringify(data), { status: res.status, statusText: res.statusText, headers });
-                        }
-                    } catch (e) { log('fetch handler error', e); }
-                    return res;
-                };
-                log('Patched fetch as fallback');
-            }
-        } catch (e) {
-            log('Failed to patch fetch', e);
+      // Patch fetch
+      try {
+        if (!window.fetch.__patched) {
+          const origFetch = window.fetch;
+          window.fetch = async function(url, init) {
+            const res = await origFetch.apply(this, arguments);
+            try {
+              const u = (typeof url === 'string') ? url : (url && url.url) || '';
+              if (u.includes('/2017-06-30/users/')) {
+                const text = await res.clone().text();
+                let data = JSON.parse(text);
+                if (data && data.health) data.health.unlimitedHeartsAvailable = true;
+                const headers = {};
+                res.headers.forEach((v,k)=> headers[k] = v);
+                return new Response(JSON.stringify(data), { status: res.status, statusText: res.statusText, headers });
+              }
+            } catch(e) { log('fetch error', e); }
+            return res;
+          };
+          window.fetch.__patched = true;
+          log('Patched fetch');
         }
-
-        log('Injection finished');
-    };
-
-    // Inject using a blob URL (works around strict CSPs better), fallback to inline injection.
-    try {
-        const code = '(' + pageFn.toString() + ')();';
-        const blob = new Blob([code], { type: 'text/javascript' });
-        const url = URL.createObjectURL(blob);
-        const s = document.createElement('script');
-        s.src = url;
-        s.onload = function () { URL.revokeObjectURL(url); s.remove(); };
-        (document.head || document.documentElement).appendChild(s);
-    } catch (e) {
-        // fallback inline
-        const s = document.createElement('script');
-        s.textContent = '(' + pageFn.toString() + ')();';
-        (document.head || document.documentElement).appendChild(s);
-        s.remove();
+      } catch(e) { log('Failed to patch fetch', e); }
     }
+
+    // Initial patch
+    applyPatches();
+
+    // Reapply periodically (every 2s for the first 30s)
+    let count = 0;
+    const interval = setInterval(() => {
+      applyPatches();
+      count++;
+      if (count > 15) clearInterval(interval); // stop after ~30s
+    }, 2000);
+
+    // Also observe changes forever (catch future overwrites)
+    const watchdog = setInterval(() => {
+      if (!Response.prototype.json.__patched || !window.fetch.__patched) {
+        log('Re-patching via watchdog');
+        applyPatches();
+      }
+    }, 5000);
+
+    log('Persistent injection running');
+  };
+
+  // Inject via blob to escape sandbox
+  try {
+    const code = '(' + pageFn.toString() + ')();';
+    const blob = new Blob([code], { type: 'text/javascript' });
+    const url = URL.createObjectURL(blob);
+    const s = document.createElement('script');
+    s.src = url;
+    s.onload = function(){ URL.revokeObjectURL(url); s.remove(); };
+    (document.head || document.documentElement).appendChild(s);
+  } catch(e) {
+    const s = document.createElement('script');
+    s.textContent = '(' + pageFn.toString() + ')();';
+    (document.head || document.documentElement).appendChild(s);
+    s.remove();
+  }
 
     /*
     * Everything below this is only for adding buttons and attribution to the Duolingo Hearts UI
