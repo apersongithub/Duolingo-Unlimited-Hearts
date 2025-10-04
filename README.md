@@ -67,7 +67,7 @@
 | Will this always be open source? | Yes, this will **never** be closed source. |
 | How does the userscript work? | It's very simple, the script intercepts your duolingo "account" json data file. It then finds and sets the unlimited hearts object to true. |
 | Is my Duolingo Account Token/Cookie being accessed? | With the **extension** nope, your account data is not accessed. Though with the **userscript**, only your json data file is accessed which is all done locally anyways. |
-| How do I know you won't add malicious code to the [extension-version.json](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/blob/main/extension-version.json)?  | This is a good question. Adding a `<script>` element won't do anything but it is possible using an `onerror` tag. In the next version I will make sure tags and elements like that are excluded (hard-coded) so the end user won't have to worry about any external malicious code being added. A beta version will come out soon. |
+| How do I know you won't add malicious code to the [extension-version.json](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/blob/main/extension-version.json)?  | I can't because any type of remote javascript/XSS is removed before the banner is loaded (This fix is only in v3.2 and newer). Obviously I'm not going to add malicious code, it's just so the end user has a peace of mind knowing this is safe. |
 
 # <img src="https://d35aaqx5ub95lt.cloudfront.net/images/gems/45c14e05be9c1af1d7d0b54c6eed7eee.svg" width="20px"> Support Me
 

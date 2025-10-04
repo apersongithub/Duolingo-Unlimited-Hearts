@@ -1,9 +1,9 @@
 {
   "manifest_version": 2,
   "name": "Duolingo Max",
-  "version": "3.1",
+  "version": "3.2",
   "description": "Gives Duolingo Max features for free",
-    "icons": {
+  "icons": {
     "16": "images/icon16.png",
     "48": "images/icon48.png",
     "128": "images/icon128.png"
@@ -50,11 +50,16 @@
     "open_in_tab": true
   },
   "web_accessible_resources": [
-        "injection.js",
-        "page_hook.js",
-        "popup.js",
-        "popup.css",
-        "exploit_banner.js",
-        "options.js"
-  ]
+    "injection.js",
+    "page_hook.js",
+    "popup.js",
+    "popup.css",
+    "exploit_banner.js",
+    "options.js"
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{9a46ec17-f439-494a-9e72-43692c969758}"
+    }
+  }
 }

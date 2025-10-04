@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Duolingo Max",
-  "version": "3.1",
+  "version": "3.2",
   "description": "Gives Duolingo Max features for free",
   "icons": {
     "16": "/images/icon16.png",

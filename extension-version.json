@@ -1,7 +1,7 @@
 {
-  "version": "3.1",
-  "releaseDate": "2025-09-23",
-  "releaseNotes": "This release adds support for duolingo china, version notification settings, a new userscript, and optimization fixes. Click CANCEL if you installed from a webstore as it will auto-update.",
+  "version": "3.2",
+  "releaseDate": "2025-10-03",
+  "releaseNotes": "This release adds security enhancements to the external banner injection process, ensuring that any possible remote javascript is removed and cannot execute. (This is a security measure; no such code is currently present in the remote JSON obviously.)",
   "EXTENSION_NAME": "Duolingo Max Extension",
   "EXTENSION_URL": "https://github.com/apersongithub/Duolingo-Unlimited-Hearts/",
   "BANNER": "<div class='thPiC'><img class='_1xOxM' src='https://raw.githubusercontent.com/apersongithub/Duolingo-Unlimited-Hearts/refs/heads/main/extras/icon.svg' style='border-radius:100px'></div><div class='_3jiBp'><h4 class='qyEhl'>Duolingo Max Extension</h4><span class='_3S2Xa'>Created by <a href='https://github.com/apersongithub' target='_blank' style='color:#07b3ec'>apersongithub</a></span></div><div class='_36kJA'><div><a href='https://html-preview.github.io/?url=https://raw.githubusercontent.com/apersongithub/Duolingo-Unlimited-Hearts/refs/heads/main/extras/donations.html' target='_blank'><button class='_1ursp _2V6ug _2paU5 _3gQUj _7jW2t rdtAy'><span class='_9lHjd' style='color:#d7d62b'>💵 Donate</span></button></a></div></div>"

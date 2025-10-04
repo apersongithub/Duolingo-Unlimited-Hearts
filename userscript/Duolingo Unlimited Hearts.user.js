@@ -9,6 +9,7 @@
 // @match        *://www.duolingo.cn/*
 // @grant        none
 // @run-at       document-start
+// @license      MPL-2.0
 // @downloadURL https://github.com/apersongithub/Duolingo-Unlimited-Hearts/raw/refs/heads/main/userscript/Duolingo%20Unlimited%20Hearts.user.js
 // @updateURL https://github.com/apersongithub/Duolingo-Unlimited-Hearts/raw/refs/heads/main/userscript/Duolingo%20Unlimited%20Hearts.user.js
 // ==/UserScript==
