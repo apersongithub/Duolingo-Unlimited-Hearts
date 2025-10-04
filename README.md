@@ -67,7 +67,7 @@
 | Will this always be open source? | Yes, this will **never** be closed source. |
 | How does the userscript work? | It's very simple, the script intercepts your duolingo "account" json data file. It then finds and sets the unlimited hearts object to true. |
 | Is my Duolingo Account Token/Cookie being accessed? | With the **extension** nope, your account data is not accessed. Though with the **userscript**, only your json data file is accessed which is all done locally anyways. |
-| How do I know you won't add malicious code to the [extension-version.json](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/blob/main/extension-version.json)?  | In versions `v3.2` and newer, all remote JavaScript/XSS is automatically removed. Version `v2.0` is also safe because an external banner wasn't implemented yet. This JS/XSS sanitization was added to ensure end users don't have to simply trust that I won't add anything malicious; they can be confident the extension is secure. |
+| How do I know you won't add malicious code to the [extension-version.json](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/blob/main/extension-version.json)?  | In versions `v3.2` and newer, [all remote JavaScript/XSS is automatically removed](https://github.com/search?q=repo%3Aapersongithub/Duolingo-Unlimited-Hearts%20sanitizeHTML&type=code). Version `v2.0` is also safe because an external banner wasn't implemented yet. This JS/XSS sanitization was added to ensure end users don't have to simply trust that I won't add anything malicious; they can be confident the extension is secure. |
 
 # <img src="https://d35aaqx5ub95lt.cloudfront.net/images/gems/45c14e05be9c1af1d7d0b54c6eed7eee.svg" width="20px"> Support Me
 
