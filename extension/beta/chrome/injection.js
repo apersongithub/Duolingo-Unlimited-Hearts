@@ -1,5 +1,7 @@
-// Orchestrates patch execution in page context
-import { applyPatches, isAppUrl } from './shared/patches.js';
+// Orchestrates patch execution in page context using UMD-exposed Patches
+const P = (typeof window !== 'undefined' ? window : globalThis).__PATCHES__ || {};
+const applyPatches = P.applyPatches;
+const isAppUrl = P.isAppUrl;
 
 if (!window.__EXT_PATCH_INJECTED__) {
   window.__EXT_PATCH_INJECTED__ = true;
@@ -23,7 +25,7 @@ if (!window.__EXT_PATCH_INJECTED__) {
       s.src = URL.createObjectURL(blob);
       s.async = false;
       s.onload = () => {
-        if (isAppUrl(url) && !appReady) {
+        if (typeof isAppUrl === 'function' && isAppUrl(url) && !appReady) {
           appReady = true;
           window.dispatchEvent(new Event('ext-app-ready'));
           flushQueue();
@@ -37,7 +39,7 @@ if (!window.__EXT_PATCH_INJECTED__) {
         // Fallback
         (new Function(code + '\n//# sourceURL=patched-' + (url.split('/').pop() || 'chunk')))();
         executed.add(url);
-        if (isAppUrl(url) && !appReady) {
+        if (typeof isAppUrl === 'function' && isAppUrl(url) && !appReady) {
           appReady = true;
           window.dispatchEvent(new Event('ext-app-ready'));
           flushQueue();
@@ -75,11 +77,12 @@ if (!window.__EXT_PATCH_INJECTED__) {
 
     if (d.source === 'ext-injector' && d.url) {
       const { url } = d;
+
       if (typeof d.patchedCode === 'string') {
         try {
           const patched = d.patchedCode;
-            codeMap.set(url, patched);
-          if (isAppUrl(url) || appReady) execPatched(url, patched);
+          codeMap.set(url, patched);
+          if ((typeof isAppUrl === 'function' && isAppUrl(url)) || appReady) execPatched(url, patched);
           window.postMessage({ source: 'ext-injector-result', url, ok: true }, '*');
         } catch {
           window.postMessage({ source: 'ext-injector-result', url, ok: false }, '*');
@@ -90,9 +93,9 @@ if (!window.__EXT_PATCH_INJECTED__) {
       (async () => {
         try {
           const original = await pageFetchText(url);
-          const patched = applyPatches(url, original);
+          const patched = typeof applyPatches === 'function' ? applyPatches(url, original) : original;
           codeMap.set(url, patched);
-          if (isAppUrl(url) || appReady) execPatched(url, patched);
+          if ((typeof isAppUrl === 'function' && isAppUrl(url)) || appReady) execPatched(url, patched);
           window.postMessage({ source: 'ext-injector-result', url, ok: true }, '*');
         } catch (err) {
           console.error('page fetch/patch failed', url, err);

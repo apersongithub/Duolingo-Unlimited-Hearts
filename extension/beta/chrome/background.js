@@ -1,4 +1,11 @@
-import { applyPatches } from './shared/patches.js';
+// Load UMD bundle for patches into service worker global scope
+try {
+  importScripts('shared/patches.js');
+} catch (e) {
+  console.error('Failed to load patches.js', e);
+}
+
+const applyPatches = (self.__PATCHES__ && self.__PATCHES__.applyPatches) ? self.__PATCHES__.applyPatches : undefined;
 
 // Fetch helper
 async function fetchText(url) {
@@ -14,7 +21,7 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
       const key = 'patched:' + url;
       try {
         const original = await fetchText(url);
-        const patched = applyPatches(url, original);
+        const patched = typeof applyPatches === 'function' ? applyPatches(url, original) : original;
         await chrome.storage.local.set({
           [key]: patched,
           ['cachedAt:' + url]: Date.now()

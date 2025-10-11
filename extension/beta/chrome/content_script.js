@@ -8,11 +8,20 @@ function tryBackgroundFetch(url) {
   });
 }
 
+function injectPatchesUMD() {
+  if (document.getElementById('__ext_patches_umd__')) return;
+  const s = document.createElement('script');
+  s.id = '__ext_patches_umd__';
+  s.src = chrome.runtime.getURL('shared/patches.js');
+  s.async = false;
+  (document.head || document.documentElement).appendChild(s);
+}
+
 function injectInjector() {
   if (document.getElementById('__ext_injector_script__')) return;
   const s = document.createElement('script');
   s.id = '__ext_injector_script__';
-  s.type = 'module';
+  // No module type; injection.js now uses global Patches from UMD
   s.src = chrome.runtime.getURL('injection.js');
   s.async = false;
   (document.head || document.documentElement).appendChild(s);
@@ -43,6 +52,8 @@ function sendPatched(url, patchedCode) {
 function handleUrl(url) {
   if (!url || processed.has(url) || !SCRIPT_RE.test(url)) return;
   processed.add(url);
+  // Ensure UMD patches are present before injector
+  injectPatchesUMD();
   injectInjector();
   enqueue(url);
 
