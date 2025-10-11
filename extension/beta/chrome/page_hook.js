@@ -3,13 +3,13 @@
   if (window.__EXT_PAGE_HOOK_INSTALLED__) return;
   window.__EXT_PAGE_HOOK_INSTALLED__ = true;
 
-  const RE = /(^|\/)(app|7220|6150|4370)[^/]*\.js(\?.*)?$/i;
+  const SCRIPT_RE = /(^|\/)(app|7220|6150|4370)[^/]*\.js(\?.*)?$/i;
   const origAppend = Element.prototype.appendChild;
   const origInsertBefore = Element.prototype.insertBefore;
 
   function maybeBlock(node) {
     try {
-      if (node?.tagName === 'SCRIPT' && RE.test(node.src)) {
+      if (node?.tagName === 'SCRIPT' && SCRIPT_RE.test(node.src)) {
         window.dispatchEvent(new CustomEvent('ext-script-blocked', { detail: { url: node.src } }));
         return true;
       }

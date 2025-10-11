@@ -1,1 +1,0 @@
-ES6 Module Imports coming when mv3 firefox adds support.

@@ -1,5 +1,5 @@
 // Coordinates patch pipeline: hook early, enqueue targets, ask background for patched code.
-const CHUNK_REGEX = /(^|\/)(app|7220|6150|4370)[^/]*\.js(\?.*)?$/i;
+const SCRIPT_RE = /(^|\/)(app|7220|6150|4370)[^/]*\.js(\?.*)?$/i;
 const processed = new Set();
 
 function tryBackgroundFetch(url) {
@@ -41,7 +41,7 @@ function sendPatched(url, patchedCode) {
 }
 
 function handleUrl(url) {
-  if (!url || processed.has(url) || !CHUNK_REGEX.test(url)) return;
+  if (!url || processed.has(url) || !SCRIPT_RE.test(url)) return;
   processed.add(url);
   injectInjector();
   enqueue(url);
@@ -62,7 +62,7 @@ window.addEventListener('ext-script-blocked', ev => {
 
 function scan() {
   for (const sc of document.getElementsByTagName('script')) {
-    if (sc.src && CHUNK_REGEX.test(sc.src)) {
+    if (sc.src && SCRIPT_RE.test(sc.src)) {
       sc.remove();
       handleUrl(sc.src);
     }
@@ -79,7 +79,7 @@ if (document.readyState === 'loading') {
 const mo = new MutationObserver(muts => {
   for (const m of muts) {
     for (const n of m.addedNodes || []) {
-      if (n && n.tagName === 'SCRIPT' && n.src && CHUNK_REGEX.test(n.src)) {
+      if (n && n.tagName === 'SCRIPT' && n.src && SCRIPT_RE.test(n.src)) {
         n.remove();
         handleUrl(n.src);
       }
