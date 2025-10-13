@@ -2,18 +2,29 @@
 > For **educational purposes** only, obviously.
 > 
 > ***Previously known as Duolingo Unlimited Hearts***
+> 
+> *Not affilliated with Duolingo*
 
 
 
 ## Gist
 > [!IMPORTANT]  
-> The following domains are accessed for patching Duolingo. Each domain serves a specific purpose:
+> 1. The following domains are accessed for patching Duolingo. Each domain serves a specific purpose:
+>
+> | **Data Access**                          | **Why?**                                                               | **Duolingo Server?** |
+> |-----------------------------------------|-------------------------------------------------------------------------|----------------------|
+> | `duolingo.com` `duolingo.cn`                          | Needed to modify the website and apply the patch.                         | ✅ Yes               |
+> | `d35aaqx5ub95lt.cloudfront.net`         | Hosts the original unpatched webpack chunk files. Ex: `app-*.js`; must modify requests for these.    | ✅ Yes               |
+> | `raw.githubusercontent.com`             | Get's the [extension-version.json](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/blob/main/extension-version.json) which includes the version number, update log, and external html for my buymeacoffee banner.         | ❌ No        >        |
+>
+> 2. There are several different options to patch Duolingo. Choose what works best for your machine in the extensions' settings:
+> <table>
+>   <tr>
+>     <td><img width="400" src="https://github.com/user-attachments/assets/38f62465-7402-4183-adb6-d157a7e5f443" alt="Map of Tectonic Plate Boundaries" /></td>
+>   </tr>
+> </table>
+> 
 
-| **Data Access**                          | **Why?**                                                               | **Duolingo Server?** |
-|-----------------------------------------|-------------------------------------------------------------------------|----------------------|
-| `duolingo.com` `duolingo.cn`                          | Needed to modify the website and apply the patch.                         | ✅ Yes               |
-| `d35aaqx5ub95lt.cloudfront.net`         | Hosts the original unpatched webpack chunk files. Ex: `app-*.js`; must modify requests for these.    | ✅ Yes               |
-| `raw.githubusercontent.com`             | Get's the [extension-version.json](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/blob/main/extension-version.json) which includes the version number, update log, and external html for my buymeacoffee banner.         | ❌ No                |
 
 
 ## Installation Process
