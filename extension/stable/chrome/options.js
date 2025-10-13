@@ -1,141 +1,119 @@
-// Default values (your hard-coded ones)
 const DEFAULT_SETTINGS = {
   enableNotifications: true,
   major: { weeks: 0, days: 3, hours: 0, minutes: 0 },
-  minor: { weeks: 1, days: 0, hours: 0, minutes: 0 }
+  minor: { weeks: 1, days: 0, hours: 0, minutes: 0 },
+  selectedPatch: 1
 };
 
-// Helper to apply settings to UI fields
-function applySettingsToUI(s) {
-  document.getElementById('enableNotifications').checked = s.enableNotifications;
-  document.getElementById('majorWeeks').value = s.major.weeks;
-  document.getElementById('majorDays').value = s.major.days;
-  document.getElementById('majorHours').value = s.major.hours;
-  document.getElementById('majorMinutes').value = s.major.minutes;
-  document.getElementById('minorWeeks').value = s.minor.weeks;
-  document.getElementById('minorDays').value = s.minor.days;
-  document.getElementById('minorHours').value = s.minor.hours;
-  document.getElementById('minorMinutes').value = s.minor.minutes;
+function byId(id) { return document.getElementById(id); }
+
+function applySettings(s) {
+  // Patch selection
+  const mode = Number(s.selectedPatch) || 1;
+  byId('patch1').checked = mode === 1;
+  byId('patch2').checked = mode === 2;
+  byId('patch3').checked = mode === 3;
+  byId('patch4').checked = mode === 4;
+  byId('patch5').checked = mode === 5;
+
+  // Other settings
+  byId('enableNotifications').checked = s.enableNotifications;
+  byId('majorWeeks').value = s.major.weeks;
+  byId('majorDays').value = s.major.days;
+  byId('majorHours').value = s.major.hours;
+  byId('majorMinutes').value = s.major.minutes;
+  byId('minorWeeks').value = s.minor.weeks;
+  byId('minorDays').value = s.minor.days;
+  byId('minorHours').value = s.minor.hours;
+  byId('minorMinutes').value = s.minor.minutes;
 }
 
-// Save settings
-document.getElementById('save').addEventListener('click', () => {
-  /**
-   * Settings
-   *
-   * Top-level configuration object populated from the options page DOM.
-   * Values are read from form controls (checkboxes and number/text inputs) and coerced
-   * into predictable primitives so the rest of the extension can consume them.
-   *
-   * @typedef {Object} Settings
-   *
-   * @property {boolean} enableNotifications
-   *   Whether the extension should show browser notifications. This is sourced from
-   *   the checkbox with id "enableNotifications". Expected boolean; falsy values
-   *   mean notifications are disabled.
-   *
-   * @property {Object} major
-   *   Time components for the "major" threshold. Each component is parsed with
-   *   parseInt(...) and falls back to 0 on invalid input. These represent whole
-   *   units (non-negative integers). They are useful for expressing larger timeouts
-   *   or reminders.
-   *
-   * @property {number} major.weeks
-   *   Number of weeks (>= 0). Typically multiplied by 7 days when converting to a
-   *   single duration value.
-   *
-   * @property {number} major.days
-   *   Number of days (>= 0).
-   *
-   * @property {number} major.hours
-   *   Number of hours (>= 0).
-   *
-   * @property {number} major.minutes
-   *   Number of minutes (>= 0).
-   *
-   * @property {Object} minor
-   *   Time components for the "minor" threshold. Same parsing and expectations as
-   *   the `major` object. Intended for shorter or secondary reminders.
-   *
-   * @property {number} minor.weeks
-   *   Number of weeks (>= 0).
-   *
-   * @property {number} minor.days
-   *   Number of days (>= 0).
-   *
-   * @property {number} minor.hours
-   *   Number of hours (>= 0).
-   *
-   * @property {number} minor.minutes
-   *   Number of minutes (>= 0).
-   *
-   * @example
-   * // Convert a component object to milliseconds:
-   * // totalMs = (((weeks * 7 + days) * 24 + hours) * 60 + minutes) * 60 * 1000
-   *
-   * @remarks
-   * - The code that builds this object currently reads values directly from elements
-   *   by id (e.g. "majorWeeks", "minorMinutes"). If you change element ids or the
-   *   form structure, update the selector code accordingly.
-   * - Inputs are coerced with parseInt(...). Consider adding explicit validation
-   *   (e.g. clamp to 0, enforce integer values, show validation UI) to avoid NaN or
-   *   negative values being accepted by mistake.
-   * - When persisting this object (e.g. chrome.storage.local), keep schema versioning
-   *   in mind. Add a migration path for future fields to avoid breaking existing users.
-   * - If you add new timing units or nested configuration, update serialization,
-   *   the options UI, and any conversion helpers that compute durations.
-   *
-   * Contributing notes
-   * - Add unit tests for parsing and conversion utilities (edge cases: empty input,
-   *   non-numeric characters, very large values).
-   * - Keep UI and logic decoupled: prefer small helper functions (parseDurationFromDom,
-   *   durationToMilliseconds) so tests can run without DOM.
-   * - Accessibility: ensure inputs have associated labels and sensible aria attributes.
-   * - i18n: strings displayed in the options UI should use the extension's localization
-   *   system rather than hard-coded English.
-   * - Performance: these objects are small, but avoid frequent unnecessary storage writes;
-   *   only persist when the user explicitly saves or when debounced changes occur.
-   */
-  const settings = {
-    enableNotifications: document.getElementById('enableNotifications').checked,
+function readSelectedPatch() {
+  if (byId('patch2').checked) return 2;
+  if (byId('patch3').checked) return 3;
+  if (byId('patch4').checked) return 4;
+  if (byId('patch5').checked) return 5;
+  return 1;
+}
+
+function readSettings() {
+  return {
+    selectedPatch: readSelectedPatch(),
+    enableNotifications: byId('enableNotifications').checked,
     major: {
-      weeks: parseInt(document.getElementById('majorWeeks').value) || 0,
-      days: parseInt(document.getElementById('majorDays').value) || 0,
-      hours: parseInt(document.getElementById('majorHours').value) || 0,
-      minutes: parseInt(document.getElementById('majorMinutes').value) || 0,
+      weeks: +byId('majorWeeks').value || 0,
+      days: +byId('majorDays').value || 0,
+      hours: +byId('majorHours').value || 0,
+      minutes: +byId('majorMinutes').value || 0
     },
     minor: {
-      weeks: parseInt(document.getElementById('minorWeeks').value) || 0,
-      days: parseInt(document.getElementById('minorDays').value) || 0,
-      hours: parseInt(document.getElementById('minorHours').value) || 0,
-      minutes: parseInt(document.getElementById('minorMinutes').value) || 0,
+      weeks: +byId('minorWeeks').value || 0,
+      days: +byId('minorDays').value || 0,
+      hours: +byId('minorHours').value || 0,
+      minutes: +byId('minorMinutes').value || 0
     }
   };
+}
 
-  chrome.storage.sync.set({ settings }, () => {
-    const status = document.getElementById('status');
-    status.textContent = '✅ Options saved!';
-    setTimeout(() => { status.textContent = ''; }, 2000);
-  });
-});
+function showStatus(msg) {
+  const el = byId('status');
+  el.textContent = msg;
+  if (msg) setTimeout(() => (el.textContent = ''), 2000);
+}
 
-// Restore settings (or defaults)
-function restoreOptions() {
-  chrome.storage.sync.get('settings', (data = {}) => {
-    const s = (data && data.settings) ? data.settings : DEFAULT_SETTINGS;
-    applySettingsToUI(s);
+// Debounce helper to avoid hitting storage.sync write quotas
+function debounce(fn, delay = 400) {
+  let t;
+  const debounced = (...args) => {
+    clearTimeout(t);
+    t = setTimeout(() => {
+      t = null;
+      fn.apply(null, args);
+    }, delay);
+  };
+  debounced.flush = () => {
+    if (t) {
+      clearTimeout(t);
+      t = null;
+      fn();
+    }
+  };
+  return debounced;
+}
+
+const saveSettings = debounce(() => {
+  // Silent autosave (no status message)
+  chrome.storage.sync.set({ settings: readSettings() });
+}, 400);
+
+function restore() {
+  chrome.storage.sync.get('settings', data => {
+    applySettings((data && data.settings) || DEFAULT_SETTINGS);
   });
 }
 
-// Reset settings to defaults
-document.getElementById('reset').addEventListener('click', () => {
+byId('reset').addEventListener('click', () => {
   if (!confirm('Reset all settings to defaults?')) return;
   chrome.storage.sync.set({ settings: DEFAULT_SETTINGS }, () => {
-    applySettingsToUI(DEFAULT_SETTINGS);
-    const status = document.getElementById('status');
-    status.textContent = '↩️ Settings reset to defaults.';
-    setTimeout(() => { status.textContent = ''; }, 2000);
+    applySettings(DEFAULT_SETTINGS);
+    showStatus('↩️ Reset to defaults');
   });
 });
 
-document.addEventListener('DOMContentLoaded', restoreOptions);
+function registerAutosaveListeners() {
+  // Autosave for radios/checkboxes on change, numbers on input
+  const inputs = Array.from(document.querySelectorAll('input'));
+  inputs.forEach(el => {
+    const evt = (el.type === 'number' || el.type === 'text') ? 'input' : 'change';
+    el.addEventListener(evt, () => {
+      saveSettings();
+    });
+  });
+  // Ensure pending changes save before closing the page
+  window.addEventListener('beforeunload', () => saveSettings.flush());
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  registerAutosaveListeners();
+  restore();
+});

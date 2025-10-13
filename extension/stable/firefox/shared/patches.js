@@ -17,9 +17,32 @@
     return APP_RE.test(name);
   }
 
-  function applyPatches(url, code) {
+  // mode: 'patch1' (default) | 'patch2' | 'patch3' | 'patch4' | 'patch5'
+  // - patch1: legacy (app + 7220/6150/4370)
+  // - patch2: app.js only (user-provided Patch 2)
+  // - patch3: app.js only (user-provided Patch 3)
+  // - patch4/patch5: no network patching; content_script injects userscripts
+  function applyPatches(url, code, mode) {
+    const sel = (mode === 'patch2' || mode === 'patch3' || mode === 'patch4' || mode === 'patch5') ? mode : 'patch1';
     try {
       const name = (url || '').split('/').pop() || '';
+
+      if (sel === 'patch2') {
+        if (APP_RE.test(name)) code = patch2(code);
+        return code;
+      }
+
+      if (sel === 'patch3') {
+        if (APP_RE.test(name)) code = patch3(code);
+        return code;
+      }
+
+      if (sel === 'patch4' || sel === 'patch5') {
+        // Userscript-based modes do not patch network chunks
+        return code;
+      }
+
+      // patch1 (legacy) behavior
       if (APP_RE.test(name)) code = patchApp(code);
       if (CHUNK_7220_RE.test(name)) code = patch7220(code);
       if (CHUNK_6150_RE.test(name)) code = patch6150(code);
@@ -49,6 +72,32 @@
       (_, v) => `${v} = !!(window.SpeechRecognition || window.webkitSpeechRecognition)`
     );
     return code;
+  }
+
+  // User-provided Patch 2 (applies to app.js only)
+  function patch2(code) {
+    // 1) change => "free" or => 'free' to => "schools"
+    code = code.replace(/=>\s*(['"])free\1/g, '=> "schools"');
+
+    // 2) append "free" to exact array ["schools","beta course","revenue paused"]
+    code = code.replace(
+      /\[\s*(['"])\s*schools\s*\1\s*,\s*(['"])\s*beta course\s*\2\s*,\s*(['"])\s*revenue paused\s*\3\s*\]/g,
+      (match, q1) => `[${q1}schools${q1}, ${q1}beta course${q1}, ${q1}revenue paused${q1}, ${q1}free${q1}]`
+    );
+
+    return code;
+  }
+
+  // User-provided Patch 3 (applies to app.js only)
+  function patch3(code) {
+    return code.replace(
+      /(?<!const\s+\w+\s*=\s*)(\w+\s*=\s*\w*\s*=>\s*\[[^\]]*?)(\]\.includes\(\w*\))/g,
+      (match, start, end) => {
+        // Skip if "free" already present
+        if (/["']free["']/.test(match)) return match;
+        return `${start}, "free"${end}`;
+      }
+    );
   }
 
   function patch7220(code) {
@@ -236,6 +285,8 @@
     isAppUrl,
     applyPatches,
     patchApp,
+    patch2,
+    patch3,
     patch7220,
     patch6150,
     patch4370

@@ -1,10 +1,182 @@
-// URL to your external JSON (remote source of banner + version info).
-// Contributors: update this to point to your hosted JSON when developing.
-var JSON_URL = 'https://raw.githubusercontent.com/apersongithub/Duolingo-Unlimited-Hearts/refs/heads/main/extension-version.json';
+// ==UserScript==
+// @name         Duolingo Max
+// @icon         https://d35aaqx5ub95lt.cloudfront.net/images/max/9f30dad6d7cc6723deeb2bd9e2f85dd8.svg
+// @namespace    http://tampermonkey.net/
+// @version      1.4
+// @description  Intercepts specific user API responses and forces "hasPlus" to true, while injecting custom shopItems and modifying tracking properties.
+// @author       apersongithub
+// @match        https://www.duolingo.com/*
+// @run-at       document-start
+// @grant        none
+// ==/UserScript==
 
-(function () {
+(function() {
     'use strict';
 
+    // --- Configuration ---
+
+    // This regex targets the user endpoint: https://www.example.com/YYYY-MM-DD/users/USER_ID...
+    // The trailing .+ ensures it matches the path, including any query parameters like ?fields=...
+    const TARGET_URL_REGEX = /https:\/\/www\.duolingo\.com\/\d{4}-\d{2}-\d{2}\/users\/.+/;
+
+    // The custom shopItems data to be injected.
+    const CUSTOM_SHOP_ITEMS = {
+        gold_subscription: {
+            itemName: "gold_subscription",
+            subscriptionInfo: {
+                vendor: "STRIPE",
+                renewing: true,
+                isFamilyPlan: true,
+                expectedExpiration: 9999999999000
+            }
+        }
+    };
+
+    // --- Core Logic ---
+
+    /**
+     * Checks if the given URL matches the API endpoint we want to intercept.
+     * Includes debug logging to confirm URL matching.
+     * @param {string} url The URL of the request.
+     * @returns {boolean} True if the URL should be intercepted.
+     */
+    function shouldIntercept(url) {
+        // NOTE: The user's URL had a typo (https://https://...).
+        // This regex assumes the correct URL format (https://www.example.com/...)
+        const isMatch = TARGET_URL_REGEX.test(url);
+
+        // --- DEBUG LOGGING ---
+        if (isMatch) {
+            console.log(`[API Intercept DEBUG] MATCH FOUND for URL: ${url}`);
+        }
+        // ---------------------
+
+        return isMatch;
+    }
+
+    /**
+     * Parses the JSON text, applies all modifications, and returns the new JSON string.
+     * @param {string} jsonText The original response body text.
+     * @returns {string} The modified JSON string.
+     */
+    function modifyJson(jsonText) {
+        try {
+            const data = JSON.parse(jsonText);
+            console.log("[API Intercept] Original Data:", data);
+
+            // --- MERGED MODIFICATION LOGIC ---
+            // 1. Force hasPlus to true. (Primary fix target)
+            data.hasPlus = true;
+
+            // 2. Set the nested tracking property for gold subscription status.
+            if (!data.trackingProperties || typeof data.trackingProperties !== 'object') {
+                data.trackingProperties = {};
+            }
+            data.trackingProperties.has_item_gold_subscription = true;
+
+            // 3. Add/replace the shopItems object with custom subscription data.
+            data.shopItems = CUSTOM_SHOP_ITEMS;
+            // --------------------------------
+
+            console.log("[API Intercept] Modified Data:", data);
+            return JSON.stringify(data);
+        } catch (e) {
+            console.error("[API Intercept] Failed to parse or modify JSON. Returning original text.", e);
+            return jsonText; // Return original text if modification fails
+        }
+    }
+
+    // =========================================================================
+    // 1. Intercepting 'fetch' requests (Modern API)
+    // =========================================================================
+
+    const originalFetch = window.fetch;
+    window.fetch = function(resource, options) {
+        // Determine the URL from the resource argument (can be a string or a Request object)
+        const url = resource instanceof Request ? resource.url : resource;
+
+        if (shouldIntercept(url)) {
+            console.log(`[API Intercept] Intercepting fetch request to: ${url}`);
+
+            // Call the original fetch, but modify the response promise chain
+            return originalFetch.apply(this, arguments).then(async (response) => {
+                // Clone the response so we can read the body (text()) without affecting
+                // the stream that the original caller might be using.
+                const clonedResponse = response.clone();
+                const jsonText = await clonedResponse.text();
+                const modifiedJsonText = modifyJson(jsonText);
+
+                // Create and return a new Response object with the modified body
+                return new Response(modifiedJsonText, {
+                    status: response.status,
+                    statusText: response.statusText,
+                    headers: response.headers,
+                });
+            }).catch(error => {
+                console.error(`[API Intercept] Error during fetch interception for ${url}:`, error);
+                throw error; // Re-throw the error
+            });
+        }
+
+        // For non-target URLs, call the original fetch immediately
+        return originalFetch.apply(this, arguments);
+    };
+
+
+    // =========================================================================
+    // 2. Intercepting 'XMLHttpRequest' requests (Older API)
+    // =========================================================================
+
+    const originalXhrOpen = XMLHttpRequest.prototype.open;
+    const originalXhrSend = XMLHttpRequest.prototype.send;
+
+    // Override open to mark if this specific XHR object should be intercepted
+    XMLHttpRequest.prototype.open = function(method, url, ...args) {
+        this._intercept = shouldIntercept(url);
+        this._url = url; // Store URL for debugging
+        originalXhrOpen.call(this, method, url, ...args);
+    };
+
+    // Override send to hook into the response handling
+    XMLHttpRequest.prototype.send = function() {
+        if (this._intercept) {
+            console.log(`[API Intercept] Intercepting XHR request to: ${this._url}`);
+
+            // Store the original event handler
+            const originalOnReadyStateChange = this.onreadystatechange;
+            const xhr = this; // Reference to the XHR object
+
+            // Override the ready state change handler
+            this.onreadystatechange = function() {
+                // readyState 4 means the request is complete
+                if (xhr.readyState === 4 && xhr.status >= 200 && xhr.status < 300) {
+                    try {
+                        const modifiedText = modifyJson(xhr.responseText);
+
+                        // Use Object.defineProperty to override the responseText and response
+                        // properties, which are often read by the application.
+                        Object.defineProperty(xhr, 'responseText', { writable: true, value: modifiedText });
+                        Object.defineProperty(xhr, 'response', { writable: true, value: modifiedText });
+                    } catch (e) {
+                        console.error("[API Intercept] XHR Modification Failed:", e);
+                    }
+                }
+
+                // Call the original handler if it exists
+                if (originalOnReadyStateChange) {
+                    originalOnReadyStateChange.apply(this, arguments);
+                }
+            };
+        }
+
+        // Send the request
+        originalXhrSend.apply(this, arguments);
+    };
+
+    var JSON_URL = 'https://raw.githubusercontent.com/apersongithub/Duolingo-Unlimited-Hearts/refs/heads/main/extension-version.json';
+    (function () {
+    'use strict';
+    
     // Unique element id used to ensure we don't insert duplicate banners.
     const newElementId = 'extension-banner';
 
@@ -212,178 +384,4 @@ var JSON_URL = 'https://raw.githubusercontent.com/apersongithub/Duolingo-Unlimit
     observer.observe(document.documentElement, { childList: true, subtree: true });
 })();
 
-window.addEventListener('load', () => {
-    // Default metadata shown to users if the remote JSON doesn't provide it
-    let EXTENSION_NAME = "Duolingo Max Extension";
-    let EXTENSION_URL = "https://github.com/apersongithub/Duolingo-Unlimited-Hearts/";
-
-    // Current extension version from the manifest. This is used to compare with remote version.
-    let CURRENT_VERSION = chrome.runtime.getManifest().version; // fallback
-
-    // Defaults for options stored in the extension's options page.
-    // Contributors: when changing default behavior, update options UI accordingly.
-    const DEFAULT_SETTINGS = {
-        enableNotifications: true,
-        major: { weeks: 0, days: 3, hours: 0, minutes: 0 },
-        minor: { weeks: 1, days: 0, hours: 0, minutes: 0 }
-    };
-
-    /**
-     * getIgnoreMs(duration)
-     * - Converts an object with weeks/days/hours/minutes into milliseconds.
-     * - Used to compute "ignore until" timestamps stored in localStorage.
-     */
-    function getIgnoreMs(duration) {
-        return (
-            ((duration.weeks * 7 * 24 * 60 * 60) +
-                (duration.days * 24 * 60 * 60) +
-                (duration.hours * 60 * 60) +
-                (duration.minutes * 60)) * 1000
-        );
-    }
-
-    /**
-     * getSettings()
-     * - Loads user settings from chrome.storage.sync (if available).
-     * - Returns a Promise that resolves to an object with the effective settings.
-     * - Keeps behavior tolerant to environments where chrome.storage is unavailable (e.g. tests).
-     */
-    const getSettings = () => new Promise(resolve => {
-        try {
-            if (chrome && chrome.storage && chrome.storage.sync) {
-                chrome.storage.sync.get('settings', data => {
-                    resolve((data && data.settings) || DEFAULT_SETTINGS);
-                });
-            } else {
-                resolve(DEFAULT_SETTINGS);
-            }
-        } catch (_) {
-            resolve(DEFAULT_SETTINGS);
-        }
-    });
-
-    // After loading settings, check remote version and prompt user if an update is available.
-    getSettings().then(settings => {
-        // Respect user toggle for update notifications
-        if (!settings.enableNotifications) return;
-
-        // Keys used to store "ignore until" timestamps for major and minor update prompts.
-        const ignoreKeyMajor = 'duo_extension_update_ignore_until_major';
-        const ignoreKeyMinor = 'duo_extension_update_ignore_until_minor';
-        const ignoreUntilMajor = localStorage.getItem(ignoreKeyMajor);
-        const ignoreUntilMinor = localStorage.getItem(ignoreKeyMinor);
-        const now = Date.now();
-
-        // Fetch latest version info from the remote JSON and compare semver parts
-        fetch(JSON_URL)
-            .then(response => response.json())
-            .then(data => {
-                const latestVersion = data.version;
-                const releaseDate = data.releaseDate; // ISO-ish string like "2025-08-28"
-                const releaseNotes = data.releaseNotes || "";
-                EXTENSION_NAME = data.EXTENSION_NAME || EXTENSION_NAME;
-                EXTENSION_URL = data.EXTENSION_URL || EXTENSION_URL;
-
-                // Parse semantic version parts into numbers for numeric comparison
-                const currentParts = CURRENT_VERSION.split('.').map(Number);
-                const latestParts = latestVersion.split('.').map(Number);
-
-                // Calculate days since release (for user-facing messaging)
-                const releaseDateObj = new Date(releaseDate);
-                const diffTime = Math.abs(now - releaseDateObj);
-                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-
-                // compareVersions(a, b)
-                // - Returns -1 if a < b, 0 if equal, 1 if a > b.
-                // - Works when arrays have different lengths (missing parts treated as 0).
-                function compareVersions(a, b) {
-                    for (let i = 0; i < Math.max(a.length, b.length); i++) {
-                        const numA = a[i] || 0;
-                        const numB = b[i] || 0;
-                        if (numA < numB) return -1;
-                        if (numA > numB) return 1;
-                    }
-                    return 0;
-                }
-
-                const cmp = compareVersions(currentParts, latestParts);
-
-                // formatDuration(d) -> human friendly "1 week, 2 days and 3 hours"
-                const formatDuration = (d) => {
-                    let minutes = Math.max(0, Number(d.minutes) || 0);
-                    let hours = Math.max(0, Number(d.hours) || 0);
-                    let days = Math.max(0, Number(d.days) || 0);
-                    let weeks = Math.max(0, Number(d.weeks) || 0);
-
-                    // Normalize smaller units into larger ones for nicer display
-                    hours += Math.floor(minutes / 60);
-                    minutes %= 60;
-
-                    days += Math.floor(hours / 24);
-                    hours %= 24;
-
-                    weeks += Math.floor(days / 7);
-                    days %= 7;
-
-                    const parts = [];
-                    if (weeks) parts.push(`${weeks} ${weeks === 1 ? 'week' : 'weeks'}`);
-                    if (days) parts.push(`${days} ${days === 1 ? 'day' : 'days'}`);
-                    if (hours) parts.push(`${hours} ${hours === 1 ? 'hour' : 'hours'}`);
-                    if (minutes) parts.push(`${minutes} ${minutes === 1 ? 'minute' : 'minutes'}`);
-
-                    if (parts.length === 0) return 'the configured period';
-                    if (parts.length === 1) return parts[0];
-                    return `${parts.slice(0, -1).join(', ')} and ${parts[parts.length - 1]}`;
-                };
-
-                // If remote version is newer, show either a major or minor update prompt.
-                if (cmp < 0) {
-                    // Major update when major version is greater (x -> y where y > x)
-                    if (currentParts[0] < latestParts[0]) {
-                        // Respect "ignore until" for major prompts
-                        if (!ignoreUntilMajor || now > parseInt(ignoreUntilMajor, 10)) {
-                            const ignoreMsMajor = getIgnoreMs(settings.major);
-                            // For older current versions show a shorter/helpful note only on >=3.1
-                            const showNote = (
-                                currentParts[0] > 3 ||
-                                (currentParts[0] === 3 && currentParts[1] >= 1)
-                            );
-                            const note = showNote ? "\n\n Note: You can disable these notifications in the options page." : "";
-                            // Using confirm() for a blocking but simple UX. OK -> go to update URL; Cancel -> ignore for configured period.
-                            if (confirm(`❗It's been ${diffDays} day(s) since a major update was released for ${EXTENSION_NAME}❗\n\n ⚠️ Please update for continued support ⚠️ \n\n Press OK to go to update page, or Cancel to ignore for ${formatDuration(settings.major)}.${note}`)) {
-                                window.location.href = EXTENSION_URL;
-                            } else {
-                                localStorage.setItem(ignoreKeyMajor, (now + ignoreMsMajor).toString());
-                            }
-                        }
-                    }
-                    // Minor update (same major, newer minor)
-                    else if (
-                        (currentParts[0] === latestParts[0]) &&
-                        (currentParts[1] < latestParts[1])
-                    ) {
-                        if (!ignoreUntilMinor || now > parseInt(ignoreUntilMinor, 10)) {
-                            const ignoreMsMinor = getIgnoreMs(settings.minor);
-                            const showNote = (
-                                currentParts[0] > 3 ||
-                                (currentParts[0] === 3 && currentParts[1] >= 1)
-                            );
-                            const note = showNote ? "\n\n Note: You can disable these notifications in the options page." : "";
-                            if (confirm(`ℹ️ A minor update (${latestVersion}) is available for ${EXTENSION_NAME}. \n\n Release notes: \n${releaseNotes} \n\n Press OK to go to update page, or Cancel to ignore for ${formatDuration(settings.minor)}.${note}`)) {
-                                window.location.href = EXTENSION_URL;
-                            } else {
-                                localStorage.setItem(ignoreKeyMinor, (now + ignoreMsMinor).toString());
-                            }
-                        }
-                    }
-                } else if (cmp > 0) {
-                    // Current version is newer than the published latest -> likely a local/beta build.
-                    console.warn(`🔨 You are using a beta version of ${EXTENSION_NAME}. Expect bugs and instability. Please report any issues on GitHub. \n\n IF YOU ARE NOT USING A BETA, IT IS A CACHE ISSUE. IGNORE THIS MESSAGE AND IT WILL GO AWAY WITHIN A FEW MINUTES`);
-                }
-                // cmp === 0 -> versions equal, do nothing.
-            })
-            .catch(() => {
-                // Fail silently if unable to fetch version (non-blocking).
-            });
-    });
-});
+})();

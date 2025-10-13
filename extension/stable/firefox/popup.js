@@ -35,11 +35,11 @@ document.addEventListener("DOMContentLoaded", () => {
         statusEl.style.color = "#28df28";
       } else if (cmp < 0) {
         // Installed is older than remote
-        statusEl.textContent = `Version: ⚠️ Update available, check GitHub! Current: v${currentVersion}, Latest: v${latestVersion}`;
+        statusEl.textContent = `Version: ⚠️ Update available! (v${currentVersion}), Latest: v${latestVersion}`;
         statusEl.style.color = "#df2828ff";
       } else {
         // Installed is newer than remote — commonly a local/beta/dev build
-        statusEl.textContent = `Version: 🧪 Beta version detected (v${currentVersion}), Latest stable: v${latestVersion}`;
+        statusEl.textContent = `Version: 🧪 Beta (v${currentVersion}) Stable: v${latestVersion}`;
         statusEl.style.color = "#2878df";
       }
     } catch (err) {

@@ -5,13 +5,13 @@
   if (window.__EXT_PAGE_HOOK_INSTALLED__) return;
   window.__EXT_PAGE_HOOK_INSTALLED__ = true;
 
-  const RE = /(^|\/)(app|7220|6150|4370)[^/]*\.js(\?.*)?$/i;
+  const SCRIPT_RE = /(^|\/)(app|7220|6150|4370)[^/]*\.js(\?.*)?$/i;
   const origAppend = Element.prototype.appendChild;
   const origInsertBefore = Element.prototype.insertBefore;
 
   function maybeAdjust(node) {
     try {
-      if (node && node.tagName === 'SCRIPT' && typeof node.src === 'string' && RE.test(node.src)) {
+      if (node && node.tagName === 'SCRIPT' && typeof node.src === 'string' && SCRIPT_RE.test(node.src)) {
         if (node.hasAttribute('integrity')) node.removeAttribute('integrity');
         if (node.hasAttribute('crossorigin')) node.removeAttribute('crossorigin');
         if (node.hasAttribute('nonce')) node.removeAttribute('nonce');
