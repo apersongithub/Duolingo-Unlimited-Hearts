@@ -9,8 +9,8 @@
     const TARGET_URL_REGEX = /https:\/\/www\.duolingo\.com\/\d{4}-\d{2}-\d{2}\/users\/.+/;
 
     const CUSTOM_SHOP_ITEMS = {
-      gold_subscription: {
-        itemName: "gold_subscription",
+      immersive_subscription: {
+        itemName: "immersive_subscription",
         subscriptionInfo: {
           vendor: "STRIPE",
           renewing: true,

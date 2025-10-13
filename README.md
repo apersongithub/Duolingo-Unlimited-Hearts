@@ -25,6 +25,7 @@
 > - ❗**NEW (Userscript Ports)**
 >   - Supports iPhone/iPad on Safari if you install the [Userscripts](https://apps.apple.com/us/app/userscripts/id1463298887) *(More info in the FAQ)*
 >     - [Duolingo Max Userscript](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/raw/refs/heads/main/userscript/Duolingo%20Max.user.js)
+>     - [Duolingo Super Userscript](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/raw/refs/heads/main/userscript/Duolingo%20Super.user.js)
 >     - [Duolingo Unlimited Hearts Userscript](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/raw/refs/heads/main/userscript/Duolingo%20Unlimited%20Hearts.user.js)
 >     
 
@@ -39,7 +40,7 @@
 | **Question** | **Answer** |
 |--------------|------------|
 | Why do I see a white screen and nothing else? | You are likely using an older version of the extension. If not, create an issue. |
-| Why should I use this extension over the userscript(s)? | The extension provides constant stream of updates with more hardcoded changes to the site to prevent the bypasses from being patched. It also just comes with more QOL features. |
+| Why should I use this extension over the userscript(s)? | The extension provides a constant stream of updates with more hardcoded changes to the site to prevent the bypasses from being patched. It also just comes with more QOL features. |
 | Does this follow TOS? | [In my opinion, yes](https://www.duolingo.com/guidelines#:~:text=Script%20or%20cheat,may%20be%20removed.). This is all on the client so there is no effect on the system. |
 | Is this safe? | Yes, this extension is open source and only changes a few lines of code which are solely responsible for the paid features. |
 | Is this all free? | Yes, but feel free to [support me](https://html-preview.github.io/?url=https://raw.githubusercontent.com/apersongithub/Duolingo-Unlimited-Hearts/refs/heads/main/extras/donations.html). |

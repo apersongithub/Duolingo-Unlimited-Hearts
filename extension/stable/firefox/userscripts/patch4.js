@@ -173,18 +173,13 @@
         originalXhrSend.apply(this, arguments);
     };
 
-    var JSON_URL = 'https://raw.githubusercontent.com/apersongithub/Duolingo-Unlimited-Hearts/refs/heads/main/extension-version.json';
-    (function () {
-    'use strict';
-    
-    // Unique element id used to ensure we don't insert duplicate banners.
-    const newElementId = 'extension-banner';
+   var JSON_URL = 'https://raw.githubusercontent.com/apersongithub/Duolingo-Unlimited-Hearts/refs/heads/main/extension-version.json';
 
-    // A minimal hard-coded fallback banner. This is used if the remote JSON is unreachable
-    // or invalid. Because this string is authored in this repository it does not require
-    // the same sanitization guarantees as untrusted remote content — but we still pass it
-    // through the sanitizer before inserting to be consistent.
-    const FALLBACK_CONFIG = {
+    (function () {
+      'use strict';
+
+      const newElementId = 'extension-banner';
+      const FALLBACK_CONFIG = {
         "BANNER": `
     <div class='thPiC'><img class='_1xOxM'
     src='https://raw.githubusercontent.com/apersongithub/Duolingo-Unlimited-Hearts/refs/heads/main/extras/icon.svg'
@@ -199,23 +194,11 @@
           style='color:#d7d62b'>💵 Donate</span></button></a></div>
 </div>
   `
-    };
+      };
 
-    /**
-     * addCustomElement(config, root = document)
-     * - Inserts the banner markup into the page next to an existing reference element.
-     * - Prevents duplicates by checking for newElementId.
-     * - The function expects `config.BANNER` to already be sanitized HTML (string).
-     *
-     * Parameters:
-     * - config: object with BANNER string
-     * - root: optional root node to run queries on (useful for testing)
-     */
-    function addCustomElement(config, root = document) {
+      function addCustomElement(config, root = document) {
         if (document.getElementById(newElementId)) return;
-
-        // Target element chosen to match the site's DOM layout where we want the banner.
-        const refElement = root.querySelector('.ky51z._26JAQ.MGk8p');
+        const refElement = root.querySelector('.MGk8p');
         if (!refElement) return;
 
         const ul = document.createElement('ul');
@@ -224,164 +207,89 @@
         const newLi = document.createElement('li');
         newLi.id = newElementId;
         newLi.className = '_17J_p';
-        // BANNER is trusted after sanitization; we set innerHTML to render the markup.
         newLi.innerHTML = config.BANNER;
 
         ul.appendChild(newLi);
         refElement.parentNode.insertBefore(ul, refElement.nextSibling);
 
-        console.log('Extension banner successfully added!');
-    }
+        try { console.log('Extension banner successfully added!'); } catch {}
+      }
 
-    /**
-     * loadConfigAndInject()
-     * - Fetches remote JSON (JSON_URL) and injects the sanitized BANNER into the UI,
-     *   but only when the user is on /settings/super.
-     * - Falls back to FALLBACK_CONFIG if fetch fails.
-     * - Because remote content could contain malicious markup, we sanitize it using
-     *   a conservative allow-list before inserting into the page.
-     */
-    async function loadConfigAndInject() {
-        // Only inject the banner on the specific settings page to avoid unintended UI changes.
+      async function loadConfigAndInject() {
         if (!window.location.pathname.includes('/settings/super')) return;
 
-        /**
-         * sanitizeHTML(unsafeHTML)
-         * - Simple allow-list sanitizer implemented using a template + tree walker.
-         * - Pros: small, deterministic, easy to audit.
-         * - Cons: not a full replacement for a dedicated sanitizer library in more complex apps.
-         *
-         * Rules:
-         * - Remove script/iframe/object/embed/style/link/meta elements entirely.
-         * - Permit only a small set of tags and attributes (no inline event handlers).
-         * - Only allow href/src values that start with http(s):// (no javascript:, data:, or relative URIs).
-         * - Remove style attributes containing obviously dangerous patterns.
-         */
         function sanitizeHTML(unsafeHTML) {
-            const template = document.createElement('template');
-            template.innerHTML = unsafeHTML || '';
+          const template = document.createElement('template');
+          template.innerHTML = unsafeHTML || '';
 
-            // Conservative allow-list of tags we permit in the banner
-            const ALLOWED_TAGS = new Set([
-                'DIV', 'SECTION',
-                'H1', 'H2', 'H3', 'H4', 'H5', 'H6',
-                'P', 'SPAN', 'SMALL',
-                'A', 'BUTTON',
-                'UL', 'OL', 'LI',
-                'STRONG', 'EM', 'B', 'I', 'U',
-                'BR', 'HR',
-                'IMG'
-            ]);
-            // Attributes that are safe enough for a simple banner UI
-            const ALLOWED_ATTRS = new Set([
-                'class', 'id',
-                'href', 'src', 'target', 'rel',
-                'style',
-                'alt', 'title',
-                'role',
-                'aria-label', 'aria-hidden', 'aria-describedby', 'aria-expanded', 'aria-controls',
-                'width', 'height',
-                'tabindex'
-            ]);
+          const ALLOWED_TAGS = new Set(['DIV','SECTION','H1','H2','H3','H4','H5','H6','P','SPAN','SMALL','A','BUTTON','UL','OL','LI','STRONG','EM','B','I','U','BR','HR','IMG']);
+          const ALLOWED_ATTRS = new Set(['class','id','href','src','target','rel','style','alt','title','role','aria-label','aria-hidden','aria-describedby','aria-expanded','aria-controls','width','height','tabindex']);
 
-            // Remove known dangerous elements completely
-            template.content.querySelectorAll('script, iframe, object, embed, style, link, meta').forEach(el => el.remove());
+          template.content.querySelectorAll('script, iframe, object, embed, style, link, meta').forEach(el => el.remove());
 
-            const walker = document.createTreeWalker(template.content, NodeFilter.SHOW_ELEMENT);
-            let node;
-            while ((node = walker.nextNode())) {
-                // If the tag is not allowed, unwrap it but keep its children (safer than removing content).
-                if (!ALLOWED_TAGS.has(node.tagName)) {
-                    const parent = node.parentNode;
-                    if (parent) parent.replaceChild(document.createDocumentFragment().append(...node.childNodes), node);
-                    continue;
-                }
-
-                // Scrub attributes on allowed tags
-                [...node.attributes].forEach(attr => {
-                    const name = attr.name.toLowerCase();
-                    const value = attr.value.trim();
-
-                    // Remove event handlers (onclick etc.) and any attribute not on the allow-list
-                    if (name.startsWith('on') || !ALLOWED_ATTRS.has(name)) {
-                        node.removeAttribute(attr.name);
-                        return;
-                    }
-
-                    // For href/src only allow absolute http(s) links
-                    if (name === 'href' || name === 'src') {
-                        const lower = value.toLowerCase();
-                        if (!/^https?:\/\//.test(lower)) {
-                            node.removeAttribute(attr.name);
-                            return;
-                        }
-                        // Extra guard against javascript: and data: URIs
-                        if (lower.startsWith('javascript:') || lower.startsWith('data:')) {
-                            node.removeAttribute(attr.name);
-                            return;
-                        }
-                    }
-
-                    // Very small sanitization for style attribute to avoid obvious injection vectors.
-                    if (name === 'style') {
-                        if (/expression|javascript:|url\s*\(\s*javascript:/i.test(value)) {
-                            node.removeAttribute(attr.name);
-                        }
-                    }
-                });
+          const walker = document.createTreeWalker(template.content, NodeFilter.SHOW_ELEMENT);
+          let node;
+          while ((node = walker.nextNode())) {
+            if (!ALLOWED_TAGS.has(node.tagName)) {
+              const parent = node.parentNode;
+              if (parent) parent.replaceChild(document.createDocumentFragment().append(...node.childNodes), node);
+              continue;
             }
 
-            // Return sanitized HTML string ready to insert via innerHTML
-            return template.innerHTML;
+            [...node.attributes].forEach(attr => {
+              const name = attr.name.toLowerCase();
+              const value = attr.value.trim();
+
+              if (name.startsWith('on') || !ALLOWED_ATTRS.has(name)) { node.removeAttribute(attr.name); return; }
+              if (name === 'href' || name === 'src') {
+                const lower = value.toLowerCase();
+                if (!/^https?:\/\//.test(lower)) { node.removeAttribute(attr.name); return; }
+                if (lower.startsWith('javascript:') || lower.startsWith('data:')) { node.removeAttribute(attr.name); return; }
+              }
+              if (name === 'style') {
+                if (/expression|javascript:|url\s*\(\s*javascript:/i.test(value)) {
+                  node.removeAttribute(attr.name);
+                }
+              }
+            });
+          }
+
+          return template.innerHTML;
         }
 
         try {
-            const response = await fetch(JSON_URL, { cache: 'no-store' });
-            if (!response.ok) throw new Error('Failed to fetch JSON');
-            const remote = await response.json();
-
-            // Only use the BANNER property from remote JSON (ignore scripts/other properties).
-            // Sanitize it before injecting.
-            const sanitized = sanitizeHTML(remote && remote.BANNER ? remote.BANNER : FALLBACK_CONFIG.BANNER);
-            addCustomElement({ BANNER: sanitized });
+          // JSON_URL may not be defined; fallback is used if fetch fails.
+          const response = await fetch(JSON_URL, { cache: 'no-store' });
+          if (!response.ok) throw new Error('Failed to fetch JSON');
+          const remote = await response.json();
+          const sanitized = sanitizeHTML(remote && remote.BANNER ? remote.BANNER : FALLBACK_CONFIG.BANNER);
+          addCustomElement({ BANNER: sanitized });
         } catch (err) {
-            // If remote fetch fails for any reason, fall back to the bundled banner.
-            console.warn('Failed to load external JSON, using fallback:', err);
-            const sanitizedFallback = sanitizeHTML(FALLBACK_CONFIG.BANNER);
-            addCustomElement({ BANNER: sanitizedFallback });
+          try { console.warn('Failed to load external JSON, using fallback:', err); } catch {}
+          const sanitizedFallback = sanitizeHTML(FALLBACK_CONFIG.BANNER);
+          addCustomElement({ BANNER: sanitizedFallback });
         }
-    }
+      }
 
-    /**
-     * removeManageSubscriptionSection(root = document)
-     * - Removes the specific "Manage subscription" section from the page if present.
-     * - This is a UI tweak: we search for section nodes with a specific class and exact heading text.
-     * - The method is idempotent and safe to call repeatedly.
-     */
-    function removeManageSubscriptionSection(root = document) {
+      function removeManageSubscriptionSection(root = document) {
         const sections = root.querySelectorAll('section._3f-te');
         for (const section of sections) {
-            const h2 = section.querySelector('h2._203-l');
-            if (h2 && h2.textContent.trim() === 'Manage subscription') {
-                section.remove();
-                break;
-            }
+          const h2 = section.querySelector('h2._203-l');
+          if (h2 && h2.textContent.trim() === 'Manage subscription') {
+            section.remove();
+            break;
+          }
         }
-    }
+      }
 
-    // Observe DOM for dynamically added "Manage subscription" sections and remove them as soon as they appear.
-    // Using a MutationObserver keeps behavior robust when the page is dynamically updated.
-    const manageSubObserver = new MutationObserver(() => removeManageSubscriptionSection());
-    manageSubObserver.observe(document.documentElement, { childList: true, subtree: true });
+      const manageSubObserver = new MutationObserver(() => removeManageSubscriptionSection());
+      manageSubObserver.observe(document.documentElement, { childList: true, subtree: true });
 
-    // Run immediate cleanup on load as well
-    removeManageSubscriptionSection();
-    // Try to fetch the config and inject banner if appropriate
-    loadConfigAndInject();
+      removeManageSubscriptionSection();
+      loadConfigAndInject();
 
-    // Observe DOM for dynamically added content and attempt to inject banner when relevant nodes appear.
-    const observer = new MutationObserver(() => loadConfigAndInject());
-    observer.observe(document.documentElement, { childList: true, subtree: true });
-})();
+      const observer = new MutationObserver(() => loadConfigAndInject());
+      observer.observe(document.documentElement, { childList: true, subtree: true });
+    })();
 
 })();

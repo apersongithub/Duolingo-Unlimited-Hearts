@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Duolingo Max",
-  "version": "3.3",
+  "version": "3.3.1",
   "description": "Gives Duolingo Max features for free",
   "icons": {
     "16": "/images/icon16.png",
@@ -58,7 +58,10 @@
         "exploit_banner.js",
         "options.js",
         "userscripts/patch4.js",
-        "userscripts/patch5.js"
+        "userscripts/patch5.js",
+        "userscripts/patch6.js",
+        "userscripts/patch7.js",
+        "userscripts/super_banner.js"
       ],
       "matches": [
         "https://*.duolingo.com/*",

@@ -1,16 +1,14 @@
 {
-  "manifest_version": 3,
+  "manifest_version": 2,
   "name": "Duolingo Max",
-  "version": "3.3",
+  "version": "3.3.1",
   "description": "Gives Duolingo Max features for free",
-
   "icons": {
     "16": "images/icon16.png",
     "48": "images/icon48.png",
     "128": "images/icon128.png"
   },
-
-  "action": {
+  "browser_action": {
     "default_popup": "popup.html",
     "default_icon": {
       "16": "images/icon16.png",
@@ -18,27 +16,21 @@
       "128": "images/icon128.png"
     }
   },
-
   "permissions": [
     "storage",
     "webRequest",
     "webRequestBlocking",
-    "webRequestFilterResponse"
-  ],
-  "host_permissions": [
     "https://d35aaqx5ub95lt.cloudfront.net/*",
     "https://*.duolingo.com/*",
     "https://*.duolingo.cn/*",
     "https://raw.githubusercontent.com/*"
   ],
-
   "background": {
     "scripts": [
-      "shared/patches.js",
       "background.js"
-    ]
+    ],
+    "persistent": false
   },
-
   "content_scripts": [
     {
       "matches": [
@@ -53,33 +45,22 @@
       "run_at": "document_start"
     }
   ],
-
   "options_ui": {
     "page": "options.html",
     "open_in_tab": true
   },
-
   "web_accessible_resources": [
-    {
-      "resources": [
-        "injection.js",
-        "shared/patches.js",
-        "page_hook.js",
-        "popup.js",
-        "popup.css",
-        "exploit_banner.js",
-        "options.js",
-        "userscripts/patch4.js",
-        "userscripts/patch5.js"
-      ],
-      "matches": [
-        "https://d35aaqx5ub95lt.cloudfront.net/*",
-        "https://*.duolingo.cn/*",
-        "https://*.duolingo.com/*"
-      ]
-    }
+    "injection.js",
+    "page_hook.js",
+    "popup.js",
+    "popup.css",
+    "exploit_banner.js",
+    "options.js",
+    "userscripts/patch4.js",
+    "userscripts/patch5.js",
+    "userscripts/patch7.js",
+    "userscripts/super_banner.js"
   ],
-
   "browser_specific_settings": {
     "gecko": {
       "id": "{9a46ec17-f439-494a-9e72-43692c969758}"

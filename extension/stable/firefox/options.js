@@ -1,26 +1,27 @@
-// Default values (your hard-coded ones)
 const DEFAULT_SETTINGS = {
   enableNotifications: true,
-  // 'patch1' | 'patch2' | 'patch3' | 'patch4' | 'patch5'
-  patchMode: 'patch1',
   major: { weeks: 0, days: 3, hours: 0, minutes: 0 },
-  minor: { weeks: 1, days: 0, hours: 0, minutes: 0 }
+  minor: { weeks: 1, days: 0, hours: 0, minutes: 0 },
+  selectedPatch: 1
 };
-
-const PATCH_IDS = ['patch1', 'patch2', 'patch3', 'patch4', 'patch5'];
 
 function byId(id) { return document.getElementById(id); }
 
-// Helper to apply settings to UI fields
-function applySettingsToUI(s) {
-  byId('enableNotifications').checked = !!s.enableNotifications;
+function applySettings(s) {
+  // Patch selection
+  const mode = Number(s.selectedPatch) || 1;
+  byId('patch1').checked = mode === 1;
+  byId('patch2').checked = mode === 2;
+  byId('patch3').checked = mode === 3;
+  byId('patch4').checked = mode === 4;
+  byId('patch5').checked = mode === 5;
+  byId('patch6').checked = mode === 6;
+  byId('patch7').checked = mode === 7;
+  byId('patch8').checked = mode === 8;
+  byId('patch9').checked = mode === 9;
 
-  const mode = PATCH_IDS.includes(s.patchMode) ? s.patchMode : DEFAULT_SETTINGS.patchMode;
-  PATCH_IDS.forEach(id => {
-    const el = byId(id);
-    if (el) el.checked = (id === mode);
-  });
-
+  // Other settings
+  byId('enableNotifications').checked = s.enableNotifications;
   byId('majorWeeks').value = s.major.weeks;
   byId('majorDays').value = s.major.days;
   byId('majorHours').value = s.major.hours;
@@ -31,47 +32,44 @@ function applySettingsToUI(s) {
   byId('minorMinutes').value = s.minor.minutes;
 }
 
-// Determine the selected patch mode (supports radios or checkbox fallback)
-function getSelectedPatchMode() {
-  // Preferred: radios with name="patchChoice"
-  const radio = document.querySelector('input[name="patchChoice"]:checked');
-  if (radio && PATCH_IDS.includes(radio.id)) return radio.id;
-
-  // Fallback: exclusive checkboxes by id
-  for (const id of PATCH_IDS) {
-    const el = byId(id);
-    if (el && el.checked) return id;
-  }
-  return DEFAULT_SETTINGS.patchMode;
+function readSelectedPatch() {
+  if (byId('patch9').checked) return 9;
+  if (byId('patch8').checked) return 8;
+  if (byId('patch7').checked) return 7;
+  if (byId('patch6').checked) return 6;
+  if (byId('patch5').checked) return 5;
+  if (byId('patch4').checked) return 4;
+  if (byId('patch3').checked) return 3;
+  if (byId('patch2').checked) return 2;
+  return 1;
 }
 
-function readSettingsFromUI() {
+function readSettings() {
   return {
+    selectedPatch: readSelectedPatch(),
     enableNotifications: byId('enableNotifications').checked,
-    patchMode: getSelectedPatchMode(),
     major: {
-      weeks: parseInt(byId('majorWeeks').value) || 0,
-      days: parseInt(byId('majorDays').value) || 0,
-      hours: parseInt(byId('majorHours').value) || 0,
-      minutes: parseInt(byId('majorMinutes').value) || 0,
+      weeks: +byId('majorWeeks').value || 0,
+      days: +byId('majorDays').value || 0,
+      hours: +byId('majorHours').value || 0,
+      minutes: +byId('majorMinutes').value || 0
     },
     minor: {
-      weeks: parseInt(byId('minorWeeks').value) || 0,
-      days: parseInt(byId('minorDays').value) || 0,
-      hours: parseInt(byId('minorHours').value) || 0,
-      minutes: parseInt(byId('minorMinutes').value) || 0,
+      weeks: +byId('minorWeeks').value || 0,
+      days: +byId('minorDays').value || 0,
+      hours: +byId('minorHours').value || 0,
+      minutes: +byId('minorMinutes').value || 0
     }
   };
 }
 
 function showStatus(msg) {
   const el = byId('status');
-  if (!el) return;
   el.textContent = msg;
   if (msg) setTimeout(() => (el.textContent = ''), 2000);
 }
 
-// Debounce helper to avoid hitting chrome.storage.sync write quotas
+// Debounce helper to avoid hitting storage.sync write quotas
 function debounce(fn, delay = 400) {
   let t;
   const debounced = (...args) => {
@@ -92,66 +90,26 @@ function debounce(fn, delay = 400) {
 }
 
 const saveSettings = debounce(() => {
-  const settings = readSettingsFromUI();
-  chrome.storage.sync.set({ settings }, () => {
-    // Intentionally no success status message on autosave
-  });
+  // Silent autosave (no status message)
+  chrome.storage.sync.set({ settings: readSettings() });
 }, 400);
 
-// Enforce mutual exclusivity only if using checkboxes (radios already exclusive)
-function setupPatchExclusivityFallback() {
-  const boxes = PATCH_IDS
-    .map(id => byId(id))
-    .filter(Boolean);
-
-  if (!boxes.length) return;
-
-  const allRadios = boxes.every(b => b.type === 'radio');
-  if (allRadios) return; // radios don't need custom exclusivity
-
-  function ensureOneSelected(changed) {
-    if (changed && changed.checked) {
-      boxes.forEach(b => { if (b !== changed) b.checked = false; });
-    }
-    // Prevent all unchecked; default to patch1
-    if (!boxes.some(b => b.checked)) {
-      const def = byId(DEFAULT_SETTINGS.patchMode);
-      if (def) def.checked = true;
-    }
-  }
-
-  boxes.forEach(b => b.addEventListener('change', () => {
-    ensureOneSelected(b);
-  }));
-
-  // Initialize state
-  ensureOneSelected();
-}
-
-// Restore settings (or defaults)
-function restoreOptions() {
-  chrome.storage.sync.get('settings', (data = {}) => {
-    const s = (data && data.settings) ? data.settings : DEFAULT_SETTINGS;
-    if (!PATCH_IDS.includes(s.patchMode)) s.patchMode = DEFAULT_SETTINGS.patchMode;
-    applySettingsToUI(s);
+function restore() {
+  chrome.storage.sync.get('settings', data => {
+    applySettings((data && data.settings) || DEFAULT_SETTINGS);
   });
 }
 
-// Reset settings to defaults
-function setupReset() {
-  const resetBtn = byId('reset');
-  if (!resetBtn) return;
-  resetBtn.addEventListener('click', () => {
-    if (!confirm('Reset all settings to defaults?')) return;
-    chrome.storage.sync.set({ settings: DEFAULT_SETTINGS }, () => {
-      applySettingsToUI(DEFAULT_SETTINGS);
-      showStatus('↩️ Settings reset to defaults.');
-    });
+byId('reset').addEventListener('click', () => {
+  if (!confirm('Reset all settings to defaults?')) return;
+  chrome.storage.sync.set({ settings: DEFAULT_SETTINGS }, () => {
+    applySettings(DEFAULT_SETTINGS);
+    showStatus('↩️ Reset to defaults');
   });
-}
+});
 
-// Register autosave on input changes
 function registerAutosaveListeners() {
+  // Autosave for radios/checkboxes on change, numbers on input
   const inputs = Array.from(document.querySelectorAll('input'));
   inputs.forEach(el => {
     const evt = (el.type === 'number' || el.type === 'text') ? 'input' : 'change';
@@ -159,13 +117,11 @@ function registerAutosaveListeners() {
       saveSettings();
     });
   });
-  // Save pending changes before leaving the page
+  // Ensure pending changes save before closing the page
   window.addEventListener('beforeunload', () => saveSettings.flush());
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  setupPatchExclusivityFallback();
-  setupReset();
   registerAutosaveListeners();
-  restoreOptions();
+  restore();
 });

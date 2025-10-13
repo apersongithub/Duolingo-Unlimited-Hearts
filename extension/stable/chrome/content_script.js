@@ -3,13 +3,14 @@ const CHUNK_REGEX = /(^|\/)(app|7220|6150|4370)[^/]*\.js(\?.*)?$/i;
 const processed = new Set();
 let selectedPatchMode = 1;
 let userscriptBootInjected = false;
+let superBannerInjected = false;
 
 function getSettingsPatchMode() {
   return new Promise(resolve => {
     try {
       chrome.storage.sync.get('settings', data => {
         const mode = Number(data?.settings?.selectedPatch) || 1;
-        resolve(Math.min(Math.max(mode, 1), 5));
+        resolve(Math.min(Math.max(mode, 1), 9));
       });
     } catch {
       resolve(1);
@@ -19,18 +20,41 @@ function getSettingsPatchMode() {
 
 function injectUserscriptBootstrapIfNeeded(mode) {
   if (userscriptBootInjected) return;
-  if (mode !== 4 && mode !== 5) return;
+  // Userscript modes: 4, 5, 8, 9
+  if (mode !== 4 && mode !== 5 && mode !== 8 && mode !== 9) return;
 
   try {
     const s = document.createElement('script');
     s.src = chrome.runtime.getURL(
-      mode === 4 ? 'userscripts/patch4.js' : 'userscripts/patch5.js'
+      mode === 4
+        ? 'userscripts/patch4.js'
+        : mode === 5
+        ? 'userscripts/patch5.js'
+        : mode === 8
+        ? 'userscripts/patch6.js'
+        : 'userscripts/patch7.js'
     );
     s.async = false;
     (document.documentElement || document.head || document.body).appendChild(s);
     userscriptBootInjected = true;
   } catch (e) {
     // Silent failure; userscripts are optional
+  }
+}
+
+function injectSuperBannerIfNeeded(mode) {
+  // Inject for all Super patch modes: 6, 7, 8, 9
+  if (superBannerInjected) return;
+  if (mode !== 6 && mode !== 7 && mode !== 8 && mode !== 9) return;
+
+  try {
+    const s = document.createElement('script');
+    s.src = chrome.runtime.getURL('userscripts/super_banner.js');
+    s.async = false;
+    (document.documentElement || document.head || document.body).appendChild(s);
+    superBannerInjected = true;
+  } catch (e) {
+    // Optional helper; ignore failures
   }
 }
 
@@ -206,6 +230,7 @@ async function handleUrl(url) {
   // Load selected patch mode ASAP and inject userscript bootstrap early if needed
   selectedPatchMode = await getSettingsPatchMode();
   injectUserscriptBootstrapIfNeeded(selectedPatchMode);
+  injectSuperBannerIfNeeded(selectedPatchMode);
   injectCustomUI(selectedPatchMode);
 })();
 

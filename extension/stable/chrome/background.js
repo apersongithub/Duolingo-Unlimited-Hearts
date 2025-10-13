@@ -11,7 +11,7 @@ async function getSelectedPatchMode() {
   try {
     const data = await chrome.storage.sync.get('settings');
     const mode = Number(data?.settings?.selectedPatch) || 1;
-    return Math.min(Math.max(mode, 1), 5);
+    return Math.min(Math.max(mode, 1), 9);
   } catch {
     return 1;
   }
@@ -48,7 +48,7 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
   if (msg?.type === 'GET_CACHED') {
     const { url, patchMode } = msg;
     (async () => {
-      const mode = Number(patchMode) || (await getSelectedPatchMode());
+      const mode = Math.min(Math.max(Number(patchMode) || (await getSelectedPatchMode()), 1), 9);
       const cacheKey = `patched:${mode}:${url}`;
       const cached = (await chrome.storage.local.get(cacheKey))[cacheKey];
       sendResponse(cached ? { ok: true, patched: cached } : { ok: false });

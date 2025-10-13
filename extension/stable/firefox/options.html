@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="en"><head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Extension Options</title>
@@ -126,6 +124,7 @@
       padding: 0 8px;
       font-weight: 500;
       color: var(--hint-color);
+      text-transform: capitalize;
     }
 
     /* Toggle Switch */
@@ -255,17 +254,36 @@
           Max Features
         </legend>
         <div class="form-group">
-          <label><input type="radio" id="patch1" name="patchChoice" class="patchChoice" checked> ⭐ Patch 1 (Hardcoded)</label>
+          <label><input type="radio" id="patch1" name="patchChoice" class="patchChoice" checked=""> ⭐ Patch 1 (Hardcoded)</label>
         </div>
         <div class="form-group">
           <label><input type="radio" id="patch4" name="patchChoice" class="patchChoice"> Patch 2 (Network Interception)</label>
         </div>
       </fieldset>
 
+      
+
+      <fieldset>
+        <legend style="display: flex; align-items: center; gap: 6px;">
+          <img src="./images/su.svg" width="35" height="35" alt="Icon">Super Features</legend>
+        <div class="form-group">
+          <label><input type="radio" id="patch6" name="patchChoice" class="patchChoice">Patch 1 (Hardcoded)</label>
+        </div>
+        <div class="form-group">
+          <label><input type="radio" id="patch7" name="patchChoice" class="patchChoice">Patch 2 (Hardcoded)</label>
+        </div>
+        <div class="form-group">
+          <label><input type="radio" id="patch8" name="patchChoice" class="patchChoice">Patch 3 (Network Interception)</label>
+        </div>
+        <div class="form-group">
+          <label><input type="radio" id="patch9" name="patchChoice" class="patchChoice">Patch 4 (Network Interception)</label>
+        </div>
+      </fieldset>
+
       <fieldset>
         <legend style="display: flex; align-items: center; gap: 6px;">
           <img src="./images/uh.svg" width="35" height="35" alt="Icon">
-          Unlimited Hearts (ONLY)
+          Unlimited Hearts
         </legend>
         <div class="form-group">
           <label><input type="radio" id="patch2" name="patchChoice" class="patchChoice"> Patch 1 (Hardcoded)</label>
@@ -277,6 +295,8 @@
           <label><input type="radio" id="patch5" name="patchChoice" class="patchChoice"> Patch 3 (Network Interception)</label>
         </div>
       </fieldset>
+      <p class="hint">Note: Close all duolingo tabs before patching.</p>
+
     </div>
 
     <div class="section">
@@ -316,5 +336,5 @@
   </main>
 
   <script src="options.js"></script>
-</body>
-</html>
+
+</body></html>

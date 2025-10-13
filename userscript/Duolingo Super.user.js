@@ -1,16 +1,34 @@
-;(() => {
-  if (window.__DL_PATCH4_INSTALLED__) return;
-  window.__DL_PATCH4_INSTALLED__ = true;
+// ==UserScript==
+// @name         Duolingo Super
+// @icon         https://d35aaqx5ub95lt.cloudfront.net/images/hearts/b3a04a561c7d0b2b5247a40e18d64946.svg
+// @namespace    https://tampermonkey.net/
+// @version      1.0
+// @description  Intercepts Duolingo's API Responses
+// @author       apersongithub
+// @match        *://www.duolingo.com/*
+// @match        *://www.duolingo.cn/*
+// @grant        none
+// @run-at       document-start
+// @license      MPL-2.0
+// @downloadURL https://github.com/apersongithub/Duolingo-Unlimited-Hearts/raw/refs/heads/main/userscript/Duolingo%20Max.user.js
+// @updateURL https://github.com/apersongithub/Duolingo-Unlimited-Hearts/raw/refs/heads/main/userscript/Duolingo%20Max.user.js
+// ==/UserScript==
 
-  (function() {
+// WORKS AS OF 2025-10-13
+
+/*
+ * Below this is the actual fetch interception and modification logic for Unlimited Hearts
+ */
+
+(function() {
     'use strict';
 
     // --- Configuration ---
     const TARGET_URL_REGEX = /https:\/\/www\.duolingo\.com\/\d{4}-\d{2}-\d{2}\/users\/.+/;
 
     const CUSTOM_SHOP_ITEMS = {
-      gold_subscription: {
-        itemName: "gold_subscription",
+      premium_subscription: {
+        itemName: "premium_subscription",
         subscriptionInfo: {
           vendor: "STRIPE",
           renewing: true,
@@ -90,7 +108,7 @@
     // =============================
     // UI banner + sanitization logic
     // =============================
-      var JSON_URL = 'https://raw.githubusercontent.com/apersongithub/Duolingo-Unlimited-Hearts/refs/heads/main/extension-version.json';
+    var JSON_URL = 'https://raw.githubusercontent.com/apersongithub/Duolingo-Unlimited-Hearts/refs/heads/main/userscript-version.json';
 
     (function () {
       'use strict';
@@ -102,7 +120,7 @@
     src='https://raw.githubusercontent.com/apersongithub/Duolingo-Unlimited-Hearts/refs/heads/main/extras/icon.svg'
     style='border-radius:100px'></div>
 <div class='_3jiBp'>
-  <h4 class='qyEhl'>Duolingo Max</h4><span class='_3S2Xa'>Created by <a
+  <h4 class='qyEhl'>Duolingo Max Userscript</h4><span class='_3S2Xa'>Created by <a
       href='https://github.com/apersongithub' target='_blank' style='color:#07b3ec'>apersongithub</a></span>
 </div>
 <div class='_36kJA'>
@@ -115,7 +133,7 @@
 
       function addCustomElement(config, root = document) {
         if (document.getElementById(newElementId)) return;
-        const refElement = root.querySelector('.MGk8p');
+        const refElement = root.querySelector('.ky51z._26JAQ.MGk8p');
         if (!refElement) return;
 
         const ul = document.createElement('ul');
@@ -208,6 +226,4 @@
       const observer = new MutationObserver(() => loadConfigAndInject());
       observer.observe(document.documentElement, { childList: true, subtree: true });
     })();
-
-  })();
 })();

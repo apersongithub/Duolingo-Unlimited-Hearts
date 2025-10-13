@@ -15,6 +15,10 @@ function applySettings(s) {
   byId('patch3').checked = mode === 3;
   byId('patch4').checked = mode === 4;
   byId('patch5').checked = mode === 5;
+  const p6 = byId('patch6'); if (p6) p6.checked = mode === 6;
+  const p7 = byId('patch7'); if (p7) p7.checked = mode === 7;
+  const p8 = byId('patch8'); if (p8) p8.checked = mode === 8;
+  const p9 = byId('patch9'); if (p9) p9.checked = mode === 9;
 
   // Other settings
   byId('enableNotifications').checked = s.enableNotifications;
@@ -33,6 +37,10 @@ function readSelectedPatch() {
   if (byId('patch3').checked) return 3;
   if (byId('patch4').checked) return 4;
   if (byId('patch5').checked) return 5;
+  if (byId('patch6')?.checked) return 6;
+  if (byId('patch7')?.checked) return 7;
+  if (byId('patch8')?.checked) return 8;
+  if (byId('patch9')?.checked) return 9;
   return 1;
 }
 
@@ -82,7 +90,6 @@ function debounce(fn, delay = 400) {
 }
 
 const saveSettings = debounce(() => {
-  // Silent autosave (no status message)
   chrome.storage.sync.set({ settings: readSettings() });
 }, 400);
 
@@ -101,7 +108,6 @@ byId('reset').addEventListener('click', () => {
 });
 
 function registerAutosaveListeners() {
-  // Autosave for radios/checkboxes on change, numbers on input
   const inputs = Array.from(document.querySelectorAll('input'));
   inputs.forEach(el => {
     const evt = (el.type === 'number' || el.type === 'text') ? 'input' : 'change';
@@ -109,7 +115,6 @@ function registerAutosaveListeners() {
       saveSettings();
     });
   });
-  // Ensure pending changes save before closing the page
   window.addEventListener('beforeunload', () => saveSettings.flush());
 }
 

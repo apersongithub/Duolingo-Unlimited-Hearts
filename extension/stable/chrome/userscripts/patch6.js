@@ -9,8 +9,8 @@
     const TARGET_URL_REGEX = /https:\/\/www\.duolingo\.com\/\d{4}-\d{2}-\d{2}\/users\/.+/;
 
     const CUSTOM_SHOP_ITEMS = {
-      gold_subscription: {
-        itemName: "gold_subscription",
+      immersive_subscription: {
+        itemName: "immersive_subscription",
         subscriptionInfo: {
           vendor: "STRIPE",
           renewing: true,
@@ -90,7 +90,7 @@
     // =============================
     // UI banner + sanitization logic
     // =============================
-      var JSON_URL = 'https://raw.githubusercontent.com/apersongithub/Duolingo-Unlimited-Hearts/refs/heads/main/extension-version.json';
+       var JSON_URL = 'https://raw.githubusercontent.com/apersongithub/Duolingo-Unlimited-Hearts/refs/heads/main/extension-version.json';
 
     (function () {
       'use strict';

@@ -1,59 +1,41 @@
-// background.js - Firefox MV2 background script
-// Uses shared/patches.js (loaded first by manifest) via window/self.__PATCHES__
-// - Intercepts app-*.js and 7220/6150/4370 chunks via webRequest.filterResponseData
-//   and patches BEFORE execution (avoids race conditions).
-// - Keeps caching to chrome.storage.local (same keys as before).
-// - Still supports FETCH_AND_PATCH/GET_CACHED messages as a fallback.
+import { applyPatches, setPatchMode } from './shared/patches.js';
 
-const PATCHES = (typeof self !== 'undefined' ? self.__PATCHES__ : (typeof window !== 'undefined' ? window.__PATCHES__ : null));
-if (!PATCHES) {
-  console.warn('shared/patches.js not loaded; patching will be disabled.');
-}
-
-// Read selected patch mode from sync storage; default to 'patch1'
-let PATCH_MODE = 'patch1';
-(function initPatchMode() {
-  try {
-    chrome.storage.sync.get('settings', (data = {}) => {
-      const s = (data && data.settings) || {};
-      PATCH_MODE = (['patch1','patch2','patch3','patch4','patch5'].includes(s.patchMode)) ? s.patchMode : 'patch1';
-    });
-    chrome.storage.onChanged.addListener((changes, area) => {
-      if (area === 'sync' && changes.settings) {
-        const s = changes.settings.newValue || {};
-        PATCH_MODE = (['patch1','patch2','patch3','patch4','patch5'].includes(s.patchMode)) ? s.patchMode : 'patch1';
-      }
-    });
-  } catch {}
-})();
-
-const applyPatches = (url, code) => {
-  try {
-    return PATCHES ? PATCHES.applyPatches(url, code, PATCH_MODE) : code;
-  } catch {
-    return code;
-  }
-};
-
+// Fetch helper
 async function fetchText(url) {
   const resp = await fetch(url, { cache: 'no-store', credentials: 'include' });
   if (!resp.ok) throw new Error('fetch failed ' + resp.status);
-  return await resp.text();
+  return resp.text();
 }
 
-// ----- Message-based fallback (kept) -----
-chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+async function getSelectedPatchMode() {
+  try {
+    const data = await chrome.storage.sync.get('settings');
+    const mode = Number(data?.settings?.selectedPatch) || 1;
+    return Math.min(Math.max(mode, 1), 9);
+  } catch {
+    return 1;
+  }
+}
+
+chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
   if (msg?.type === 'FETCH_AND_PATCH') {
-    const url = msg.url;
+    const { url, patchMode } = msg;
     (async () => {
-      const key = 'patched:' + url;
+      // Prefer the mode supplied by the content script to avoid races with storage
+      const mode = Math.min(Math.max(Number(patchMode) || (await getSelectedPatchMode()), 1), 9);
+      setPatchMode(mode);
+      const cacheKey = `patched:${mode}:${url}`;
+      const cachedAtKey = `cachedAt:${mode}:${url}`;
       try {
         const original = await fetchText(url);
         const patched = applyPatches(url, original);
-        await chrome.storage.local.set({ [key]: patched, ['cachedAt:' + url]: Date.now() });
+        await chrome.storage.local.set({
+          [cacheKey]: patched,
+          [cachedAtKey]: Date.now()
+        });
         sendResponse({ ok: true, patched, fromCache: false });
       } catch (err) {
-        const cached = (await chrome.storage.local.get(key))[key];
+        const cached = (await chrome.storage.local.get(cacheKey))[cacheKey];
         if (cached) {
           sendResponse({ ok: true, patched: cached, fromCache: true });
         } else {
@@ -62,84 +44,16 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
       }
     })();
     return true;
-  } else if (msg?.type === 'GET_CACHED') {
-    const url = msg.url;
-    const key = 'patched:' + url;
+  }
+
+  if (msg?.type === 'GET_CACHED') {
+    const { url, patchMode } = msg;
     (async () => {
-      const cached = (await chrome.storage.local.get(key))[key];
-      if (cached) sendResponse({ ok: true, patched: cached });
-      else sendResponse({ ok: false });
+      const mode = Math.min(Math.max(Number(patchMode) || (await getSelectedPatchMode()), 1), 9);
+      const cacheKey = `patched:${mode}:${url}`;
+      const cached = (await chrome.storage.local.get(cacheKey))[cacheKey];
+      sendResponse(cached ? { ok: true, patched: cached } : { ok: false });
     })();
     return true;
   }
 });
-
-// ----- Firefox network-level patch for ALL target chunks -----
-(function setupResponseFilter() {
-  if (typeof browser === 'undefined' || !browser.webRequest || !browser.webRequest.filterResponseData) return;
-
-  const CHUNK_RE = /(^|\/)(app|7220|6150|4370)[^/]*\.js(\?.*)?$/i;
-
-  browser.webRequest.onBeforeRequest.addListener(
-    (details) => {
-      if (!CHUNK_RE.test(details.url)) return {};
-
-      const filter = browser.webRequest.filterResponseData(details.requestId);
-      const decoder = new TextDecoder('utf-8');
-      const encoder = new TextEncoder();
-      const chunks = [];
-
-      filter.ondata = (event) => {
-        if (event && event.data) chunks.push(event.data);
-      };
-
-      filter.onstop = async () => {
-        let originalText = '';
-        try {
-          if (chunks.length) {
-            let totalLen = 0;
-            for (const c of chunks) totalLen += (c.byteLength || c.length || 0);
-            const merged = new Uint8Array(totalLen);
-            let offset = 0;
-            for (const c of chunks) {
-              const u8 = c instanceof Uint8Array ? c : new Uint8Array(c);
-              merged.set(u8, offset);
-              offset += u8.byteLength;
-            }
-            originalText = decoder.decode(merged);
-          }
-
-          const patched = applyPatches(details.url, originalText);
-          await chrome.storage.local.set({
-            ['patched:' + details.url]: patched,
-            ['cachedAt:' + details.url]: Date.now()
-          });
-
-          filter.write(encoder.encode(patched));
-        } catch (e) {
-          try {
-            const key = 'patched:' + details.url;
-            const cached = (await chrome.storage.local.get(key))[key];
-            if (cached) {
-              filter.write(encoder.encode(cached));
-            } else {
-              for (const c of chunks) filter.write(c);
-            }
-          } catch {
-            for (const c of chunks) filter.write(c);
-          }
-        } finally {
-          try { filter.close(); } catch {}
-        }
-      };
-
-      filter.onerror = () => {
-        try { filter.close(); } catch {}
-      };
-
-      return {};
-    },
-    { urls: ["<all_urls>"], types: ["script"] },
-    ["blocking"]
-  );
-})();
