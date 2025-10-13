@@ -34,7 +34,7 @@
 >   - Supports Firefox for Android
 >   - *Keep in mind that these extension stores may take upto a week to provide an extension update on your browser due to the reviewal process and your browsers' extension update cycle (By default it is within a week)*
 > - ❗**NEW (Userscript Ports)**
->   - Supports iPhone/iPad on Safari if you install the [Userscripts](https://apps.apple.com/us/app/userscripts/id1463298887) *(More info in the FAQ)*
+>   - Supports iPhone/iPad on Safari if you install the [Userscripts](https://apps.apple.com/us/app/userscripts/id1463298887) app *(More info in the FAQ)*
 >     - [Duolingo Max Userscript](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/raw/refs/heads/main/userscript/Duolingo%20Max.user.js)
 >     - [Duolingo Super Userscript](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/raw/refs/heads/main/userscript/Duolingo%20Super.user.js)
 >     - [Duolingo Unlimited Hearts Userscript](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/raw/refs/heads/main/userscript/Duolingo%20Unlimited%20Hearts.user.js)
@@ -69,6 +69,7 @@
 > - This extension for the Safari Browser or any webkit browser AKA **(EVERY BROWSER ON iPhone/iPad)** will never be supported unless Apple fully implements `webRequest` or `declarativeNetRequest` APIs, which are necessary for this extension to function.  
 >   - Even if the above happened, not only would I need to buy a **Mac** to develop it on Apple’s proprietary Xcode platform, I would also need to pay **$99/year** for a developer license to publish the extension on the App Store.  
 >   - I *could* use a virtual machine, but I’d still have to pay for the license...
+>   - TLDR: Use the userscript(s) if you are on iOS.
 
 
 ### Developer FAQ
