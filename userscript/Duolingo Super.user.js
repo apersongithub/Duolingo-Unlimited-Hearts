@@ -120,7 +120,7 @@
     src='https://raw.githubusercontent.com/apersongithub/Duolingo-Unlimited-Hearts/refs/heads/main/extras/icon.svg'
     style='border-radius:100px'></div>
 <div class='_3jiBp'>
-  <h4 class='qyEhl'>Duolingo Max Userscript</h4><span class='_3S2Xa'>Created by <a
+  <h4 class='qyEhl'>Duolingo Super Userscript</h4><span class='_3S2Xa'>Created by <a
       href='https://github.com/apersongithub' target='_blank' style='color:#07b3ec'>apersongithub</a></span>
 </div>
 <div class='_36kJA'>
