@@ -2,7 +2,7 @@
 // @name         Duolingo Super
 // @icon         https://d35aaqx5ub95lt.cloudfront.net/images/hearts/b3a04a561c7d0b2b5247a40e18d64946.svg
 // @namespace    https://tampermonkey.net/
-// @version      1.0
+// @version      1.2
 // @description  Intercepts Duolingo's API Responses
 // @author       apersongithub
 // @match        *://www.duolingo.com/*
@@ -10,8 +10,8 @@
 // @grant        none
 // @run-at       document-start
 // @license      MPL-2.0
-// @downloadURL https://github.com/apersongithub/Duolingo-Unlimited-Hearts/raw/refs/heads/main/userscript/Duolingo%20Max.user.js
-// @updateURL https://github.com/apersongithub/Duolingo-Unlimited-Hearts/raw/refs/heads/main/userscript/Duolingo%20Max.user.js
+// @downloadURL https://github.com/apersongithub/Duolingo-Unlimited-Hearts/raw/refs/heads/main/userscript/Duolingo%20Super.user.js
+// @updateURL https://github.com/apersongithub/Duolingo-Unlimited-Hearts/raw/refs/heads/main/userscript/Duolingo%20Super.user.js
 // ==/UserScript==
 
 // WORKS AS OF 2025-10-13
@@ -133,7 +133,7 @@
 
       function addCustomElement(config, root = document) {
         if (document.getElementById(newElementId)) return;
-        const refElement = root.querySelector('.ky51z._26JAQ.MGk8p');
+        const refElement = root.querySelector('.MGk8p');
         if (!refElement) return;
 
         const ul = document.createElement('ul');

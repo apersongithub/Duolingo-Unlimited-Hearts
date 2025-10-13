@@ -2,7 +2,7 @@
 // @name         Duolingo Max
 // @icon         https://d35aaqx5ub95lt.cloudfront.net/images/max/9f30dad6d7cc6723deeb2bd9e2f85dd8.svg
 // @namespace    https://tampermonkey.net/
-// @version      1.1
+// @version      1.2
 // @description  Intercepts Duolingo's API Responses
 // @author       apersongithub
 // @match        *://www.duolingo.com/*
@@ -133,7 +133,7 @@
 
       function addCustomElement(config, root = document) {
         if (document.getElementById(newElementId)) return;
-        const refElement = root.querySelector('.ky51z._26JAQ.MGk8p');
+        const refElement = root.querySelector('.MGk8p');
         if (!refElement) return;
 
         const ul = document.createElement('ul');
