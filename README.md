@@ -11,13 +11,13 @@
 > [!IMPORTANT]  
 > 1. The following domains are accessed for patching Duolingo. Each domain serves a specific purpose:
 >
-> | **Data Access**                          | **Why?**                                                               | **Duolingo Server?** |
+> | **Data Access**                          | **Reason**                                                               | **Duolingo's Server** |
 > |-----------------------------------------|-------------------------------------------------------------------------|----------------------|
 > | `duolingo.com` `duolingo.cn`                          | Needed to modify the website and apply the patch.                         | ✅ Yes               |
-> | `d35aaqx5ub95lt.cloudfront.net`         | Hosts the original unpatched webpack chunk files. Ex: `app-*.js`; must modify requests for these.    | ✅ Yes               |
+> | `d35aaqx5ub95lt.cloudfront.net`         | Hosts the original unpatched webpack chunk files. Ex: `app-*.js`; must modify requests for these (Cloudfront is Amazon's CDN).   | ✅ Yes               |
 > | `raw.githubusercontent.com`             | Get's the [extension-version.json](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/blob/main/extension-version.json) which includes the version number, update log, and external html for my buymeacoffee banner.         | ❌ No                |
 >
-> 2. There are several different options to patch Duolingo. Choose what works best for your machine in the extensions' settings:
+> 2. There are several different options to patch Duolingo. Choose what works best for your machine in the extension's settings (:
 > <table>
 >   <tr>
 >     <td><img width="400" src="https://github.com/user-attachments/assets/38f62465-7402-4183-adb6-d157a7e5f443" alt="Map of Tectonic Plate Boundaries" /></td>
@@ -38,7 +38,7 @@
 >     - [Duolingo Max Userscript](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/raw/refs/heads/main/userscript/Duolingo%20Max.user.js)
 >     - [Duolingo Super Userscript](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/raw/refs/heads/main/userscript/Duolingo%20Super.user.js)
 >     - [Duolingo Unlimited Hearts Userscript](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/raw/refs/heads/main/userscript/Duolingo%20Unlimited%20Hearts.user.js)
->     
+>    - Also hosted on [Greasyfork](https://greasyfork.org/en/users/1355249-apersongithub)
 
 | **Browser** | **Installation Steps** |
 |-------------|------------------------|
@@ -78,7 +78,7 @@
 |--------------|------------|
 | Why is the modified patched files minified/bundled? | The unpatched files are also minified because they are [webpack chunks](https://webpack.js.org/) — there's nothing I can do. |
 | Are there any third-party server components in the userscript or extension. | No and there **never** will be as my goal is to make everything local. I don't want your data lol.
-| How can I reproduce this? | Find your required webpack chunks/files then open '[duolingo patcher.html](https://html-preview.github.io/?url=https://raw.githubusercontent.com/apersongithub/Duolingo-Unlimited-Hearts/refs/heads/main/extras/duolingo%20patcher.html)' and put it through. Then download the newly patched files and use firefox or chrome local overrides to point it towards the patched files you just downloaded (Currently only for the Default Patch).  |
+| How can I reproduce this? | Find your required webpack chunks/files then open '[duolingo patcher.html](https://html-preview.github.io/?url=https://raw.githubusercontent.com/apersongithub/Duolingo-Unlimited-Hearts/refs/heads/main/extras/duolingo%20patcher.html)' and put it through. Then download the newly patched files and use firefox or chrome local overrides to point it towards the patched files you just downloaded.  |
 | Why aren't the modified patched files in this repository? | It is all done locally. It only fetches the github for the [extension-version.json](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/blob/main/extension-version.json). |
 | Why is the code slightly differen't for each browser? | Firefox and Chrome do not have equal extension support. I try my best to keep code parity between both browsers. |
 | What happened to the chrome mv2 version of this extension? | I decided to remove it as major browsers don't support it anymore. |
