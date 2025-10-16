@@ -106,7 +106,7 @@ function patch6150(code) {
     let q = p + 1;
     let arg = null;
     while (q < out.length) {
-      if (out[q] === '\\') { q += 2; continue; }
+      if (out[q] === '\') { q += 2; continue; }
       if (out[q] === qch) { arg = out.slice(p + 1, q); break; }
       q++;
     }
@@ -124,22 +124,44 @@ function patch6150(code) {
     if (braceEnd === -1 || braceEnd < pushDot) { cursor = pushDot + 1; continue; }
     let replaceFrom = onKeyPos;
     let replaceTo = braceEnd;
+
+    // Try to remove disabled flag within the parent object, similar to 4370
+    let objStart = -1, objEnd = -1;
+    const scanLimit = 2000;
+    const leftBound = Math.max(0, replaceFrom - scanLimit);
+    for (let j = replaceFrom - 1; j >= leftBound; j--) {
+      if (out[j] === '{') {
+        const match = findMatchingBrace(out, j);
+        if (match !== -1 && match >= replaceTo) { objStart = j; objEnd = match; break; }
+      } else if (out[j] === ';' || out[j] === '(') {
+        if (replaceFrom - j > 200) break;
+      }
+    }
+    if (objStart !== -1) {
+      const res = removeDisabledInObject(out, objStart, objEnd, replaceFrom, replaceTo);
+      if (res.removed) {
+        out = res.out;
+        replaceFrom = res.replaceFrom;
+        replaceTo = res.replaceTo;
+      }
+    }
+
     let commaAfter = '';
     if (out[replaceTo + 1] === ',') {
       commaAfter = ',';
       replaceTo = replaceTo + 1;
     }
-    const replacement = `onButtonClick:()=>{${routerVar}.push("${TARGET_ROUTE}");}${commaAfter}`;
+    const replacement = `onButtonClick:()=>{${routerVar}.push("${TARGET_ROUTE}");}` + commaAfter;
     const originalSnippet = out.slice(replaceFrom, replaceTo + 1);
-    const minimalForm = `onButtonClick:()=>{${routerVar}.push("${TARGET_ROUTE}");}${commaAfter}`;
-    if (originalSnippet === minimalForm || originalSnippet === `onButtonClick:()=>{${routerVar}.push('${TARGET_ROUTE}');}${commaAfter}`) {
+    const minimalForm = `onButtonClick:()=>{${routerVar}.push("${TARGET_ROUTE}");}` + commaAfter;
+    if (originalSnippet === minimalForm || originalSnippet === `onButtonClick:()=>{${routerVar}.push('${TARGET_ROUTE}');}` + commaAfter) {
       cursor = replaceTo + 1;
       continue;
     }
     out = out.slice(0, replaceFrom) + replacement + out.slice(replaceTo + 1);
     cursor = replaceFrom + replacement.length;
   }
-  return out;
+  return out.replace(/,\s*,/g, ',').replace(/\{\s*,/g, '{');
 }
 
 function patch4370(code) {
@@ -157,7 +179,7 @@ function patch4370(code) {
     let q = p + 1;
     let arg = null;
     while (q < out.length) {
-      if (out[q] === '\\') { q += 2; continue; }
+      if (out[q] === '\') { q += 2; continue; }
       if (out[q] === qch) { arg = out.slice(p + 1, q); break; }
       q++;
     }
@@ -200,12 +222,12 @@ function patch4370(code) {
       replaceTo = replaceTo + 1;
     }
     const originalSnippet = out.slice(replaceFrom, replaceTo + 1);
-    const minimalForm = `onButtonClick:()=>{${routerVar}.push("${TARGET_ROUTE}");}${commaAfter}`;
-    if (originalSnippet === minimalForm || originalSnippet === `onButtonClick:()=>{${routerVar}.push('${TARGET_ROUTE}');}${commaAfter}`) {
+    const minimalForm = `onButtonClick:()=>{${routerVar}.push("${TARGET_ROUTE}");}` + commaAfter;
+    if (originalSnippet === minimalForm || originalSnippet === `onButtonClick:()=>{${routerVar}.push('${TARGET_ROUTE}');}` + commaAfter) {
       cursor = replaceTo + 1;
       continue;
     }
-    const replacement = `onButtonClick:()=>{${routerVar}.push("${TARGET_ROUTE}");}${commaAfter}`;
+    const replacement = `onButtonClick:()=>{${routerVar}.push("${TARGET_ROUTE}");}` + commaAfter;
     out = out.slice(0, replaceFrom) + replacement + out.slice(replaceTo + 1);
     cursor = replaceFrom + replacement.length;
   }
@@ -236,7 +258,7 @@ function findMatchingBrace(str, braceStart) {
       const qc = ch;
       k++;
       while (k < str.length) {
-        if (str[k] === '\\') { k += 2; continue; }
+        if (str[k] === '\') { k += 2; continue; }
         if (str[k] === qc) break;
         k++;
       }
