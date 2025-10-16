@@ -15,7 +15,33 @@
     --code-bg: #282c34;
     --code-text: #abb2bf;
     --info-bg: #e8f4ff;
+    --info-border: #bde0ff;
     --info-text: #0c549c;
+    --secondary-text: #777;
+  }
+
+  /* --- Dark Mode Theme --- */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg-color: #121212;
+      --card-bg: #1e1e1e;
+      --text-color: #e0e0e0;
+      --border-color: #444;
+      --info-bg: #1a2c42;
+      --info-border: #2a5a8a;
+      --info-text: #a9d1ff;
+      --secondary-text: #aaa;
+    }
+    
+    button, .file-btn, select {
+        background-color: #333 !important;
+        border-color: #555 !important;
+    }
+    
+    button:hover, .file-btn:hover, select:hover {
+        background-color: #444 !important;
+        border-color: #777 !important;
+    }
   }
 
   body {
@@ -24,6 +50,7 @@
     padding: 40px 20px;
     background-color: var(--bg-color);
     color: var(--text-color);
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
 
   .container {
@@ -34,6 +61,7 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     padding: 30px;
     border: 1px solid var(--border-color);
+    transition: background-color 0.2s ease, border-color 0.2s ease;
   }
 
   header {
@@ -41,6 +69,7 @@
     margin-bottom: 30px;
     border-bottom: 1px solid var(--border-color);
     padding-bottom: 20px;
+    transition: border-color 0.2s ease;
   }
   
   h1 {
@@ -52,7 +81,7 @@
   h2 {
     font-weight: 400;
     font-size: 1.1em;
-    color: #777;
+    color: var(--secondary-text);
     margin: 5px 0 0;
   }
 
@@ -64,7 +93,6 @@
     margin-bottom: 25px;
   }
   
-  /* Styled file input */
   .file-input-wrapper {
     position: relative;
     overflow: hidden;
@@ -83,7 +111,7 @@
     display: inline-block;
   }
   #fileName {
-    color: #555;
+    color: var(--secondary-text);
     font-size: 0.9em;
     margin-left: 10px;
   }
@@ -95,6 +123,7 @@
     border: 1px solid var(--border-color);
     border-radius: 8px;
     background-color: #fff;
+    color: var(--text-color);
     transition: all 0.2s ease;
   }
 
@@ -104,42 +133,44 @@
   }
 
   #transformBtn {
-    background-color: var(--primary-color);
-    color: white;
+    background-color: var(--primary-color) !important;
+    color: white !important;
     font-weight: bold;
-    border: none;
+    border: none !important;
   }
 
   #transformBtn:hover {
-    background-color: var(--primary-hover);
+    background-color: var(--primary-hover) !important;
   }
   
   #transformBtn:disabled {
-    background-color: #a5d6a7;
+    background-color: #a5d6a7 !important;
     cursor: wait;
   }
 
   .panels-container {
     display: flex;
     gap: 20px;
-    min-height: 400px;
+    /* --- MODIFICATION: Set a fixed height for the container --- */
+    height: 450px; 
   }
 
   .code-panel {
     flex: 1;
     display: flex;
     flex-direction: column;
+    min-width: 0; /* Prevents flexbox overflow */
   }
 
   .code-panel h3 {
     margin-top: 0;
     font-weight: 600;
-    color: #444;
+    color: var(--text-color);
   }
 
   textarea, pre {
     width: 100%;
-    flex-grow: 1;
+    height: 100%; /* --- MODIFICATION: Fill the fixed-height parent --- */
     font-family: 'Fira Code', 'Courier New', monospace;
     font-size: 0.9em;
     border-radius: 8px;
@@ -149,11 +180,14 @@
     box-sizing: border-box;
     background-color: var(--code-bg);
     color: var(--code-text);
+    resize: none; /* Disable manual resizing */
+    transition: border-color 0.2s ease;
   }
   
   pre {
     white-space: pre-wrap;
     overflow-y: auto;
+    word-break: break-all;
   }
   
   textarea:focus, select:focus {
@@ -163,7 +197,7 @@
 
   .results-area {
     margin-top: 20px;
-    display: none; /* Hidden by default */
+    display: none; 
     align-items: center;
     gap: 15px;
   }
@@ -189,7 +223,8 @@
     border-radius: 8px;
     background-color: var(--info-bg);
     color: var(--info-text);
-    border: 1px solid #bde0ff;
+    border: 1px solid var(--info-border);
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
   }
   
 </style>
@@ -433,7 +468,7 @@ function removeDisabledInObject(currentOut, replaceFrom, replaceTo) {
   return { out: before + mid + after, replaceFrom, replaceTo };
 }
 
-// --- NEW UI-FOCUSED JAVASCRIPT ---
+// --- UI-FOCUSED JAVASCRIPT ---
 document.addEventListener('DOMContentLoaded', () => {
   const fileInput = document.getElementById('fileInput');
   const fileNameSpan = document.getElementById('fileName');
@@ -468,11 +503,9 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // Set loading state
     transformBtn.disabled = true;
     transformBtn.textContent = 'Applying...';
     
-    // Use a short timeout to allow the UI to update before the potentially blocking patch operation
     setTimeout(() => {
         try {
             const patchType = patchSelector.value;
@@ -492,11 +525,10 @@ document.addEventListener('DOMContentLoaded', () => {
             outputArea.textContent = `An error occurred during patching:\n\n${error.message}`;
             alert("An error occurred. Check the console for details.");
         } finally {
-            // Reset button state
             transformBtn.disabled = false;
             transformBtn.textContent = 'Apply Patch';
         }
-    }, 50); // 50ms timeout
+    }, 50);
   });
 
   // Copy to clipboard handler
