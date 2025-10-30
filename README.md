@@ -1,4 +1,4 @@
-# <img src="https://d35aaqx5ub95lt.cloudfront.net/images/max/9f30dad6d7cc6723deeb2bd9e2f85dd8.svg" width="25px"> Duolingo Max
+# <img src="https://d35aaqx5ub95lt.cloudfront.net/images/max/9f30dad6d7cc6723deeb2bd9e2f85dd8.svg" width="30px"> Duolingo Max
 > For **educational purposes** only, obviously.
 > 
 > ***Previously known as Duolingo Unlimited Hearts***
@@ -6,7 +6,7 @@
 > *Not affilliated with Duolingo*
 
 
-## <img src="https://d35aaqx5ub95lt.cloudfront.net/images/leagues/7082c58e0bdbfbf9aec94191b704f549.svg" width="25px"> Gist
+## <img src="https://d35aaqx5ub95lt.cloudfront.net/images/leagues/7082c58e0bdbfbf9aec94191b704f549.svg" width="30px"> Gist
 > [!IMPORTANT]
 > 
 > The following domains are accessed for patching Duolingo. Each domain serves a specific purpose:
