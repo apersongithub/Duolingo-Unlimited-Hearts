@@ -1,7 +1,7 @@
 {
   "version": "3.2",
   "PATCH": "8",
-  "chromestupid:" "true",
+  "chromestupid": "true",
   "releaseDate": "2025-10-13",
   "releaseNotes": "This release adds patching options for future-proofing. More info on GitHub. If you are using an extension store, feel free to ignore this.",
   "EXTENSION_NAME": "Duolingo Max Extension",
