@@ -18,6 +18,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const r = await fetch('https://raw.githubusercontent.com/apersongithub/Duolingo-Unlimited-Hearts/refs/heads/main/extension-version.json');
       const data = await r.json();
       const latest = data.version;
+
+      // Gate beta label by chromestupid flag (accept boolean true/false or string "true"/"false")
+      const chromestupidRaw = data.chromestupid;
+      const chromestupid = (typeof chromestupidRaw === 'boolean')
+        ? chromestupidRaw
+        : String(chromestupidRaw).toLowerCase() === 'true';
+
       const cmp = compareVersions(current, latest);
       if (cmp === 0) {
         statusEl.textContent = `Version: ✅ Up to date (v${current})`;
@@ -26,11 +33,18 @@ document.addEventListener('DOMContentLoaded', () => {
         statusEl.textContent = `Version: ⚠️ Update available! (v${current}), Latest: v${latest}`;
         statusEl.style.color = '#df2828ff';
       } else {
-        statusEl.textContent = `Version: 🧪 Beta (v${current}) Stable: v${latest}`;
-        statusEl.style.color = '#2878df';
+        // Current ahead of stable
+        if (!chromestupid) {
+          statusEl.textContent = `Version: 🧪 Beta (v${current}) Stable: v${latest}`;
+          statusEl.style.color = '#2878df';
+        } else {
+          statusEl.textContent = `Version: ✅ Up to date (v${current})`;
+          statusEl.style.color = '#28df28';
+        }
       }
     } catch {
       statusEl.textContent = 'Version: Error checking';
+      statusEl.style.color = '';
     }
   }
 

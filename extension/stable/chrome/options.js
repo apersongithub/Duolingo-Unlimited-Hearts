@@ -1,15 +1,22 @@
+import { fetchDefaultPatch } from './shared/defaults.js';
+
 const DEFAULT_SETTINGS = {
   enableNotifications: true,
   major: { weeks: 0, days: 3, hours: 0, minutes: 0 },
   minor: { weeks: 1, days: 0, hours: 0, minutes: 0 },
-  selectedPatch: 1
+  selectedPatch: 1,
+  syncDefaultPatch: true,
+  userOverridePatch: false
 };
+
+// Token key to signal all content scripts to clear page localStorage
+const CLEAR_LS_TOKEN_KEY = '__ext_clear_localstorage_token__';
+
+let REMOTE_DEFAULT = 1;
 
 function byId(id) { return document.getElementById(id); }
 
-function applySettings(s) {
-  // Patch selection
-  const mode = Number(s.selectedPatch) || 1;
+function setRadioMode(mode) {
   byId('patch1').checked = mode === 1;
   byId('patch2').checked = mode === 2;
   byId('patch3').checked = mode === 3;
@@ -19,9 +26,27 @@ function applySettings(s) {
   const p7 = byId('patch7'); if (p7) p7.checked = mode === 7;
   const p8 = byId('patch8'); if (p8) p8.checked = mode === 8;
   const p9 = byId('patch9'); if (p9) p9.checked = mode === 9;
+}
 
-  // Other settings
-  byId('enableNotifications').checked = s.enableNotifications;
+function markDefaultPatchStar(defaultPatch) {
+  document.querySelectorAll('label .default-star').forEach(n => n.remove());
+  const input = byId('patch' + defaultPatch);
+  if (!input) return;
+  const label = input.closest('label');
+  if (!label) return;
+  const star = document.createElement('span');
+  star.className = 'default-star';
+  star.textContent = '⭐ DEFAULT';
+  label.appendChild(star);
+}
+
+function applySettings(s) {
+  const mode = Number(s.selectedPatch) || 1;
+  setRadioMode(mode);
+
+  byId('syncDefaultPatch').checked = s.syncDefaultPatch !== false;
+
+  byId('enableNotifications').checked = !!s.enableNotifications;
   byId('majorWeeks').value = s.major.weeks;
   byId('majorDays').value = s.major.days;
   byId('majorHours').value = s.major.hours;
@@ -47,6 +72,7 @@ function readSelectedPatch() {
 function readSettings() {
   return {
     selectedPatch: readSelectedPatch(),
+    syncDefaultPatch: byId('syncDefaultPatch').checked,
     enableNotifications: byId('enableNotifications').checked,
     major: {
       weeks: +byId('majorWeeks').value || 0,
@@ -69,7 +95,6 @@ function showStatus(msg) {
   if (msg) setTimeout(() => (el.textContent = ''), 2000);
 }
 
-// Debounce helper to avoid hitting storage.sync write quotas
 function debounce(fn, delay = 400) {
   let t;
   const debounced = (...args) => {
@@ -89,32 +114,154 @@ function debounce(fn, delay = 400) {
   return debounced;
 }
 
-const saveSettings = debounce(() => {
-  chrome.storage.sync.set({ settings: readSettings() });
-}, 400);
+async function getStoredSettings() {
+  return await new Promise(resolve => chrome.storage.sync.get('settings', s => resolve(s?.settings || {})));
+}
 
-function restore() {
-  chrome.storage.sync.get('settings', data => {
-    applySettings((data && data.settings) || DEFAULT_SETTINGS);
+async function saveSettingsImmediate(next) {
+  await chrome.storage.sync.set({ settings: next });
+}
+
+const saveSettings = debounce(async () => {
+  const data = await getStoredSettings();
+  const next = { ...DEFAULT_SETTINGS, ...data, ...readSettings() };
+  await chrome.storage.sync.set({ settings: next });
+}, 300);
+
+async function restore() {
+  chrome.storage.sync.get('settings', async data => {
+    const existing = (data && data.settings) || null;
+    const remoteDefault = await fetchDefaultPatch();
+    REMOTE_DEFAULT = remoteDefault;
+    markDefaultPatchStar(remoteDefault);
+
+    if (!existing || typeof existing.selectedPatch !== 'number') {
+      const merged = { ...DEFAULT_SETTINGS, selectedPatch: remoteDefault, syncDefaultPatch: true, userOverridePatch: false };
+      applySettings(merged);
+      await chrome.storage.sync.set({ settings: merged });
+      return;
+    }
+
+    // If syncing and not overridden, update selection to remote default now
+    if ((existing.syncDefaultPatch !== false) && (existing.userOverridePatch !== true)) {
+      const updated = { ...DEFAULT_SETTINGS, ...existing, selectedPatch: remoteDefault, syncDefaultPatch: true, userOverridePatch: false };
+      applySettings(updated);
+      await chrome.storage.sync.set({ settings: updated });
+      return;
+    }
+
+    // Otherwise, keep user's selection
+    applySettings({ ...DEFAULT_SETTINGS, ...existing });
   });
 }
 
-byId('reset').addEventListener('click', () => {
+byId('reset').addEventListener('click', async () => {
   if (!confirm('Reset all settings to defaults?')) return;
-  chrome.storage.sync.set({ settings: DEFAULT_SETTINGS }, () => {
-    applySettings(DEFAULT_SETTINGS);
-    showStatus('↩️ Reset to defaults');
-  });
+  try {
+    const remoteDefault = await fetchDefaultPatch();
+    REMOTE_DEFAULT = remoteDefault;
+    const merged = {
+      ...DEFAULT_SETTINGS,
+      selectedPatch: remoteDefault,
+      syncDefaultPatch: true,
+      userOverridePatch: false
+    };
+    await chrome.storage.sync.set({ settings: merged });
+
+    // Signal all content scripts (on duolingo.com) to clear page localStorage immediately
+    await chrome.storage.sync.set({ [CLEAR_LS_TOKEN_KEY]: Date.now() });
+
+    applySettings(merged);
+    markDefaultPatchStar(remoteDefault);
+    showStatus('✅ Settings reset, localStorage cleared.');
+  } catch {
+    const merged = { ...DEFAULT_SETTINGS, selectedPatch: 1, syncDefaultPatch: true, userOverridePatch: false };
+    await chrome.storage.sync.set({ settings: merged });
+
+    // Still trigger localStorage clear
+    await chrome.storage.sync.set({ [CLEAR_LS_TOKEN_KEY]: Date.now() });
+
+    applySettings(merged);
+    markDefaultPatchStar(1);
+    showStatus('✅ Settings reset, localStorage cleared.');
+  }
 });
 
 function registerAutosaveListeners() {
-  const inputs = Array.from(document.querySelectorAll('input'));
-  inputs.forEach(el => {
-    const evt = (el.type === 'number' || el.type === 'text') ? 'input' : 'change';
-    el.addEventListener(evt, () => {
-      saveSettings();
+  // 1) Radio changes: if sync is ON and selection != remote default -> turn sync OFF automatically
+  const radios = Array.from(document.querySelectorAll('input.patchChoice'));
+  radios.forEach(r => {
+    r.addEventListener('change', async () => {
+      const selected = readSelectedPatch();
+      const syncToggle = byId('syncDefaultPatch');
+      const currentSync = syncToggle.checked;
+
+      if (currentSync && selected !== REMOTE_DEFAULT) {
+        // Turn sync OFF and set manual override
+        syncToggle.checked = false;
+        const existing = await getStoredSettings();
+        const next = {
+          ...DEFAULT_SETTINGS,
+          ...existing,
+          ...readSettings(),
+          selectedPatch: selected,
+          syncDefaultPatch: false,
+          userOverridePatch: true
+        };
+        await saveSettingsImmediate(next);
+        return;
+      }
+
+      // Selecting the default patch while sync is OFF should NOT turn sync on.
+      const existing = await getStoredSettings();
+      const next = {
+        ...DEFAULT_SETTINGS,
+        ...existing,
+        ...readSettings(),
+        selectedPatch: selected
+      };
+      await saveSettingsImmediate(next);
     });
   });
+
+  // 2) Sync toggle changes: turning ON sets patch to remote default; turning OFF keeps current patch
+  const syncToggle = byId('syncDefaultPatch');
+  syncToggle.addEventListener('change', async () => {
+    const turnOn = syncToggle.checked;
+    const existing = await getStoredSettings();
+
+    if (turnOn) {
+      // Switch to remote default and clear override
+      setRadioMode(REMOTE_DEFAULT);
+      const next = {
+        ...DEFAULT_SETTINGS,
+        ...existing,
+        ...readSettings(),
+        selectedPatch: REMOTE_DEFAULT,
+        syncDefaultPatch: true,
+        userOverridePatch: false
+      };
+      await saveSettingsImmediate(next);
+    } else {
+      // Keep current patch, mark override
+      const next = {
+        ...DEFAULT_SETTINGS,
+        ...existing,
+        ...readSettings(),
+        syncDefaultPatch: false,
+        userOverridePatch: true
+      };
+      await saveSettingsImmediate(next);
+    }
+  });
+
+  // 3) Other inputs
+  const inputs = Array.from(document.querySelectorAll('input')).filter(el => !radios.includes(el) && el.id !== 'syncDefaultPatch');
+  inputs.forEach(el => {
+    const evt = (el.type === 'number' || el.type === 'text') ? 'input' : 'change';
+    el.addEventListener(evt, () => saveSettings());
+  });
+
   window.addEventListener('beforeunload', () => saveSettings.flush());
 }
 

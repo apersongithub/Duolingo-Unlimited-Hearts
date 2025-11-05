@@ -19,6 +19,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = await r.json();
       const latest = data.version;
       const cmp = compareVersions(current, latest);
+      const chromeStupid = (typeof data.chromestupid === 'string')
+        ? data.chromestupid.toLowerCase() === 'true'
+        : !!data.chromestupid;
+
       if (cmp === 0) {
         statusEl.textContent = `Version: ✅ Up to date (v${current})`;
         statusEl.style.color = '#28df28';
@@ -26,8 +30,15 @@ document.addEventListener('DOMContentLoaded', () => {
         statusEl.textContent = `Version: ⚠️ Update available! (v${current}), Latest: v${latest}`;
         statusEl.style.color = '#df2828ff';
       } else {
-        statusEl.textContent = `Version: 🧪 Beta (v${current}) Stable: v${latest}`;
-        statusEl.style.color = '#2878df';
+        // Current > latest: only show Beta if remote allows (chromestupid === false)
+        if (!chromeStupid) {
+          statusEl.textContent = `Version: 🧪 Beta (v${current}) Stable: v${latest}`;
+          statusEl.style.color = '#2878df';
+        } else {
+          // Suppress beta message; treat as up-to-date to avoid confusion
+          statusEl.textContent = `Version: ✅ Up to date (v${current})`;
+          statusEl.style.color = '#28df28';
+        }
       }
     } catch {
       statusEl.textContent = 'Version: Error checking';

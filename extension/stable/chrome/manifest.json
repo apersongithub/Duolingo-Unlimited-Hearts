@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Duolingo Max",
-  "version": "3.3.1",
-  "description": "Gives Duolingo Max features for free",
+  "version": "3.4",
+  "description": "Adds extra features and customizations to Duolingo.",
   "icons": {
     "16": "/images/icon16.png",
     "48": "/images/icon48.png",
@@ -38,7 +38,7 @@
       ],
       "js": [
         "content_script.js",
-        "exploit_banner.js"
+        "banner.js"
       ],
       "run_at": "document_start"
     }
@@ -55,13 +55,15 @@
         "page_hook.js",
         "popup.js",
         "popup.css",
-        "exploit_banner.js",
+        "options.css",
+        "banner.js",
         "options.js",
         "userscripts/patch4.js",
         "userscripts/patch5.js",
         "userscripts/patch6.js",
         "userscripts/patch7.js",
-        "userscripts/super_banner.js"
+        "userscripts/super_banner.js",
+        "shared/defaults.js"
       ],
       "matches": [
         "https://*.duolingo.com/*",

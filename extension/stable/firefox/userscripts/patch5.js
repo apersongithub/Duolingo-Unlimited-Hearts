@@ -14,19 +14,23 @@
 // ==/UserScript==
 
 // WORKS AS OF 2025-09-23
-(function() {
-    'use strict';
+    (function () {
+        'use strict';
 
-    // Inject code into the page context
-    const script = document.createElement('script');
-    script.textContent = `
-        (function() {
+        // Inject code into the page context
+        const script = document.createElement('script');
+        script.textContent = `
+(function() {
             const originalFetch = window.fetch;
             const CACHE_KEY = 'user_data_cache';
             const CACHE_EXPIRATION_TIME = 5 * 60 * 1000; // 5 minutes in milliseconds
 
+            // The Regular Expression to match the dynamic URL pattern: /YYYY-MM-DD/users/
+            const USER_DATA_REGEX = /\\/\\d{4}-\\d{2}-\\d{2}\\/users\\//;
+
             window.fetch = async function(url, config) {
-                if (typeof url === 'string' && url.includes('/2017-06-30/users/')) {
+                // Use .test() with the Regex to check the URL structure
+                if (typeof url === 'string' && USER_DATA_REGEX.test(url)) {
                     console.log('[Injected] Intercepting fetch request to:', url);
 
                     // Check for a valid, unexpired cached response
@@ -79,11 +83,11 @@
         })();
     `;
 
-/*
- * Above this code is the actual fetch interception and modification logic for Unlimited Hearts
- * Below this code adds buttons and attribution to the Duolingo Hearts UI
- */
+        /*
+         * Above this code is the actual fetch interception and modification logic for Unlimited Hearts
+         * Below this code adds buttons and attribution to the Duolingo Hearts UI
+         */
 
-    document.documentElement.appendChild(script);
-    script.remove();
+        document.documentElement.appendChild(script);
+        script.remove();
 })();

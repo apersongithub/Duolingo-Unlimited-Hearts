@@ -2,11 +2,11 @@
 // @name         Duolingo Max
 // @icon         https://d35aaqx5ub95lt.cloudfront.net/images/max/9f30dad6d7cc6723deeb2bd9e2f85dd8.svg
 // @namespace    https://tampermonkey.net/
-// @version      1.2
-// @description  Intercepts Duolingo's API Responses
+// @version      1.3
+// @description  Intercepts and modifies fetch Duolingo's API responses to give Duolingo Max.
 // @author       apersongithub
-// @match        *://www.duolingo.com/*
-// @match        *://www.duolingo.cn/*
+// @match       *://*.duolingo.com/*
+// @match       *://*.duolingo.cn/*
 // @grant        none
 // @run-at       document-start
 // @license      MPL-2.0
@@ -24,7 +24,7 @@
     'use strict';
 
     // --- Configuration ---
-    const TARGET_URL_REGEX = /https:\/\/www\.duolingo\.com\/\d{4}-\d{2}-\d{2}\/users\/.+/;
+    const TARGET_URL_REGEX = /https?:\/\/(?:[a-zA-Z0-9-]+\.)?duolingo\.[a-zA-Z]{2,6}(?:\.[a-zA-Z]{2})?\/\d{4}-\d{2}-\d{2}\/users\/.+/;
 
     const CUSTOM_SHOP_ITEMS = {
       gold_subscription: {

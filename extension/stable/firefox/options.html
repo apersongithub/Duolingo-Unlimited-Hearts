@@ -1,241 +1,9 @@
 <html lang="en"><head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="/images/icon128.png">
+  <link rel="stylesheet" type="text/css" href="options.css" media="screen" /> 
   <title>Extension Options</title>
-  <style>
-    :root {
-      /* Light Theme */
-      --bg-color: #f4f6f8;
-      --text-color: #212529;
-      --card-bg-color: #ffffff;
-      --card-border-color: #dee2e6;
-      --input-bg-color: #f8f9fa;
-      --input-border-color: #ced4da;
-      --primary-color: #007bff;
-      --primary-hover-color: #0056b3;
-      --danger-color: #dc3545;
-      --danger-hover-color: #c82333;
-      --success-color: #28a745;
-      --hint-color: #6c757d;
-    }
-
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg-color: #121212;
-        --text-color: #e0e0e0;
-        --card-bg-color: #1e1e1e;
-        --card-border-color: #333;
-        --input-bg-color: #2c2c2c;
-        --input-border-color: #444;
-        --primary-color: #378bf7;
-        --primary-hover-color: #5fa4ff;
-        --danger-color: #e57373;
-        --danger-hover-color: #ff8a80;
-        --success-color: #66bb6a;
-        --hint-color: #a0a0a0;
-      }
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      margin: 0;
-      padding: 24px;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      transition: background-color 0.2s, color 0.2s;
-    }
-
-    main {
-      max-width: 600px;
-      margin: 0 auto;
-    }
-
-    header {
-      border-bottom: 1px solid var(--card-border-color);
-      padding-bottom: 16px;
-      margin-bottom: 24px;
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    h1 {
-      font-size: 1.8em;
-      margin: 0;
-    }
-
-    .autosave-hint {
-      font-size: 0.9em;
-      color: var(--hint-color);
-    }
-
-    h2 {
-      font-size: 1.2em;
-      margin-top: 0;
-      margin-bottom: 12px;
-    }
-
-    .section {
-      background-color: var(--card-bg-color);
-      border: 1px solid var(--card-border-color);
-      border-radius: 8px;
-      padding: 20px;
-      margin-bottom: 24px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    }
-    
-    .hint {
-      font-size: 0.9em;
-      color: var(--hint-color);
-      margin-bottom: 16px;
-    }
-
-    .form-group {
-      margin-bottom: 12px;
-    }
-    
-    .form-group:last-child {
-      margin-bottom: 0;
-    }
-    
-    label {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      cursor: pointer;
-    }
-
-    input[type="radio"], input[type="checkbox"].std-checkbox {
-      accent-color: var(--primary-color);
-      width: 1.2em;
-      height: 1.2em;
-    }
-    
-    fieldset {
-      border: 1px solid var(--card-border-color);
-      border-radius: 6px;
-      padding: 16px;
-      margin: 0 0 16px 0;
-    }
-    
-    legend {
-      padding: 0 8px;
-      font-weight: 500;
-      color: var(--hint-color);
-      text-transform: capitalize;
-    }
-
-    /* Toggle Switch */
-    .toggle-switch {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .switch {
-      position: relative;
-      display: inline-block;
-      width: 40px;
-      height: 24px;
-    }
-    .switch input { 
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: var(--input-border-color);
-      transition: .4s;
-      border-radius: 24px;
-    }
-    .slider:before {
-      position: absolute;
-      content: "";
-      height: 16px;
-      width: 16px;
-      left: 4px;
-      bottom: 4px;
-      background-color: white;
-      transition: .4s;
-      border-radius: 50%;
-    }
-    input:checked + .slider {
-      background-color: var(--primary-color);
-    }
-    input:checked + .slider:before {
-      transform: translateX(16px);
-    }
-
-    .duration-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-      gap: 16px;
-    }
-
-    .duration-grid label {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 6px;
-      font-size: 0.9em;
-    }
-
-    input[type="number"] {
-      width: 100%;
-      padding: 8px 12px;
-      border: 1px solid var(--input-border-color);
-      background-color: var(--input-bg-color);
-      color: var(--text-color);
-      border-radius: 6px;
-      box-sizing: border-box;
-    }
-    
-    input:focus-visible {
-      outline: 2px solid var(--primary-color);
-      outline-offset: 2px;
-    }
-
-    .button-group {
-      display: flex;
-      gap: 12px;
-      margin-top: 10px;
-    }
-
-    button {
-      padding: 10px 20px;
-      border: none;
-      font-weight: bold;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background-color 0.2s, transform 0.1s;
-    }
-    
-    button:active {
-      transform: translateY(1px);
-    }
-
-    #reset {
-      background-color: var(--danger-color);
-      color: white;
-    }
-    #reset:hover {
-      background-color: var(--danger-hover-color);
-    }
-    
-    .status {
-      margin-top: 16px;
-      color: var(--success-color);
-      font-weight: 500;
-      min-height: 1.2em;
-    }
-
-  </style>
 </head>
 <body>
   <main>
@@ -245,96 +13,108 @@
     </header>
 
     <div class="section">
-      <h2>Patch Selection</h2>
-      <p class="hint">If one method doesn't work for you, there are others available. Sorted by reliability.</p>
-      <p class="hint">Happy Learning!</p>
-      <fieldset>
-        <legend style="display: flex; align-items: center; gap: 6px;">
-          <img src="./images/mx.svg" width="35" height="35" alt="Icon">
-          Max Features
-        </legend>
-        <div class="form-group">
-          <label><input type="radio" id="patch1" name="patchChoice" class="patchChoice" checked=""> ⭐ Patch 1 (Hardcoded)</label>
-        </div>
-        <div class="form-group">
-          <label><input type="radio" id="patch4" name="patchChoice" class="patchChoice"> Patch 2 (Network Interception)</label>
-        </div>
-      </fieldset>
-
+      <h2>Patch Configuration</h2>
+      <p class="hint">Select your preferred patch method. If one doesn't work, try another.</p>
       
-
       <fieldset>
         <legend style="display: flex; align-items: center; gap: 6px;">
-          <img src="./images/su.svg" width="35" height="35" alt="Icon">Super Features</legend>
-        <div class="form-group">
-          <label><input type="radio" id="patch6" name="patchChoice" class="patchChoice">Patch 1 (Hardcoded)</label>
-        </div>
-        <div class="form-group">
-          <label><input type="radio" id="patch7" name="patchChoice" class="patchChoice">Patch 2 (Hardcoded)</label>
-        </div>
-        <div class="form-group">
-          <label><input type="radio" id="patch8" name="patchChoice" class="patchChoice">Patch 3 (Network Interception)</label>
-        </div>
-        <div class="form-group">
-          <label><input type="radio" id="patch9" name="patchChoice" class="patchChoice">Patch 4 (Network Interception)</label>
-        </div>
-      </fieldset>
-
-      <fieldset>
-        <legend style="display: flex; align-items: center; gap: 6px;">
-          <img src="./images/uh.svg" width="35" height="35" alt="Icon">
-          Unlimited Hearts
+          <img src="./images/mx.svg" width="35" height="35" alt="Icon"> Max Features
         </legend>
         <div class="form-group">
-          <label><input type="radio" id="patch2" name="patchChoice" class="patchChoice"> Patch 1 (Hardcoded)</label>
+          <label><input type="radio" id="patch1" name="patchChoice" class="patchChoice" checked> <span class="label-text">Patch 1 (Hardcoded)</span></label>
         </div>
         <div class="form-group">
-          <label><input type="radio" id="patch3" name="patchChoice" class="patchChoice"> Patch 2 (Hardcoded)</label>
-        </div>
-        <div class="form-group">
-          <label><input type="radio" id="patch5" name="patchChoice" class="patchChoice"> Patch 3 (Network Interception)</label>
+          <label><input type="radio" id="patch4" name="patchChoice" class="patchChoice"> <span class="label-text">Patch 2 (Network Interception)</span></label>
         </div>
       </fieldset>
-      <p class="hint">Note: Close all duolingo tabs before patching.</p>
 
+      <fieldset>
+        <legend style="display: flex; align-items: center; gap: 6px;">
+          <img src="./images/su.svg" width="35" height="35" alt="Icon"> Super Features
+        </legend>
+        <div class="form-group">
+          <label><input type="radio" id="patch6" name="patchChoice" class="patchChoice"> <span class="label-text">Patch 1 (Hardcoded)</span></label>
+        </div>
+        <div class="form-group">
+          <label><input type="radio" id="patch7" name="patchChoice" class="patchChoice"> <span class="label-text">Patch 2 (Hardcoded)</span></label>
+        </div>
+        <div class="form-group">
+          <label><input type="radio" id="patch8" name="patchChoice" class="patchChoice"> <span class="label-text">Patch 3 (Network Interception)</span></label>
+        </div>
+        <div class="form-group">
+          <label><input type="radio" id="patch9" name="patchChoice" class="patchChoice"> <span class="label-text">Patch 4 (Network Interception)</span></label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend style="display: flex; align-items: center; gap: 6px;">
+          <img src="./images/uh.svg" width="35" height="35" alt="Icon"> Unlimited Hearts
+        </legend>
+        <div class="form-group">
+          <label><input type="radio" id="patch2" name="patchChoice" class="patchChoice"> <span class="label-text">Patch 1 (Hardcoded)</span></label>
+        </div>
+        <div class="form-group">
+          <label><input type="radio" id="patch3" name="patchChoice" class="patchChoice"> <span class="label-text">Patch 2 (Hardcoded)</span></label>
+        </div>
+        <div class="form-group">
+          <label><input type="radio" id="patch5" name="patchChoice" class="patchChoice"> <span class="label-text">Patch 3 (Network Interception)</span></label>
+        </div>
+      </fieldset>
+      
+      <fieldset>
+        <legend>Sync Settings</legend>
+        <div class="toggle-switch">
+          <span>Syncs default patch remotely</span>
+          <label class="switch">
+            <input type="checkbox" id="syncDefaultPatch" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+      </fieldset>
+            <p class="hint">This allows patches to be changed automatically if anything breaks.</p>
     </div>
+
+    <hr>
 
     <div class="section">
-      <div class="toggle-switch">
-        <span>Enable Notifications</span>
-        <label class="switch">
-          <input type="checkbox" id="enableNotifications">
-          <span class="slider"></span>
-        </label>
-      </div>
-    </div>
+      <h2>Notification Behavior</h2>
+      <fieldset>
+        <legend>Notifications</legend>
+        <div class="toggle-switch">
+          <span>Enable notifications</span>
+          <label class="switch">
+            <input type="checkbox" id="enableNotifications">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </fieldset>
 
-    <div class="section">
-      <h2>Ignore Duration for Major Updates</h2>
-      <div class="duration-grid">
-        <label>Weeks: <input type="number" id="majorWeeks" min="0" placeholder="0"></label>
-        <label>Days: <input type="number" id="majorDays" min="0" placeholder="0"></label>
-        <label>Hours: <input type="number" id="majorHours" min="0" placeholder="0"></label>
-        <label>Minutes: <input type="number" id="majorMinutes" min="0" placeholder="0"></label>
-      </div>
-    </div>
+      <fieldset>
+        <legend>Ignore Duration for Major Updates</legend>
+        <div class="duration-grid">
+          <label>Weeks: <input type="number" id="majorWeeks" min="0" placeholder="0"></label>
+          <label>Days: <input type="number" id="majorDays" min="0" placeholder="0"></label>
+          <label>Hours: <input type="number" id="majorHours" min="0" placeholder="0"></label>
+          <label>Minutes: <input type="number" id="majorMinutes" min="0" placeholder="0"></label>
+        </div>
+      </fieldset>
 
-    <div class="section">
-      <h2>Ignore Duration for Minor Updates</h2>
-      <div class="duration-grid">
-        <label>Weeks: <input type="number" id="minorWeeks" min="0" placeholder="0"></label>
-        <label>Days: <input type="number" id="minorDays" min="0" placeholder="0"></label>        
-        <label>Hours: <input type="number" id="minorHours" min="0" placeholder="0"></label>
-        <label>Minutes: <input type="number" id="minorMinutes" min="0" placeholder="0"></label>
-      </div>
+      <fieldset>
+        <legend>Ignore Duration for Minor Updates</legend>
+        <div class="duration-grid">
+          <label>Weeks: <input type="number" id="minorWeeks" min="0" placeholder="0"></label>
+          <label>Days: <input type="number" id="minorDays" min="0" placeholder="0"></label>
+          <label>Hours: <input type="number" id="minorHours" min="0" placeholder="0"></label>
+          <label>Minutes: <input type="number" id="minorMinutes" min="0" placeholder="0"></label>
+        </div>
+      </fieldset>
     </div>
-
+    
     <div class="button-group">
       <button id="reset">Reset to Defaults</button>
     </div>
     <div id="status" class="status" role="status" aria-live="polite"></div>
   </main>
-
-  <script src="options.js"></script>
-
+  <script type="module" src="options.js"></script>
+  <script src="shared/defaults.js"></script>
 </body></html>

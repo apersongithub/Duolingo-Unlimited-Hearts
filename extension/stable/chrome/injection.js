@@ -71,6 +71,13 @@ if (!window.__EXT_PATCH_INJECTED__) {
     const d = ev.data;
     if (!d || ev.source !== window) return;
 
+    // Explicitly set patch mode from content script (handshake-safe)
+    if (d.source === 'ext-set-patch-mode' && typeof d.patchMode === 'number') {
+      const m = Math.min(Math.max(d.patchMode, 1), 9);
+      setPatchMode(m);
+      return;
+    }
+
     if (d.source === 'ext-injector-enqueue') {
       if (typeof d.patchMode === 'number') setPatchMode(d.patchMode);
       if (d.url && !queue.includes(d.url)) queue.push(d.url);
@@ -107,4 +114,9 @@ if (!window.__EXT_PATCH_INJECTED__) {
   });
 
   window.addEventListener('ext-app-ready', flushQueue);
+
+  // Signal readiness so content_script can safely send mode and enqueue
+  try {
+    window.postMessage({ source: 'ext-injector-ready' }, '*');
+  } catch {}
 }
