@@ -268,7 +268,7 @@
           } else if (cmp > 0) {
             // Beta version notice (subtle; no storage interaction)
             // Only show if chromestupid is explicitly false (or absent/falsey)
-            if (CHROME_STUPID) {
+            if (!CHROME_STUPID) {
               createOverlay({
                 title: 'You are on a beta build',
                 message: `You’re running v${CURRENT_VERSION} (latest stable is v${latestVersion}). If this was intentional, you can ignore this message.`,
