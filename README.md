@@ -50,4 +50,7 @@
 
 ## <img src="https://d35aaqx5ub95lt.cloudfront.net/images/profile/48b8884ac9d7513e65f3a2b54984c5c4.svg" width="30px"> [Frequently Asked Questions](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/wiki/FAQ)
 
+## <img src="https://d35aaqx5ub95lt.cloudfront.net/images/goals/39f13d2de304cad2ac2f88b31a7e2ff4.svg" width="30px"> [Contributing](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/wiki/Contributing)
+
+
 ## <img src="https://d35aaqx5ub95lt.cloudfront.net/vendor/7ef36bae3f9d68fc763d3451b5167836.svg" width="30px"> [Support Me](https://html-preview.github.io/?url=https://raw.githubusercontent.com/apersongithub/Duolingo-Unlimited-Hearts/refs/heads/main/extras/donations.html)
