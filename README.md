@@ -9,7 +9,7 @@
 > [!CAUTION]  
 > The **Chrome Web Store** is no longer supported due to rejections for bypassing paywalls.
 > 
-> Please switch to the manual installation as soon as possible for continued support.
+> Please switch to the **manual installation** as soon as possible for continued support.
 ## <img src="https://d35aaqx5ub95lt.cloudfront.net/images/leagues/7082c58e0bdbfbf9aec94191b704f549.svg" width="30px"> Gist
 > [!IMPORTANT]
 > 
@@ -21,7 +21,7 @@
 > | `d35aaqx5ub95lt.cloudfront.net`         | Hosts the original unpatched webpack chunk files. Ex: `app-*.js`; must modify requests for these (Cloudfront is Amazon's CDN).   | ✅ Yes               |
 > | `raw.githubusercontent.com`             | Get's the [extension-version.json](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/blob/main/extension-version.json) which includes the version number, remote patch sync, update log, and external html for my buymeacoffee banner.         | ❌ No                |
 
-   There are several different options to patch Duolingo. Choose what works best for your machine in the extension's settings:
+   There are **several different** options to patch Duolingo. Choose what works **best** for your machine in the extension's settings:
  <table>
    <tr>
      <td><img width="400" src="https://github.com/user-attachments/assets/f4187165-5b33-43f0-ba6e-3345781d0fdf" /></td>
