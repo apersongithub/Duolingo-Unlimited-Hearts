@@ -34,6 +34,9 @@ Answer: Yes or No
 **Have you read the FAQ?**
 Answer: Yes or No
 
+**Are you on the latest version and not using the chrome web store?**
+Answer: Yes or No
+
 **Additional context**
 Add any other context about the problem here.
 
