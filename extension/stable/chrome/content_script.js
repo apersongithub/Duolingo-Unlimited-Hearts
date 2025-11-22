@@ -8,6 +8,7 @@ let superBannerInjected = false;
 // Key used by options page to signal a localStorage clear across open Duolingo tabs
 const CLEAR_LS_TOKEN_KEY = '__ext_clear_localstorage_token__';
 
+// Fetch remote default patch (used for initial seeding)
 async function fetchRemoteDefaultPatch() {
   try {
     const res = await fetch('https://raw.githubusercontent.com/apersongithub/Duolingo-Unlimited-Hearts/refs/heads/main/extension-version.json', { cache: 'no-store' });
@@ -273,13 +274,48 @@ async function handleUrl(url) {
   }
 }
 
-// Listen for reset signal to clear page localStorage immediately, no extra permissions required
+// NEW: live patch mode update handler
+async function onPatchModeChanged(newMode) {
+  const prev = selectedPatchMode;
+  selectedPatchMode = Math.min(Math.max(Number(newMode) || 1, 1), 9);
+
+  // Tell injector to switch modes immediately
+  window.postMessage({ source: 'ext-set-patch-mode', patchMode: selectedPatchMode }, '*');
+
+  // Inject userscript bootstrap if entering a userscript mode
+  injectUserscriptBootstrapIfNeeded(selectedPatchMode);
+
+  const prevUserscript = [4, 5, 8, 9].includes(prev);
+  const nowUserscript = [4, 5, 8, 9].includes(selectedPatchMode);
+
+  // If the mode family changed, flush caches and reload to avoid lingering code
+  if (prev !== selectedPatchMode || prevUserscript !== nowUserscript) {
+    chrome.runtime.sendMessage({ type: 'FLUSH_PATCH_CACHE', keepMode: selectedPatchMode }, () => {
+      setTimeout(() => {
+        try { location.reload(); } catch {}
+      }, 75);
+    });
+  }
+}
+
+// Listen for reset signal to clear page localStorage immediately, and for settings changes
 chrome.storage.onChanged.addListener((changes, area) => {
   if (area !== 'sync') return;
+
   if (changes[CLEAR_LS_TOKEN_KEY]) {
     try {
       localStorage.clear();
     } catch {}
+  }
+
+  if (changes.settings) {
+    const newVal = changes.settings.newValue;
+    const oldVal = changes.settings.oldValue;
+    if (newVal && typeof newVal.selectedPatch === 'number') {
+      if (!oldVal || oldVal.selectedPatch !== newVal.selectedPatch) {
+        onPatchModeChanged(newVal.selectedPatch);
+      }
+    }
   }
 });
 

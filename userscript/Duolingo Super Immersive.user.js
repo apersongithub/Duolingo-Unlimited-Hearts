@@ -1,23 +1,23 @@
 // ==UserScript==
-// @name         Duolingo Super
+// @name         Duolingo Super Immersive
 // @icon         https://d35aaqx5ub95lt.cloudfront.net/images/hearts/b3a04a561c7d0b2b5247a40e18d64946.svg
 // @namespace    https://tampermonkey.net/
 // @version      3.4.1
-// @description  Intercepts and modifies fetch Duolingo's API responses to give Duolingo Super.
+// @description  Intercepts and modifies fetch Duolingo's API responses to give Duolingo Super Immersive.
 // @author       apersongithub
 // @match       *://*.duolingo.com/*
 // @match       *://*.duolingo.cn/*
 // @grant        none
 // @run-at       document-start
 // @license      MPL-2.0
-// @downloadURL https://github.com/apersongithub/Duolingo-Unlimited-Hearts/raw/refs/heads/main/userscript/Duolingo%20Super.user.js
-// @updateURL https://github.com/apersongithub/Duolingo-Unlimited-Hearts/raw/refs/heads/main/userscript/Duolingo%20Super.user.js
+// @downloadURL https://github.com/apersongithub/Duolingo-Unlimited-Hearts/raw/refs/heads/main/userscript/Duolingo%20Super%20Immersive.user.js
+// @updateURL https://github.com/apersongithub/Duolingo-Unlimited-Hearts/raw/refs/heads/main/userscript/Duolingo%20Super%20Immersive.user.js
 // ==/UserScript==
 
 // WORKS AS OF 2025-11-22
 
 /*
- * Below this is the actual fetch interception and modification logic for Duolingo Super
+ * Below this is the actual fetch interception and modification logic for Duolingo Super Immersive
  */
 
 (function () {
@@ -27,8 +27,8 @@
   const TARGET_URL_REGEX = /https?:\/\/(?:[a-zA-Z0-9-]+\.)?duolingo\.[a-zA-Z]{2,6}(?:\.[a-zA-Z]{2})?\/\d{4}-\d{2}-\d{2}\/users\/.+/;
 
   const CUSTOM_SHOP_ITEMS = {
-    premium_subscription: {
-      itemName: "premium_subscription",
+    immersive_subscription: {
+      itemName: "immersive_subscription",
       subscriptionInfo: {
         vendor: "STRIPE",
         renewing: true,
@@ -55,7 +55,7 @@
       const data = JSON.parse(jsonText);
       data.hasPlus = true;
       if (!data.trackingProperties || typeof data.trackingProperties !== 'object') data.trackingProperties = {};
-      data.trackingProperties.has_item_premium_subscription = true;
+      data.trackingProperties.has_item_immersive_subscription = true;
 
       // FIX: Merge existing shop items with your custom subscription
       // (Previous code deleted all real items, breaking the shop UI)
@@ -129,7 +129,7 @@
     src='https://raw.githubusercontent.com/apersongithub/Duolingo-Unlimited-Hearts/refs/heads/main/extras/icon.svg'
     style='border-radius:100px'></div>
 <div class='_3jiBp'>
-  <h4 class='qyEhl'>Duolingo Super Userscript</h4><span class='_3S2Xa'>Created by <a
+  <h4 class='qyEhl'>Duolingo Super Immersive Userscript</h4><span class='_3S2Xa'>Created by <a
       href='https://github.com/apersongithub' target='_blank' style='color:#07b3ec'>apersongithub</a></span>
 </div>
 <div class='_36kJA'>

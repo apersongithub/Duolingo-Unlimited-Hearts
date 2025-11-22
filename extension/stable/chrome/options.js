@@ -188,7 +188,7 @@ byId('reset').addEventListener('click', async () => {
 });
 
 function registerAutosaveListeners() {
-  // 1) Radio changes: if sync is ON and selection != remote default -> turn sync OFF automatically
+  // Radio changes: if sync is ON and selection != remote default -> turn sync OFF automatically
   const radios = Array.from(document.querySelectorAll('input.patchChoice'));
   radios.forEach(r => {
     r.addEventListener('change', async () => {
@@ -197,7 +197,7 @@ function registerAutosaveListeners() {
       const currentSync = syncToggle.checked;
 
       if (currentSync && selected !== REMOTE_DEFAULT) {
-        // Turn sync OFF and set manual override
+        // Turn sync OFF and set manual override immediately
         syncToggle.checked = false;
         const existing = await getStoredSettings();
         const next = {
@@ -209,22 +209,28 @@ function registerAutosaveListeners() {
           userOverridePatch: true
         };
         await saveSettingsImmediate(next);
+        // Optional: clear localStorage on patch mode change
+        // await chrome.storage.sync.set({ [CLEAR_LS_TOKEN_KEY]: Date.now() });
         return;
       }
 
-      // Selecting the default patch while sync is OFF should NOT turn sync on.
+      // Selecting the default patch while sync is OFF should not auto-enable sync
       const existing = await getStoredSettings();
       const next = {
         ...DEFAULT_SETTINGS,
         ...existing,
         ...readSettings(),
-        selectedPatch: selected
+        selectedPatch: selected,
+        // Preserve override; if sync off we keep userOverridePatch true
+        userOverridePatch: currentSync ? existing.userOverridePatch : true
       };
       await saveSettingsImmediate(next);
+      // Optional LS clear:
+      // await chrome.storage.sync.set({ [CLEAR_LS_TOKEN_KEY]: Date.now() });
     });
   });
 
-  // 2) Sync toggle changes: turning ON sets patch to remote default; turning OFF keeps current patch
+  // Sync toggle changes
   const syncToggle = byId('syncDefaultPatch');
   syncToggle.addEventListener('change', async () => {
     const turnOn = syncToggle.checked;
@@ -255,7 +261,7 @@ function registerAutosaveListeners() {
     }
   });
 
-  // 3) Other inputs
+  // Other inputs (notifications + durations)
   const inputs = Array.from(document.querySelectorAll('input')).filter(el => !radios.includes(el) && el.id !== 'syncDefaultPatch');
   inputs.forEach(el => {
     const evt = (el.type === 'number' || el.type === 'text') ? 'input' : 'change';

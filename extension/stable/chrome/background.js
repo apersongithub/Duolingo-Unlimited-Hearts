@@ -6,7 +6,6 @@ const DEFAULT_SETTINGS = {
   major: { weeks: 0, days: 3, hours: 0, minutes: 0 },
   minor: { weeks: 1, days: 0, hours: 0, minutes: 0 },
   selectedPatch: 1,
-  // unified key (replaces legacy syncRemoteDefault)
   syncDefaultPatch: true,
   userOverridePatch: false
 };
@@ -34,9 +33,7 @@ async function ensureSettingsSeeded() {
 }
 
 async function maybeSyncSelectedPatch(s) {
-  // If user disabled sync or manually overrode, do nothing
   if (s.syncDefaultPatch === false || s.userOverridePatch === true) return s;
-
   const remote = await fetchDefaultPatch();
   if (remote !== s.selectedPatch) {
     const next = { ...s, selectedPatch: remote };
@@ -46,7 +43,6 @@ async function maybeSyncSelectedPatch(s) {
   return s;
 }
 
-// Fetch helper for code patching
 async function fetchText(url) {
   const resp = await fetch(url, { cache: 'no-store', credentials: 'include' });
   if (!resp.ok) throw new Error('fetch failed ' + resp.status);
@@ -54,9 +50,7 @@ async function fetchText(url) {
 }
 
 async function getSelectedPatchMode() {
-  // Seed on first run
   let s = await ensureSettingsSeeded();
-  // Auto-sync if allowed and not overridden
   s = await maybeSyncSelectedPatch(s);
   const mode = Number(s?.selectedPatch) || 1;
   return Math.min(Math.max(mode, 1), 9);
@@ -101,6 +95,36 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
       const cacheKey = `patched:${mode}:${url}`;
       const cached = (await chrome.storage.local.get(cacheKey))[cacheKey];
       sendResponse(cached ? { ok: true, patched: cached } : { ok: false });
+    })();
+    return true;
+  }
+
+  // NEW: flush old patch caches when switching modes
+  if (msg?.type === 'FLUSH_PATCH_CACHE') {
+    const keepMode = Number(msg.keepMode);
+    (async () => {
+      try {
+        const all = await chrome.storage.local.get(null);
+        const removeKeys = [];
+        for (const k of Object.keys(all)) {
+          const isPatched = k.startsWith('patched:');
+          const isTs = k.startsWith('cachedAt:');
+            // remove everything except keys for keepMode if provided
+          if (isPatched || isTs) {
+            if (Number.isFinite(keepMode)) {
+              if (!k.startsWith(`patched:${keepMode}:`) && !k.startsWith(`cachedAt:${keepMode}:`)) {
+                removeKeys.push(k);
+              }
+            } else {
+              removeKeys.push(k);
+            }
+          }
+        }
+        if (removeKeys.length) await chrome.storage.local.remove(removeKeys);
+        sendResponse({ ok: true, removed: removeKeys.length });
+      } catch (e) {
+        sendResponse({ ok: false, error: String(e) });
+      }
     })();
     return true;
   }
