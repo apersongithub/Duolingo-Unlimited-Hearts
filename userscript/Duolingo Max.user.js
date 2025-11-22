@@ -2,7 +2,7 @@
 // @name         Duolingo Max
 // @icon         https://d35aaqx5ub95lt.cloudfront.net/images/max/9f30dad6d7cc6723deeb2bd9e2f85dd8.svg
 // @namespace    https://tampermonkey.net/
-// @version      3.4.1
+// @version      3.4.2
 // @description  Intercepts and modifies fetch Duolingo's API responses to give Duolingo Max.
 // @author       apersongithub
 // @match       *://*.duolingo.com/*
@@ -113,4 +113,126 @@
     }
     originalXhrSend.apply(this, arguments);
   };
+  
+  // =============================
+  // UI banner + sanitization logic
+  // =============================
+  var JSON_URL = 'https://raw.githubusercontent.com/apersongithub/Duolingo-Unlimited-Hearts/refs/heads/main/userscript-version.json';
+
+  (function () {
+    'use strict';
+
+    const newElementId = 'extension-banner';
+    const FALLBACK_CONFIG = {
+      "BANNER": `
+    <div class='thPiC'><img class='_1xOxM'
+    src='https://raw.githubusercontent.com/apersongithub/Duolingo-Unlimited-Hearts/refs/heads/main/extras/icon.svg'
+    style='border-radius:100px'></div>
+<div class='_3jiBp'>
+  <h4 class='qyEhl'>Duolingo Max Userscript</h4><span class='_3S2Xa'>Created by <a
+      href='https://github.com/apersongithub' target='_blank' style='color:#07b3ec'>apersongithub</a></span>
+</div>
+<div class='_36kJA'>
+  <div><a href='https://html-preview.github.io/?url=https://raw.githubusercontent.com/apersongithub/Duolingo-Unlimited-Hearts/refs/heads/main/extras/donations.html'
+      target='_blank'><button class='_1ursp _2V6ug _2paU5 _3gQUj _7jW2t rdtAy'><span class='_9lHjd'
+          style='color:#d7d62b'>💵 Donate</span></button></a></div>
+</div>
+  `
+    };
+
+    function addCustomElement(config, root = document) {
+      if (document.getElementById(newElementId)) return;
+      const refElement = root.querySelector('.MGk8p');
+      if (!refElement) return;
+
+      const ul = document.createElement('ul');
+      ul.className = 'Y6o36';
+
+      const newLi = document.createElement('li');
+      newLi.id = newElementId;
+      newLi.className = '_17J_p';
+      newLi.innerHTML = config.BANNER;
+
+      ul.appendChild(newLi);
+      refElement.parentNode.insertBefore(ul, refElement.nextSibling);
+
+      try { console.log('Extension banner successfully added!'); } catch { }
+    }
+
+    async function loadConfigAndInject() {
+      if (!window.location.pathname.includes('/settings/super')) return;
+
+      function sanitizeHTML(unsafeHTML) {
+        const template = document.createElement('template');
+        template.innerHTML = unsafeHTML || '';
+
+        const ALLOWED_TAGS = new Set(['DIV', 'SECTION', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'P', 'SPAN', 'SMALL', 'A', 'BUTTON', 'UL', 'OL', 'LI', 'STRONG', 'EM', 'B', 'I', 'U', 'BR', 'HR', 'IMG']);
+        const ALLOWED_ATTRS = new Set(['class', 'id', 'href', 'src', 'target', 'rel', 'style', 'alt', 'title', 'role', 'aria-label', 'aria-hidden', 'aria-describedby', 'aria-expanded', 'aria-controls', 'width', 'height', 'tabindex']);
+
+        template.content.querySelectorAll('script, iframe, object, embed, style, link, meta').forEach(el => el.remove());
+
+        const walker = document.createTreeWalker(template.content, NodeFilter.SHOW_ELEMENT);
+        let node;
+        while ((node = walker.nextNode())) {
+          if (!ALLOWED_TAGS.has(node.tagName)) {
+            const parent = node.parentNode;
+            if (parent) parent.replaceChild(document.createDocumentFragment().append(...node.childNodes), node);
+            continue;
+          }
+
+          [...node.attributes].forEach(attr => {
+            const name = attr.name.toLowerCase();
+            const value = attr.value.trim();
+
+            if (name.startsWith('on') || !ALLOWED_ATTRS.has(name)) { node.removeAttribute(attr.name); return; }
+            if (name === 'href' || name === 'src') {
+              const lower = value.toLowerCase();
+              if (!/^https?:\/\//.test(lower)) { node.removeAttribute(attr.name); return; }
+              if (lower.startsWith('javascript:') || lower.startsWith('data:')) { node.removeAttribute(attr.name); return; }
+            }
+            if (name === 'style') {
+              if (/expression|javascript:|url\s*\(\s*javascript:/i.test(value)) {
+                node.removeAttribute(attr.name);
+              }
+            }
+          });
+        }
+
+        return template.innerHTML;
+      }
+
+      try {
+        // JSON_URL may not be defined; fallback is used if fetch fails.
+        const response = await fetch(JSON_URL, { cache: 'no-store' });
+        if (!response.ok) throw new Error('Failed to fetch JSON');
+        const remote = await response.json();
+        const sanitized = sanitizeHTML(remote && remote.BANNER ? remote.BANNER : FALLBACK_CONFIG.BANNER);
+        addCustomElement({ BANNER: sanitized });
+      } catch (err) {
+        try { console.warn('Failed to load external JSON, using fallback:', err); } catch { }
+        const sanitizedFallback = sanitizeHTML(FALLBACK_CONFIG.BANNER);
+        addCustomElement({ BANNER: sanitizedFallback });
+      }
+    }
+
+    function removeManageSubscriptionSection(root = document) {
+      const sections = root.querySelectorAll('section._3f-te');
+      for (const section of sections) {
+        const h2 = section.querySelector('h2._203-l');
+        if (h2 && h2.textContent.trim() === 'Manage subscription') {
+          section.remove();
+          break;
+        }
+      }
+    }
+
+    const manageSubObserver = new MutationObserver(() => removeManageSubscriptionSection());
+    manageSubObserver.observe(document.documentElement, { childList: true, subtree: true });
+
+    removeManageSubscriptionSection();
+    loadConfigAndInject();
+
+    const observer = new MutationObserver(() => loadConfigAndInject());
+    observer.observe(document.documentElement, { childList: true, subtree: true });
+  })();
 })();
