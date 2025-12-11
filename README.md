@@ -9,7 +9,7 @@
 > [!CAUTION]  
 > The **Chrome Web Store** is no longer supported due to rejections for bypassing paywalls.
 > 
-> If you use installed from there, please switch to the **Manual Installation** as soon as possible for continued support.
+> If you've installed from there, please switch to the **Manual Installation** as soon as possible for continued support.
 ## <img src="https://d35aaqx5ub95lt.cloudfront.net/images/leagues/7082c58e0bdbfbf9aec94191b704f549.svg" width="30px"> Gist
 > [!IMPORTANT]
 > 
