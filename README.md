@@ -9,7 +9,7 @@
 > [!CAUTION]  
 > The **Chrome Web Store** is no longer supported due to rejections for bypassing paywalls.
 > 
-> Please switch to the **manual installation** as soon as possible for continued support.
+> If you use installed from there, please switch to the **Manual Installation** as soon as possible for continued support.
 ## <img src="https://d35aaqx5ub95lt.cloudfront.net/images/leagues/7082c58e0bdbfbf9aec94191b704f549.svg" width="30px"> Gist
 > [!IMPORTANT]
 > 
@@ -38,7 +38,7 @@
 >     - [Duolingo Max Userscript](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/raw/refs/heads/main/userscript/Duolingo%20Max.user.js)
 >     - [Duolingo Super Userscript](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/raw/refs/heads/main/userscript/Duolingo%20Super.user.js)
 >     - [Duolingo Unlimited Hearts Userscript](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/raw/refs/heads/main/userscript/Duolingo%20Unlimited%20Hearts.user.js)
->    - Also hosted on [Greasyfork](https://greasyfork.org/en/users/1355249-apersongithub)
+>    - Also hosted on [Greasyfork](https://greasyfork.org/en/scripts?set=593926)
 
 | **Browser** | **Installation Steps** |
 |-------------|------------------------|
