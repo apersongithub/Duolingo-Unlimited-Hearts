@@ -13,15 +13,17 @@
 ## <img src="https://d35aaqx5ub95lt.cloudfront.net/images/leagues/7082c58e0bdbfbf9aec94191b704f549.svg" width="30px"> Gist
 > [!IMPORTANT]
 > 
-> The following domains are accessed for patching Duolingo. Each domain serves a specific purpose:
+> The following is accessed for patching Duolingo. Each serves a specific purpose:
 >
-> | **Data Access**                          | **Reason**                                                               | **Duolingo's Server** |
+> | **Domains**                          | **Reason**                                                               | **Duolingo's Server** |
 > |-----------------------------------------|-------------------------------------------------------------------------|----------------------|
 > | `duolingo.com` `duolingo.cn`                          | Needed to modify the website and apply the patch.                         | ✅ Yes               |
 > | `d35aaqx5ub95lt.cloudfront.net`         | Hosts the original unpatched webpack chunk files. Ex: `app-*.js`; must modify requests for these (Cloudfront is Amazon's CDN).   | ✅ Yes               |
 > | `raw.githubusercontent.com`             | Get's the [extension-version.json](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/blob/main/extension-version.json) which includes the version number, remote patch sync, update log, and external html for my buymeacoffee banner.         | ❌ No                |
-
-   There are **several different** options to patch Duolingo. Choose what works **best** for your machine through the settings page.
+>
+> | **Permissions**                          | **Reason**                                                               
+> |-----------------------------------------|-------------------------------------------------------------------------|
+> | `storage`                          | Needed to store the patching mode and other settings.                         | 
 
 ## <img src="https://d35aaqx5ub95lt.cloudfront.net/images/goals/62bb241121ae018b28240eebffb9fc4a.svg" width="30px"> Installation Process
 > [!NOTE]
