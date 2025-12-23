@@ -1,4 +1,8 @@
 # <img src="https://d35aaqx5ub95lt.cloudfront.net/images/max/9f30dad6d7cc6723deeb2bd9e2f85dd8.svg" width="30px"> Duolingo Max
+
+![Chrome Extension Rating](https://img.shields.io/chrome-web-store/rating/jkcaeflmchplggcelmodjobeakgmhmdb?style=for-the-badge&label=Chrome%20Rating&logo=google-chrome&logoColor=white&color=brightgreen)
+![Firefox Extension Rating](https://img.shields.io/amo/stars/duolingo-unlimited-hearts?style=for-the-badge&label=Firefox%20Rating&logo=firefox&logoColor=white&color=orange)
+
 > For **educational purposes** only, obviously.
 > 
 > ***Previously known as Duolingo Unlimited Hearts***
