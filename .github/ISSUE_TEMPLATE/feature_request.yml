@@ -1,0 +1,85 @@
+name: ⭐ Feature Request
+description: Suggest an idea for this project
+labels: ["enhancement"]
+assignees: 
+  - apersongithub
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the suggestion! Please fill out the details below.
+
+  - type: checkboxes
+    id: prerequisites
+    attributes:
+      label: Checklist
+      options:
+        - label: "I have read the [FAQ](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/wiki/FAQ)."
+          required: true
+
+        - label: "I am on the latest version of the extension/userscript."
+          required: true
+
+  - type: textarea
+    id: feature_description
+    attributes:
+      label: Describe the feature
+      description: What is the feature you want?
+      placeholder: "I would like the ability to..."
+    validations:
+      required: true
+
+  - type: dropdown
+    id: is_niche
+    attributes:
+      label: Is the feature niche?
+      options:
+        - "No"
+        - "Yes"
+    validations:
+      required: true
+
+  - type: input
+    id: platform_os
+    attributes:
+      label: OS
+      placeholder: "e.g. iOS, Windows"
+    validations:
+      required: false
+
+  - type: input
+    id: browser
+    attributes:
+      label: Browser
+      placeholder: "e.g. Chrome, Firefox"
+    validations:
+      required: false
+
+  - type: input
+    id: version
+    attributes:
+      label: Extension or Userscript(s) 
+      placeholder: "e.g. Duolingo Max Userscript"
+    validations:
+      required: false
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: If applicable, add screenshots to help explain the feature you want.
+      value: |
+        <details>
+        <summary>Screenshot(s)</summary>
+        
+        </details>
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Add any other context about the request here.
+    validations:
+      required: false

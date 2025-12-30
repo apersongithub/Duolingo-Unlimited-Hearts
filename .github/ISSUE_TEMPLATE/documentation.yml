@@ -1,0 +1,56 @@
+name: 📖 Documentation
+description: Something is missing/wrong in the documentation
+labels: ["documentation"]
+assignees: 
+  - apersongithub
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve the documentation!
+
+  - type: checkboxes
+    id: prerequisites
+    attributes:
+      label: Checklist
+      options:
+        - label: "I have read the [FAQ](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/wiki/FAQ)."
+          required: true
+
+        - label: "I have checked other issues to see if my issue has already been reported."
+          required: true
+
+  - type: dropdown
+    id: issue_type
+    attributes:
+      label: Is something Missing or Incorrect?
+      options:
+        - Missing
+        - Incorrect
+    validations:
+      required: true
+
+  - type: textarea
+    id: incorrect_statement
+    attributes:
+      label: If you selected Incorrect
+      description: Please quote the Incorrect Statement here, otherwise skip this if you put "Missing".
+      placeholder: "The text says 'X' but it should be 'Y'..."
+    validations:
+      required: false
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the issue
+      description: A concise description of what the issue is.
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Add any other context about the problem here.
+    validations:
+      required: false

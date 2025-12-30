@@ -1,0 +1,42 @@
+name: ❓ General Question
+description: Ask a question about something
+labels: ["question"]
+assignees: 
+  - apersongithub
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reaching out! Please check the FAQ before asking to see if your question is already answered.
+
+  - type: checkboxes
+    id: prerequisites
+    attributes:
+      label: Checklist
+      options:
+        - label: "I have read the [FAQ](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/wiki/FAQ)."
+          required: true
+        - label: "I've verified this is **NOT** a feature request or bug report (please use their respective forms)."
+          required: true
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+      description: Write your question here.
+      placeholder: "How do I..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: If applicable, add screenshots to help explain your question.
+      value: |
+        <details>
+        <summary>Screenshot(s)</summary>
+        
+        </details>
+    validations:
+      required: false

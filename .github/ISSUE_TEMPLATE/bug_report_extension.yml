@@ -1,0 +1,135 @@
+name: 🧩 Bug report (Extension)
+description: Create a report to help us improve the extension
+labels: ["bug", "extension"]
+assignees: 
+  - apersongithub
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+        Please review the checklist below to ensure this is a valid issue. Reports missing this info may be closed.
+
+  - type: checkboxes
+    id: prerequisites
+    attributes:
+      label: Troubleshooting Checklist
+      description: |
+        **IMPORTANT:** Please try these steps before submitting.
+      options:
+        - label: "I have read the [FAQ](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/wiki/FAQ) and my issue is not listed there."
+          required: true
+        - label: "I have checked other issues to see if my issue has already been reported."
+          required: true
+        - label: "I verified that [Duolingo Status](https://status.duolingo.com/) is fully operational (not down)."
+          required: true
+        - label: "I am using the latest version of the extension (and not the Chrome Web Store version)."
+          required: true
+        - label: "I have tried reproducing this in an Incognito/Private window."
+          required: true
+        - label: "I have tried using a different Patch Method."
+          required: true
+        - label: "I verified that the feature/issue works correctly *without* the extension enabled (it is not a Duolingo bug)."
+          required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the bug
+      description: A clear and concise description of what the bug is.
+      placeholder: "If you do not do this, I won't be able to diagnose the issue..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: To Reproduce
+      description: Steps to reproduce the behavior.
+      placeholder: |
+        1. Go to '...'
+        2. Click on '....'
+        3. Scroll down to '....'
+        4. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: A clear and concise description of what you expected to happen.
+    validations:
+      required: true
+
+  - type: input
+    id: platform_os
+    attributes:
+      label: OS
+      placeholder: "e.g. Windows 11, macOS, iOS"
+    validations:
+      required: true
+
+  - type: input
+    id: browser
+    attributes:
+      label: Browser
+      placeholder: "e.g. Chrome, Firefox"
+    validations:
+      required: true
+
+  - type: input
+    id: extension_version
+    attributes:
+      label: Extension Version
+      placeholder: "e.g. v2.1"
+    validations:
+      required: true
+
+  - type: input
+    id: patch_number
+    attributes:
+      label: Patch Number
+      description: View in extension options.
+      placeholder: "Ex: Max 1, Super 3, etc."
+    validations:
+      required: true
+
+  - type: textarea
+    id: other_extensions
+    attributes:
+      label: Other Duolingo Extensions/Userscripts
+      description: List other duolingo related extensions you are using along with this one. Feel free to use a screenshot.
+      placeholder: "Write 'None' if this is the only duolingo extension you use."
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: If applicable, add screenshots to help explain your problem.
+      value: |
+        <details>
+        <summary>Screenshot(s)</summary>
+
+        </details>
+    validations:
+      required: false
+
+  - type: textarea
+    id: file_uploads
+    attributes:
+      label: Upload Patched and Unpatched files
+      description: |
+        If applicable, [Ex: app*.js, 7220*.js]. You can drag and drop zip files or text files here.
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Add any other context about the problem here.
+    validations:
+      required: false
