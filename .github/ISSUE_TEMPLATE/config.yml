@@ -3,12 +3,12 @@ blank_issues_enabled: false
 contact_links:
   - name: FAQ
     url: https://github.com/apersongithub/Duolingo-Unlimited-Hearts/wiki/FAQ
-    about: View frequently asked questions here.
+    about: View frequently asked questions here
 
   - name: Unoffical Duolingo API
     url: https://github.com/apersongithub/Duolingo-Unlimited-Hearts/wiki/Unofficial-Duolingo-API-Docs
-    about: View unoffical and not completed Duolingo API Docs here.
+    about: View unoffical and not completed Duolingo API Docs here
 
   - name: Contributing
     url: https://github.com/apersongithub/Duolingo-Unlimited-Hearts/wiki/Contributing
-    about: Help me develop and keep the extension up-to date here.
+    about: Help me develop and keep the extension up-to date here

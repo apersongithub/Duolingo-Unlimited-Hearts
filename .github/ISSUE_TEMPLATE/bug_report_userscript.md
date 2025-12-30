@@ -50,6 +50,9 @@ Answer: Yes or No
 **Do you have any other Duolingo Extensions/Userscripts enabled, and if so please list them.**
 Answer: Yes, ..... or No
 
+**If related, does the feature or issue work correctly without the userscript(s) enabled?**
+Answer: Yes or No [If not related, skip this question]
+
 **Upload Patched and Unpatched files**
 If applicable, [Ex: app*.js, 7220*.js]
 
