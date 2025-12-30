@@ -30,12 +30,15 @@ body:
         - label: "I verified that the feature/issue works correctly *without* the userscript enabled (it is not a Duolingo bug)."
           required: true
 
-  - type: textarea
-    id: userscript_name
+  - type: dropdown
+    id: version
     attributes:
-      label: Which userscript(s) are you using?
-      description: List the exact name that is in the GitHub or GreasyFork repository.
-      placeholder: "e.g. Duolingo Super Userscript, Duolingo Max, etc."
+      label: Which userscript(s) are affected?
+      options:
+        - Duolingo Max Userscript
+        - Duolingo Super Userscript
+        - Duolingo Unlimited Hearts Userscript
+        - All userscripts
     validations:
       required: true
 

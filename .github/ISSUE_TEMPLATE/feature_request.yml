@@ -39,29 +39,18 @@ body:
     validations:
       required: true
 
-  - type: input
-    id: platform_os
-    attributes:
-      label: OS
-      placeholder: "e.g. iOS, Windows"
-    validations:
-      required: false
-
-  - type: input
-    id: browser
-    attributes:
-      label: Browser
-      placeholder: "e.g. Chrome, Firefox"
-    validations:
-      required: false
-
-  - type: input
+  - type: dropdown
     id: version
     attributes:
-      label: Extension or Userscript(s) 
-      placeholder: "e.g. Duolingo Max Userscript"
+      label: For which extension or userscript(s)?
+      options:
+        - Duolingo Max Extension
+        - Duolingo Max Userscript
+        - Duolingo Super Userscript
+        - Duolingo Unlimited Hearts Userscript
+        - Parity with all extensions/userscripts
     validations:
-      required: false
+      required: true
 
   - type: textarea
     id: screenshots
