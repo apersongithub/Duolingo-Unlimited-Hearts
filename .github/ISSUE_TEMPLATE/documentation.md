@@ -10,8 +10,8 @@ assignees: 'apersongithub'
 **Is something Missing or Incorrect?**
 Answer: Missing or Incorrect
 
-**If you selected Incorrect:**
-Please quote the Incorrect statement, otherwise skip this if you put missing.
+**If you selected Incorrect...**
+Please quote the Incorrect statement [Otherwise skip this if you put "Missing"]
 
 **Describe the issue**
 A concise description of what the issue is.

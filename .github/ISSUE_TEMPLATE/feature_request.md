@@ -31,7 +31,7 @@ Answer: Yes or No
 Answer: Yes or No (If you clicked "Yes" you didn't read the FAQ)
 *The only feature I might add [only if repeatedly requested] is "Explain My Answer" since it is easy to implement, but you may need your own AI API key.*
 
-**Is it the feature niche?**
+**Is the feature niche?**
 Answer: Yes or No
 
 **Additional context**
