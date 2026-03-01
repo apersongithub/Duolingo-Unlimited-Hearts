@@ -58,6 +58,9 @@ async function getSelectedPatchMode() {
 
 chrome.runtime.onInstalled.addListener(async () => {
   await ensureSettingsSeeded();
+  // Store install date for money-saved counter (only on first install)
+  const { installDate } = await chrome.storage.local.get('installDate');
+  if (!installDate) await chrome.storage.local.set({ installDate: Date.now() });
 });
 
 chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
@@ -109,7 +112,7 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
         for (const k of Object.keys(all)) {
           const isPatched = k.startsWith('patched:');
           const isTs = k.startsWith('cachedAt:');
-            // remove everything except keys for keepMode if provided
+          // remove everything except keys for keepMode if provided
           if (isPatched || isTs) {
             if (Number.isFinite(keepMode)) {
               if (!k.startsWith(`patched:${keepMode}:`) && !k.startsWith(`cachedAt:${keepMode}:`)) {

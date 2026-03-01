@@ -78,3 +78,9 @@
     .options-button:hover {
       background-color: #2c3187;
     }
+    #moneySaved {
+      font-size: 14px;
+      font-weight: bold;
+      margin: 6px 0 4px;
+      color: #66bb6a;
+    }

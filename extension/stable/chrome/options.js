@@ -274,4 +274,21 @@ function registerAutosaveListeners() {
 document.addEventListener('DOMContentLoaded', () => {
   registerAutosaveListeners();
   restore();
+
+  // Money saved indicator
+  const moneySavedEl = document.getElementById('moneySaved');
+  if (moneySavedEl) {
+    chrome.storage.local.get('installDate', data => {
+      const installDate = data.installDate || Date.now();
+      if (!data.installDate) {
+        chrome.storage.local.set({ installDate });
+      }
+      const now = Date.now();
+      const msPerMonth = 30.44 * 24 * 60 * 60 * 1000;
+      const monthsElapsed = Math.floor((now - installDate) / msPerMonth);
+      const totalMonths = monthsElapsed + 1;
+      const saved = (totalMonths * 12.99).toFixed(2);
+      moneySavedEl.textContent = `💰 You've saved $${saved} from using this extension, a small donation would be appreciated!`;
+    });
+  }
 });

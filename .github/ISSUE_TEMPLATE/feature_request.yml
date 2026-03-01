@@ -20,6 +20,9 @@ body:
         - label: "I am on the latest version of the extension/userscript."
           required: true
 
+        - label: "I understand that my feature request is not guaranteed to be implemented and that it may take some time to be reviewed. (Remember this is mostly unpaid labor!)"
+          required: true
+
   - type: textarea
     id: feature_description
     attributes:

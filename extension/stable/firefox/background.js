@@ -94,5 +94,13 @@ async function refreshRemoteDefault() {
 }
 
 // Trigger a single refresh on extension installed/startup (no periodic alarms)
-chrome.runtime.onInstalled.addListener(() => refreshRemoteDefault());
+chrome.runtime.onInstalled.addListener(() => {
+  refreshRemoteDefault();
+  // Store install date on first install for money-saved calculation
+  chrome.storage.local.get('installDate', data => {
+    if (!data.installDate) {
+      chrome.storage.local.set({ installDate: Date.now() });
+    }
+  });
+});
 chrome.runtime.onStartup.addListener(() => refreshRemoteDefault());

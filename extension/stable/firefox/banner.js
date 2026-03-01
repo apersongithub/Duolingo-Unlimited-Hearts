@@ -13,7 +13,7 @@
   const FALLBACK_BANNER_HTML = `
     <div class='thPiC'><img class='_1xOxM'
       src='https://raw.githubusercontent.com/apersongithub/Duolingo-Unlimited-Hearts/refs/heads/main/extras/icon.svg'
-      style='border-radius:100px'></div>
+      style='border-radius:100px; filter: contrast(0.8);'></div>
     <div class='_3jiBp'>
       <h4 class='qyEhl'>Duolingo Max</h4><span class='_3S2Xa'>Created by <a
           href='https://github.com/apersongithub' target='_blank' style='color:#07b3ec'>apersongithub</a></span>
@@ -24,6 +24,26 @@
               style='color:#d7d62b'>💵 Donate</span></button></a></div>
     </div>
   `;
+
+  // Check for native Sanitizer API support
+  const HAS_SANITIZER_API = typeof Sanitizer === 'function' && typeof HTMLElement.prototype.setHTML === 'function';
+
+  // Build a native Sanitizer instance matching our allow-list (created once, reused)
+  let nativeSanitizer = null;
+  if (HAS_SANITIZER_API) {
+    try {
+      nativeSanitizer = new Sanitizer({
+        elements: ['div', 'section', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'span', 'small', 'a', 'button', 'ul', 'ol', 'li', 'strong', 'em', 'b', 'i', 'u', 'br', 'hr', 'img'],
+        removeElements: ['script', 'iframe', 'object', 'embed', 'style', 'link', 'meta'],
+        attributes: ['class', 'id', 'href', 'src', 'target', 'rel', 'style', 'alt', 'title', 'role',
+          'aria-label', 'aria-hidden', 'aria-describedby', 'aria-expanded', 'aria-controls',
+          'width', 'height', 'tabindex'],
+        comments: false
+      });
+    } catch {
+      nativeSanitizer = null;
+    }
+  }
 
   function addCustomElement(bannerHTML, root = document) {
     if (document.getElementById(newElementId)) return;
@@ -38,7 +58,18 @@
     const newLi = document.createElement('li');
     newLi.id = newElementId;
     newLi.className = '_17J_p';
-    newLi.innerHTML = bannerHTML;
+
+    // Use native Sanitizer API when available, fall back to manual sanitizer
+    if (nativeSanitizer) {
+      try {
+        newLi.setHTML(bannerHTML, { sanitizer: nativeSanitizer });
+      } catch {
+        // If setHTML fails for any reason, fall back
+        newLi.innerHTML = sanitizeHTML(bannerHTML);
+      }
+    } else {
+      newLi.innerHTML = sanitizeHTML(bannerHTML);
+    }
 
     ul.appendChild(newLi);
     refElement.parentNode.insertBefore(ul, refElement.nextSibling);
@@ -46,7 +77,7 @@
     try { console.log('Extension banner successfully added!'); } catch { }
   }
 
-  // Allow-list based sanitizer
+  // Allow-list based sanitizer (fallback for browsers without native Sanitizer API)
   function sanitizeHTML(unsafeHTML) {
     const template = document.createElement('template');
     template.innerHTML = unsafeHTML || '';

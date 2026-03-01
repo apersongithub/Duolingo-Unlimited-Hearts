@@ -3,7 +3,6 @@ const CHUNK_REGEX = /(^|\/)(app|7220|6150|4370)[^/]*\.js(\?.*)?$/i;
 const processed = new Set();
 let selectedPatchMode = 1;
 let userscriptBootInjected = false;
-let superBannerInjected = false;
 
 // Key used by options page to signal a localStorage clear across open Duolingo tabs
 const CLEAR_LS_TOKEN_KEY = '__ext_clear_localstorage_token__';
@@ -35,7 +34,7 @@ async function loadSettings() {
 async function saveSettings(settings) {
   try {
     await chrome.storage.sync.set({ settings });
-  } catch {}
+  } catch { }
 }
 
 async function getSettingsPatchMode() {
@@ -82,10 +81,10 @@ function injectUserscriptBootstrapIfNeeded(mode) {
       mode === 4
         ? 'userscripts/patch4.js'
         : mode === 5
-        ? 'userscripts/patch5.js'
-        : mode === 8
-        ? 'userscripts/patch6.js'
-        : 'userscripts/patch7.js'
+          ? 'userscripts/patch5.js'
+          : mode === 8
+            ? 'userscripts/patch6.js'
+            : 'userscripts/patch7.js'
     );
     s.async = false;
     (document.documentElement || document.head || document.body).appendChild(s);
@@ -95,20 +94,7 @@ function injectUserscriptBootstrapIfNeeded(mode) {
   }
 }
 
-function injectSuperBannerIfNeeded() {
-  // Inject for all modes (banner script shows UI only on specific pages)
-  if (superBannerInjected) return;
 
-  try {
-    const s = document.createElement('script');
-    s.src = chrome.runtime.getURL('userscripts/super_banner.js');
-    s.async = false;
-    (document.documentElement || document.head || document.body).appendChild(s);
-    superBannerInjected = true;
-  } catch (e) {
-    // Optional helper; ignore failures
-  }
-}
 
 function injectCustomUI(mode) {
   if (mode !== 2 && mode !== 3 && mode !== 5) return;
@@ -292,7 +278,7 @@ async function onPatchModeChanged(newMode) {
   if (prev !== selectedPatchMode || prevUserscript !== nowUserscript) {
     chrome.runtime.sendMessage({ type: 'FLUSH_PATCH_CACHE', keepMode: selectedPatchMode }, () => {
       setTimeout(() => {
-        try { location.reload(); } catch {}
+        try { location.reload(); } catch { }
       }, 75);
     });
   }
@@ -305,7 +291,7 @@ chrome.storage.onChanged.addListener((changes, area) => {
   if (changes[CLEAR_LS_TOKEN_KEY]) {
     try {
       localStorage.clear();
-    } catch {}
+    } catch { }
   }
 
   if (changes.settings) {
@@ -323,7 +309,6 @@ chrome.storage.onChanged.addListener((changes, area) => {
   // Load selected patch mode ASAP and inject userscript bootstrap early if needed
   selectedPatchMode = await getSettingsPatchMode();
   injectUserscriptBootstrapIfNeeded(selectedPatchMode);
-  injectSuperBannerIfNeeded();
   injectCustomUI(selectedPatchMode);
 })();
 

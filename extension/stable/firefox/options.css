@@ -65,6 +65,19 @@
      color: var(--hint-color);
    }
 
+   #moneySaved {
+     font-size: 1em;
+     font-weight: 600;
+     color: var(--success-color);
+     background-color: var(--card-bg-color);
+     border: 1px solid var(--card-border-color);
+     border-radius: 8px;
+     padding: 12px 16px;
+     margin-bottom: 24px;
+     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+     text-align: center;
+   }
+
    h2 {
      font-size: 1.2em;
      margin-top: 0;
@@ -270,4 +283,6 @@
 
      /* Ensures background wraps tightly around content */
      display: inline-block;
+
+     color: white;
    }

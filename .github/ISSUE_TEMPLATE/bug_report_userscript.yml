@@ -29,6 +29,8 @@ body:
           required: true
         - label: "I verified that the feature/issue works correctly *without* the userscript enabled (it is not a Duolingo bug)."
           required: true
+        - label: "I understand that bug fixes are not guaranteed especially if they aren't website-breaking and that it may take some time to be reviewed. (Remember this is mostly unpaid labor!)"
+          required: true
 
   - type: dropdown
     id: version

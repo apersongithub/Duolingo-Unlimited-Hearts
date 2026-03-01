@@ -59,7 +59,7 @@ function showStatus(msg) {
 }
 
 // Debounce helper
-function debounce(fn, delay = 300) { let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), delay); }; }
+function debounce(fn, delay = 300) { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), delay); }; }
 
 const saveSettings = debounce((settings) => { chrome.storage.sync.set({ settings }); }, 200);
 
@@ -196,7 +196,7 @@ function registerAutosaveListeners(initialSettings) {
       // Broadcast a one-time nonce through storage.local. Content scripts will clear localStorage on change.
       try {
         chrome.storage.local.set({ '__ext_clear_ls__': Date.now() });
-      } catch {}
+      } catch { }
     });
   });
 
@@ -212,4 +212,21 @@ function registerAutosaveListeners(initialSettings) {
 
 document.addEventListener('DOMContentLoaded', () => {
   restore();
+
+  // Money saved indicator
+  const moneySavedEl = document.getElementById('moneySaved');
+  if (moneySavedEl) {
+    chrome.storage.local.get('installDate', data => {
+      const installDate = data.installDate || Date.now();
+      if (!data.installDate) {
+        chrome.storage.local.set({ installDate });
+      }
+      const now = Date.now();
+      const msPerMonth = 30.44 * 24 * 60 * 60 * 1000;
+      const monthsElapsed = Math.floor((now - installDate) / msPerMonth);
+      const totalMonths = monthsElapsed + 1;
+      const saved = (totalMonths * 12.99).toFixed(2);
+      moneySavedEl.textContent = `💰 You've saved $${saved} from using this extension, a small donation would be appreciated!`;
+    });
+  }
 });

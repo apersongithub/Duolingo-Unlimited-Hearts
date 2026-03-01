@@ -50,4 +50,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
   updateStatus();
   setInterval(updateStatus, 5000);
+
+  // Money saved indicator
+  const moneySavedEl = document.getElementById('moneySaved');
+  chrome.storage.local.get('installDate', data => {
+    const installDate = data.installDate || Date.now();
+    // If no install date stored yet, store it now as fallback
+    if (!data.installDate) {
+      chrome.storage.local.set({ installDate });
+    }
+    const now = Date.now();
+    const msPerMonth = 30.44 * 24 * 60 * 60 * 1000;
+    const monthsElapsed = Math.floor((now - installDate) / msPerMonth);
+    const totalMonths = monthsElapsed + 1; // First month counts on install day
+    const saved = (totalMonths * 12.99).toFixed(2);
+    moneySavedEl.textContent = `💰 You've saved $${saved}!`;
+  });
 });
