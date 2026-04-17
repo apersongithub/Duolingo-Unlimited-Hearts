@@ -61,7 +61,7 @@ async function getSettingsPatchMode() {
       userOverridePatch: false
     };
     await saveSettings(s);
-    
+
     // Kick off remote fetch passively
     fetchRemoteDefaultPatch().then(async remote => {
       if (remote !== defaultMode) {
@@ -69,8 +69,8 @@ async function getSettingsPatchMode() {
         await saveSettings(s);
         showRemoteChangedOverlay();
       }
-    }).catch(() => {});
-    
+    }).catch(() => { });
+
     return defaultMode;
   }
 
@@ -83,7 +83,7 @@ async function getSettingsPatchMode() {
         await saveSettings(s);
         showRemoteChangedOverlay();
       }
-    }).catch(() => {});
+    }).catch(() => { });
     return currentMode;
   }
 
@@ -276,22 +276,31 @@ function sendPatched(url, patchedCode) {
   );
 }
 
+function tryBackgroundFetch(url) {
+  return new Promise(resolve => {
+    chrome.runtime.sendMessage({ type: 'FETCH_AND_PATCH', url, patchMode: selectedPatchMode }, resp => resolve(resp));
+  });
+}
+
 async function handleUrl(url) {
   if (!url || processed.has(url) || !CHUNK_REGEX.test(url)) return;
-  
+
   if (!modeReady) {
     pendingUrls.push(url);
     return;
   }
-  
+
   processed.add(url);
   await injectInjector();
   enqueue(url);
 
-  // We bypass the background MV3 service worker entirely for chunk fetching.
-  // We send null patchedCode, which signals injection.js to fetch and patch inline.
-  // This completely solves the white-screen timeout issues caused by the MV3 limitation.
-  sendPatched(url, null);
+  try {
+    const resp = await tryBackgroundFetch(url);
+    if (resp && resp.ok && resp.patched) sendPatched(url, resp.patched);
+    else sendPatched(url, null);
+  } catch {
+    sendPatched(url, null);
+  }
 }
 
 // NEW: live patch mode update handler
@@ -347,11 +356,11 @@ chrome.storage.onChanged.addListener((changes, area) => {
     const data = await loadSettings();
     enableSpeechPatch = data?.enableSpeechPatch !== false;
   } catch { enableSpeechPatch = true; }
-  
+
   injectPageHook();
   injectUserscriptBootstrapIfNeeded(selectedPatchMode);
   injectCustomUI(selectedPatchMode);
-  
+
   // Flush queue
   modeReady = true;
   resolveModeReady();

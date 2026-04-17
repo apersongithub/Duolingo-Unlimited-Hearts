@@ -44,7 +44,7 @@ async function maybeSyncSelectedPatch(s) {
 }
 
 async function fetchText(url) {
-  const resp = await fetch(url, { cache: 'no-store', credentials: 'include' });
+  const resp = await fetch(url, { cache: 'default', credentials: 'include' });
   if (!resp.ok) throw new Error('fetch failed ' + resp.status);
   return resp.text();
 }
@@ -73,23 +73,12 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
         const data = await chrome.storage.sync.get('settings');
         setSpeechPatchEnabled(data?.settings?.enableSpeechPatch !== false);
       } catch { setSpeechPatchEnabled(true); }
-      const cacheKey = `patched:${mode}:${url}`;
-      const cachedAtKey = `cachedAt:${mode}:${url}`;
       try {
         const original = await fetchText(url);
         const patched = applyPatches(url, original);
-        await chrome.storage.local.set({
-          [cacheKey]: patched,
-          [cachedAtKey]: Date.now()
-        });
         sendResponse({ ok: true, patched, fromCache: false });
       } catch (err) {
-        const cached = (await chrome.storage.local.get(cacheKey))[cacheKey];
-        if (cached) {
-          sendResponse({ ok: true, patched: cached, fromCache: true });
-        } else {
-          sendResponse({ ok: false, error: String(err) });
-        }
+        sendResponse({ ok: false, error: String(err) });
       }
     })();
     return true;
