@@ -1,19 +1,7 @@
-// ==UserScript==
-// @name         Duolingo Unlimited Hearts
-// @icon         https://d35aaqx5ub95lt.cloudfront.net/images/hearts/fa8debbce8d3e515c3b08cb10271fbee.svg
-// @namespace    http://tampermonkey.net/
-// @version      3.4.1
-// @description  Intercepts and modifies fetch Duolingo's API responses for user data with caching support.
-// @author       apersongithub
-// @match       *://*.duolingo.com/*
-// @match       *://*.duolingo.cn/*
-// @grant        none
-// @run-at       document-start
-// @downloadURL https://github.com/apersongithub/Duolingo-Unlimited-Hearts/raw/refs/heads/main/userscript/Duolingo%20Unlimited%20Hearts.user.js
-// @updateURL https://github.com/apersongithub/Duolingo-Unlimited-Hearts/raw/refs/heads/main/userscript/Duolingo%20Unlimited%20Hearts.user.js
-// ==/UserScript==
+; (() => {
+    if (window.__DL_PATCH5_INSTALLED__) return;
+    window.__DL_PATCH5_INSTALLED__ = true;
 
-// WORKS AS OF 2025-11-22
     (function () {
         'use strict';
 
@@ -86,4 +74,5 @@
 
         document.documentElement.appendChild(script);
         script.remove();
+})();
 })();

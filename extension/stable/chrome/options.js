@@ -2,6 +2,7 @@ import { fetchDefaultPatch } from './shared/defaults.js';
 
 const DEFAULT_SETTINGS = {
   enableNotifications: true,
+  enableSpeechPatch: true,
   major: { weeks: 0, days: 3, hours: 0, minutes: 0 },
   minor: { weeks: 1, days: 0, hours: 0, minutes: 0 },
   selectedPatch: 1,
@@ -45,6 +46,7 @@ function applySettings(s) {
   setRadioMode(mode);
 
   byId('syncDefaultPatch').checked = s.syncDefaultPatch !== false;
+  byId('enableSpeechPatch').checked = s.enableSpeechPatch !== false;
 
   byId('enableNotifications').checked = !!s.enableNotifications;
   byId('majorWeeks').value = s.major.weeks;
@@ -73,6 +75,7 @@ function readSettings() {
   return {
     selectedPatch: readSelectedPatch(),
     syncDefaultPatch: byId('syncDefaultPatch').checked,
+    enableSpeechPatch: byId('enableSpeechPatch').checked,
     enableNotifications: byId('enableNotifications').checked,
     major: {
       weeks: +byId('majorWeeks').value || 0,

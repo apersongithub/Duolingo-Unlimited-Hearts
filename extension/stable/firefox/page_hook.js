@@ -3,7 +3,7 @@
   if (window.__EXT_PAGE_HOOK_INSTALLED__) return;
   window.__EXT_PAGE_HOOK_INSTALLED__ = true;
 
-  const RE = /(^|\/)(app|7220|6150|4370)[^/]*\.js(\?.*)?$/i;
+  const RE = /(^|\/)(app|\d{3,5})[^/]*\.js(\?.*)?$/i;
   const origAppend = Element.prototype.appendChild;
   const origInsertBefore = Element.prototype.insertBefore;
 

@@ -1,9 +1,18 @@
 // Shared patch logic for both background and in-page module (injection.js)
 
 const APP_RE = /^app([.-].*|)\.js(\?.*|)?$/i;
-const CHUNK_7220_RE = /^7220[^/]*\.js(\?.*|)?$/i;
-const CHUNK_6150_RE = /^6150[^/]*\.js(\?.*|)?$/i;
-const CHUNK_4370_RE = /^4370[^/]*\.js(\?.*|)?$/i;
+
+// Content fingerprints — detect which patches to apply by inspecting code contents
+// rather than relying on hardcoded chunk filenames that Duolingo changes on major updates.
+export function looksLikeChunk7220(code) {
+  return code.includes('isDisabled:!0,') && code.includes('.user.hasPlus');
+}
+export function looksLikeChunk6150(code) {
+  return code.includes('/mistakes-review');
+}
+export function looksLikeChunk4370(code) {
+  return code.includes('/practice-hub/words/practice');
+}
 
 export const isAppUrl = url => APP_RE.test((url || '').split('/').pop() || '');
 
@@ -17,6 +26,12 @@ export function getPatchMode() {
   return PATCH_MODE;
 }
 
+// Speech Recognition patch toggle (on by default)
+let SPEECH_PATCH_ENABLED = true;
+export function setSpeechPatchEnabled(enabled) {
+  SPEECH_PATCH_ENABLED = enabled !== false;
+}
+
 export function applyPatches(url, code) {
   try {
     const name = (url || '').split('/').pop() || '';
@@ -24,9 +39,9 @@ export function applyPatches(url, code) {
     switch (PATCH_MODE) {
       case 1: {
         if (APP_RE.test(name)) code = patchApp(code);
-        if (CHUNK_7220_RE.test(name)) code = patch7220(code);
-        if (CHUNK_6150_RE.test(name)) code = patch6150(code);
-        if (CHUNK_4370_RE.test(name)) code = patch4370(code);
+        if (looksLikeChunk7220(code)) code = patch7220(code);
+        if (looksLikeChunk6150(code)) code = patch6150(code);
+        if (looksLikeChunk4370(code)) code = patch4370(code);
         return code;
       }
       case 2: {
@@ -45,16 +60,16 @@ export function applyPatches(url, code) {
         return code;
       case 6: {
         if (APP_RE.test(name)) code = patchAppPremium(code);
-        if (CHUNK_7220_RE.test(name)) code = patch7220(code);
-        if (CHUNK_6150_RE.test(name)) code = patch6150(code);
-        if (CHUNK_4370_RE.test(name)) code = patch4370(code);
+        if (looksLikeChunk7220(code)) code = patch7220(code);
+        if (looksLikeChunk6150(code)) code = patch6150(code);
+        if (looksLikeChunk4370(code)) code = patch4370(code);
         return code;
       }
       case 7: {
         if (APP_RE.test(name)) code = patchAppImmersive(code);
-        if (CHUNK_7220_RE.test(name)) code = patch7220(code);
-        if (CHUNK_6150_RE.test(name)) code = patch6150(code);
-        if (CHUNK_4370_RE.test(name)) code = patch4370(code);
+        if (looksLikeChunk7220(code)) code = patch7220(code);
+        if (looksLikeChunk6150(code)) code = patch6150(code);
+        if (looksLikeChunk4370(code)) code = patch4370(code);
         return code;
       }
       default:
@@ -82,10 +97,12 @@ export function patchApp(code) {
   );
 
   // --- SpeechRecognition check ---
-  code = code.replace(
-    /([A-Za-z_$][\w$]*)\s*=\s*!!window\.webkitSpeechRecognition\s*&&\s*\(\s*[A-Za-z_$][\w$]*\.Z\.chrome\s*\|\|\s*[A-Za-z_$][\w$]*\.Z\.edgeSupportedSpeaking\s*\)/g,
-    (_, v) => `${v} = !!(window.SpeechRecognition || window.webkitSpeechRecognition)`
-  );
+  if (SPEECH_PATCH_ENABLED) {
+    code = code.replace(
+      /([A-Za-z_$][\w$]*)\s*=\s*!!window\.webkitSpeechRecognition\s*&&\s*\(\s*[A-Za-z_$][\w$]*\.Z\.chrome\s*\|\|\s*[A-Za-z_$][\w$]*\.Z\.edgeSupportedSpeaking\s*\)/g,
+      (_, v) => `${v} = !!(window.SpeechRecognition || window.webkitSpeechRecognition)`
+    );
+  }
   return code;
 }
 
@@ -107,10 +124,12 @@ export function patchAppPremium(code) {
     /([A-Za-z_$][\w$]*)\s*=\s*e\s*=>\s*e\.user(?!\s*[\.\[(])\s*(?=[,;)}]|$)/g,
     `$1=(()=>{let lu=null,lpu=null;return e=>{const cu=e.user;if(cu===lu)return lpu;lu=cu;lpu={...cu,hasPlus:true};return lpu;};})()`
   );
-  code = code.replace(
-    /([A-Za-z_$][\w$]*)\s*=\s*!!window\.webkitSpeechRecognition\s*&&\s*\(\s*[A-Za-z_$][\w$]*\.Z\.chrome\s*\|\|\s*[A-Za-z_$][\w$]*\.Z\.edgeSupportedSpeaking\s*\)/g,
-    (_, v) => `${v} = !!(window.SpeechRecognition || window.webkitSpeechRecognition)`
-  );
+  if (SPEECH_PATCH_ENABLED) {
+    code = code.replace(
+      /([A-Za-z_$][\w$]*)\s*=\s*!!window\.webkitSpeechRecognition\s*&&\s*\(\s*[A-Za-z_$][\w$]*\.Z\.chrome\s*\|\|\s*[A-Za-z_$][\w$]*\.Z\.edgeSupportedSpeaking\s*\)/g,
+      (_, v) => `${v} = !!(window.SpeechRecognition || window.webkitSpeechRecognition)`
+    );
+  }
   return code;
 }
 
@@ -132,10 +151,12 @@ export function patchAppImmersive(code) {
     /([A-Za-z_$][\w$]*)\s*=\s*e\s*=>\s*e\.user(?!\s*[\.\[(])\s*(?=[,;)}]|$)/g,
     `$1=(()=>{let lu=null,lpu=null;return e=>{const cu=e.user;if(cu===lu)return lpu;lu=cu;lpu={...cu,hasPlus:true};return lpu;};})()`
   );
-  code = code.replace(
-    /([A-Za-z_$][\w$]*)\s*=\s*!!window\.webkitSpeechRecognition\s*&&\s*\(\s*[A-Za-z_$][\w$]*\.Z\.chrome\s*\|\|\s*[A-Za-z_$][\w$]*\.Z\.edgeSupportedSpeaking\s*\)/g,
-    (_, v) => `${v} = !!(window.SpeechRecognition || window.webkitSpeechRecognition)`
-  );
+  if (SPEECH_PATCH_ENABLED) {
+    code = code.replace(
+      /([A-Za-z_$][\w$]*)\s*=\s*!!window\.webkitSpeechRecognition\s*&&\s*\(\s*[A-Za-z_$][\w$]*\.Z\.chrome\s*\|\|\s*[A-Za-z_$][\w$]*\.Z\.edgeSupportedSpeaking\s*\)/g,
+      (_, v) => `${v} = !!(window.SpeechRecognition || window.webkitSpeechRecognition)`
+    );
+  }
   return code;
 }
 

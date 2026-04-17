@@ -1,9 +1,18 @@
 // Shared patch logic for both background and in-page module (injection.js)
 
 const APP_RE = /^app([.-].*|)\.js(\?.*|)?$/i;
-const CHUNK_7220_RE = /^7220[^/]*\.js(\?.*|)?$/i;
-const CHUNK_6150_RE = /^6150[^/]*\.js(\?.*|)?$/i;
-const CHUNK_4370_RE = /^4370[^/]*\.js(\?.*|)?$/i;
+
+// Content fingerprints — detect which patches to apply by inspecting code contents
+// rather than relying on hardcoded chunk filenames that Duolingo changes on major updates.
+export function looksLikeChunk7220(code) {
+  return code.includes('isDisabled:!0,') && code.includes('.user.hasPlus');
+}
+export function looksLikeChunk6150(code) {
+  return code.includes('/mistakes-review');
+}
+export function looksLikeChunk4370(code) {
+  return code.includes('/practice-hub/words/practice');
+}
 
 export const isAppUrl = url => APP_RE.test((url || '').split('/').pop() || '');
 
@@ -17,56 +26,52 @@ export function getPatchMode() {
   return PATCH_MODE;
 }
 
+// Speech Recognition patch toggle (on by default)
+let SPEECH_PATCH_ENABLED = true;
+export function setSpeechPatchEnabled(enabled) {
+  SPEECH_PATCH_ENABLED = enabled !== false;
+}
+
 export function applyPatches(url, code) {
   try {
     const name = (url || '').split('/').pop() || '';
 
     switch (PATCH_MODE) {
       case 1: {
-        // Original behavior (legacy patches)
         if (APP_RE.test(name)) code = patchApp(code);
-        if (CHUNK_7220_RE.test(name)) code = patch7220(code);
-        if (CHUNK_6150_RE.test(name)) code = patch6150(code);
-        if (CHUNK_4370_RE.test(name)) code = patch4370(code);
+        if (looksLikeChunk7220(code)) code = patch7220(code);
+        if (looksLikeChunk6150(code)) code = patch6150(code);
+        if (looksLikeChunk4370(code)) code = patch4370(code);
         return code;
       }
       case 2: {
-        // Patch 2: app*.js only
         if (APP_RE.test(name)) code = patch2(code);
         return code;
       }
       case 3: {
-        // Patch 3: app*.js only
         if (APP_RE.test(name)) code = patchCode3(code);
         return code;
       }
       case 4:
       case 5:
-        // Userscript modes: no code mutation here. Userscripts are injected separately at document-start.
+      case 8:
+      case 9:
+        // Userscript modes: no code mutation here
         return code;
-
       case 6: {
-        // Premium subscription variant (same process as patch 1 but different subscription name)
         if (APP_RE.test(name)) code = patchAppPremium(code);
-        if (CHUNK_7220_RE.test(name)) code = patch7220(code);
-        if (CHUNK_6150_RE.test(name)) code = patch6150(code);
-        if (CHUNK_4370_RE.test(name)) code = patch4370(code);
+        if (looksLikeChunk7220(code)) code = patch7220(code);
+        if (looksLikeChunk6150(code)) code = patch6150(code);
+        if (looksLikeChunk4370(code)) code = patch4370(code);
         return code;
       }
       case 7: {
-        // Immersive subscription variant (same process as patch 1 but different subscription name)
         if (APP_RE.test(name)) code = patchAppImmersive(code);
-        if (CHUNK_7220_RE.test(name)) code = patch7220(code);
-        if (CHUNK_6150_RE.test(name)) code = patch6150(code);
-        if (CHUNK_4370_RE.test(name)) code = patch4370(code);
+        if (looksLikeChunk7220(code)) code = patch7220(code);
+        if (looksLikeChunk6150(code)) code = patch6150(code);
+        if (looksLikeChunk4370(code)) code = patch4370(code);
         return code;
       }
-
-      case 8:
-      case 9:
-        // Userscript modes (linked to userscripts/patch6.js and userscripts/patch7.js from content script)
-        return code;
-
       default:
         return code;
     }
@@ -77,11 +82,8 @@ export function applyPatches(url, code) {
 
 /**
  * Patch 1 (existing)
- * Patches below intentionally concise; keep replacements identical to legacy versions.
  */
 export function patchApp(code) {
-  // Inject premium subscription + hasPlus + speech recognition unlock
-
   // --- Patch e.items ---
   code = code.replace(
     /([A-Za-z_$][\w$]*)\s*=\s*e\s*=>\s*e\.items(?!\s*[\.\[(])\s*(?=[,;)}]|$)/g,
@@ -94,51 +96,67 @@ export function patchApp(code) {
     `$1=(()=>{let lu=null,lpu=null;return e=>{const cu=e.user;if(cu===lu)return lpu;lu=cu;lpu={...cu,hasPlus:true};return lpu;};})()`
   );
 
-  // --- Patch SpeechRecognition check ---
-  code = code.replace(
-    /([A-Za-z_$][\w$]*)\s*=\s*!!window\.webkitSpeechRecognition\s*&&\s*\(\s*[A-Za-z_$][\w$]*\.Z\.chrome\s*\|\|\s*[A-Za-z_$][\w$]*\.Z\.edgeSupportedSpeaking\s*\)/g,
-    (_, v) => `${v} = !!(window.SpeechRecognition || window.webkitSpeechRecognition)`
-  );
+  // --- SpeechRecognition check ---
+  if (SPEECH_PATCH_ENABLED) {
+    code = code.replace(
+      /([A-Za-z_$][\w$]*)\s*=\s*!!window\.webkitSpeechRecognition\s*&&\s*\(\s*[A-Za-z_$][\w$]*\.Z\.chrome\s*\|\|\s*[A-Za-z_$][\w$]*\.Z\.edgeSupportedSpeaking\s*\)/g,
+      (_, v) => `${v} = !!(window.SpeechRecognition || window.webkitSpeechRecognition)`
+    );
+  }
   return code;
 }
 
-// Patch 6: Premium subscription variant of patchApp
+/**
+ * Super Patch 1 (Premium) — like Patch 1 but injects premium_subscription
+ */
 export function patchAppPremium(code) {
-  // --- Patch e.items (premium_subscription) ---
+  const before = code;
   code = code.replace(
     /([A-Za-z_$][\w$]*)\s*=\s*e\s*=>\s*e\.items(?!\s*[\.\[(])\s*(?=[,;)}]|$)/g,
     `$1=e=>({...e.items,inventory:{...e.items.inventory,premium_subscription:{itemName:"premium_subscription",subscriptionInfo:{vendor:"STRIPE",renewing:true,isFamilyPlan:true,expectedExpiration:9999999999000}}}})`
   );
-
-  // Keep the rest same as patchApp
+  if (code === before && !code.includes('premium_subscription')) {
+    code = patchApp(code)
+      .replace(/"gold_subscription"/g, '"premium_subscription"')
+      .replace(/\bgold_subscription\b/g, 'premium_subscription');
+  }
   code = code.replace(
     /([A-Za-z_$][\w$]*)\s*=\s*e\s*=>\s*e\.user(?!\s*[\.\[(])\s*(?=[,;)}]|$)/g,
     `$1=(()=>{let lu=null,lpu=null;return e=>{const cu=e.user;if(cu===lu)return lpu;lu=cu;lpu={...cu,hasPlus:true};return lpu;};})()`
   );
-  code = code.replace(
-    /([A-Za-z_$][\w$]*)\s*=\s*!!window\.webkitSpeechRecognition\s*&&\s*\(\s*[A-Za-z_$][\w$]*\.Z\.chrome\s*\|\|\s*[A-Za-z_$][\w$]*\.Z\.edgeSupportedSpeaking\s*\)/g,
-    (_, v) => `${v} = !!(window.SpeechRecognition || window.webkitSpeechRecognition)`
-  );
+  if (SPEECH_PATCH_ENABLED) {
+    code = code.replace(
+      /([A-Za-z_$][\w$]*)\s*=\s*!!window\.webkitSpeechRecognition\s*&&\s*\(\s*[A-Za-z_$][\w$]*\.Z\.chrome\s*\|\|\s*[A-Za-z_$][\w$]*\.Z\.edgeSupportedSpeaking\s*\)/g,
+      (_, v) => `${v} = !!(window.SpeechRecognition || window.webkitSpeechRecognition)`
+    );
+  }
   return code;
 }
 
-// Patch 7: Immersive subscription variant of patchApp
+/**
+ * Super Patch 2 (Immersive) — like Patch 1 but injects immersive_subscription
+ */
 export function patchAppImmersive(code) {
-  // --- Patch e.items (immersive_subscription) ---
+  const before = code;
   code = code.replace(
     /([A-Za-z_$][\w$]*)\s*=\s*e\s*=>\s*e\.items(?!\s*[\.\[(])\s*(?=[,;)}]|$)/g,
     `$1=e=>({...e.items,inventory:{...e.items.inventory,immersive_subscription:{itemName:"immersive_subscription",subscriptionInfo:{vendor:"STRIPE",renewing:true,isFamilyPlan:true,expectedExpiration:9999999999000}}}})`
   );
-
-  // Keep the rest same as patchApp
+  if (code === before && !code.includes('immersive_subscription')) {
+    code = patchApp(code)
+      .replace(/"gold_subscription"/g, '"immersive_subscription"')
+      .replace(/\bgold_subscription\b/g, 'immersive_subscription');
+  }
   code = code.replace(
     /([A-Za-z_$][\w$]*)\s*=\s*e\s*=>\s*e\.user(?!\s*[\.\[(])\s*(?=[,;)}]|$)/g,
     `$1=(()=>{let lu=null,lpu=null;return e=>{const cu=e.user;if(cu===lu)return lpu;lu=cu;lpu={...cu,hasPlus:true};return lpu;};})()`
   );
-  code = code.replace(
-    /([A-Za-z_$][\w$]*)\s*=\s*!!window\.webkitSpeechRecognition\s*&&\s*\(\s*[A-Za-z_$][\w$]*\.Z\.chrome\s*\|\|\s*[A-Za-z_$][\w$]*\.Z\.edgeSupportedSpeaking\s*\)/g,
-    (_, v) => `${v} = !!(window.SpeechRecognition || window.webkitSpeechRecognition)`
-  );
+  if (SPEECH_PATCH_ENABLED) {
+    code = code.replace(
+      /([A-Za-z_$][\w$]*)\s*=\s*!!window\.webkitSpeechRecognition\s*&&\s*\(\s*[A-Za-z_$][\w$]*\.Z\.chrome\s*\|\|\s*[A-Za-z_$][\w$]*\.Z\.edgeSupportedSpeaking\s*\)/g,
+      (_, v) => `${v} = !!(window.SpeechRecognition || window.webkitSpeechRecognition)`
+    );
+  }
   return code;
 }
 
@@ -163,15 +181,11 @@ export function patch4370(code) {
  * Patch 2 (app.js only)
  */
 export function patch2(code) {
-  // 1) change => "free" or => 'free' to => "schools"
   code = code.replace(/=>\s*(['"])free\1/g, '=> "schools"');
-
-  // 2) append "free" to exact array ["schools","beta course","revenue paused"]
   code = code.replace(
     /\[\s*(['"])\s*schools\s*\1\s*,\s*(['"])\s*beta course\s*\2\s*,\s*(['"])\s*revenue paused\s*\3\s*\]/g,
     (match, q1) => `[${q1}schools${q1}, ${q1}beta course${q1}, ${q1}revenue paused${q1}, ${q1}free${q1}]`
   );
-
   return code;
 }
 
@@ -182,7 +196,6 @@ export function patchCode3(code) {
   return code.replace(
     /(?<!const\s+\w+\s*=\s*)(\w+\s*=\s*\w*\s*=>\s*\[[^\]]*?)(\]\.includes\(\w*\))/g,
     (match, start, end) => {
-      // Skip if "free" already present
       if (/["']free["']/.test(match)) return match;
       return `${start}, "free"${end}`;
     }

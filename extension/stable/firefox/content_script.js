@@ -1,8 +1,9 @@
 // Coordinates patch pipeline: hook early, enqueue targets, ask background for patched code.
 // Avoid "mixed" modes by finalizing patch mode before handling any script URLs.
-const CHUNK_REGEX = /(^|\/)(app|7220|6150|4370)[^/]*\.js(\?.*)?$/i;
+const CHUNK_REGEX = /(^|\/)(app|\d{3,5})[^/]*\.js(\?.*)?$/i;
 const processed = new Set();
 let selectedPatchMode = 1;
+let enableSpeechPatch = true;
 let userscriptBootInjected = false;
 
 // Injector load promise
@@ -30,16 +31,37 @@ function getSettingsPatchMode() {
         const stored = Number(s.selectedPatch);
         try {
           if (sync && !overridden) {
-            const remote = await (globalThis.fetchDefaultPatch?.() || Promise.resolve(1));
-            resolve(clampPatch(remote));
+            const fallback = Number.isFinite(stored) ? clampPatch(stored) : 1;
+            if (globalThis.fetchDefaultPatch) {
+              globalThis.fetchDefaultPatch().then(remote => {
+                const r = clampPatch(remote);
+                if (r !== fallback) {
+                  s.selectedPatch = r;
+                  chrome.storage.sync.set({ settings: s }, () => {
+                    chrome.storage.local.set({ remoteDefaultPatch: r }); // Background listener handles UI
+                  });
+                }
+              }).catch(() => {});
+            }
+            resolve(fallback);
             return;
           }
           if (Number.isFinite(stored)) {
             resolve(clampPatch(stored));
             return;
           }
-          const remote = await (globalThis.fetchDefaultPatch?.() || Promise.resolve(1));
-          resolve(clampPatch(remote));
+          
+          const fallbackFinal = 1;
+          if (globalThis.fetchDefaultPatch) {
+            globalThis.fetchDefaultPatch().then(remote => {
+              const r = clampPatch(remote);
+              if (r !== fallbackFinal) {
+                s.selectedPatch = r;
+                chrome.storage.sync.set({ settings: s });
+              }
+            }).catch(() => {});
+          }
+          resolve(fallbackFinal);
         } catch {
           resolve(1);
         }
@@ -221,7 +243,7 @@ function injectPageHook() {
 }
 
 function enqueue(url) {
-  window.postMessage({ source: 'ext-injector-enqueue', url, patchMode: selectedPatchMode }, '*');
+  window.postMessage({ source: 'ext-injector-enqueue', url, patchMode: selectedPatchMode, enableSpeechPatch }, '*');
 }
 
 function sendPatched(url, patchedCode) {
@@ -236,29 +258,27 @@ function sendPatched(url, patchedCode) {
 async function handleUrl(url) {
   if (!url || processed.has(url) || !CHUNK_REGEX.test(url)) return;
 
-  // If patch mode isn't ready yet, queue and return. The page_hook has already prevented script execution.
   if (!modeReady) {
     pendingUrls.push(url);
     return;
   }
 
   processed.add(url);
-
   await injectInjector();
   enqueue(url);
 
-  try {
-    const resp = await tryBackgroundFetch(url);
-    if (resp && resp.ok && resp.patched) sendPatched(url, resp.patched);
-    else sendPatched(url, null);
-  } catch {
-    sendPatched(url, null);
-  }
+  // Use fast inline fetch exactly like Chrome.
+  sendPatched(url, null);
 }
 
 async function finalizeModeAndFlush() {
   try {
     selectedPatchMode = await getSettingsPatchMode();
+    // Read speech patch setting
+    try {
+      const data = await new Promise(r => chrome.storage.sync.get('settings', r));
+      enableSpeechPatch = data?.settings?.enableSpeechPatch !== false;
+    } catch { enableSpeechPatch = true; }
   } catch {
     selectedPatchMode = 1;
   } finally {
@@ -268,9 +288,7 @@ async function finalizeModeAndFlush() {
     resolveModeReady?.();
 
     const urls = pendingUrls.splice(0, pendingUrls.length);
-    for (const u of urls) {
-      await handleUrl(u);
-    }
+    await Promise.all(urls.map(u => handleUrl(u)));
 
     scan();
   }

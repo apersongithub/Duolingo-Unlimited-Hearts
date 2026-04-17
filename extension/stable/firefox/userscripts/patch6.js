@@ -1,6 +1,6 @@
 ;(() => {
-  if (window.__DL_PATCH4_INSTALLED__) return;
-  window.__DL_PATCH4_INSTALLED__ = true;
+  if (window.__DL_PATCH6_INSTALLED__) return;
+  window.__DL_PATCH6_INSTALLED__ = true;
 
   (function () {
   'use strict';

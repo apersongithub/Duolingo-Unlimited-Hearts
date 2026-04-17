@@ -1,4 +1,4 @@
-import { applyPatches, setPatchMode } from './shared/patches.js';
+import { applyPatches, setPatchMode, setSpeechPatchEnabled } from './shared/patches.js';
 import { fetchDefaultPatch } from './shared/defaults.js';
 
 const DEFAULT_SETTINGS = {
@@ -58,7 +58,6 @@ async function getSelectedPatchMode() {
 
 chrome.runtime.onInstalled.addListener(async () => {
   await ensureSettingsSeeded();
-  // Store install date for money-saved counter (only on first install)
   const { installDate } = await chrome.storage.local.get('installDate');
   if (!installDate) await chrome.storage.local.set({ installDate: Date.now() });
 });
@@ -69,6 +68,11 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
     (async () => {
       const mode = await getSelectedPatchMode();
       setPatchMode(mode);
+      // Read speech patch setting
+      try {
+        const data = await chrome.storage.sync.get('settings');
+        setSpeechPatchEnabled(data?.settings?.enableSpeechPatch !== false);
+      } catch { setSpeechPatchEnabled(true); }
       const cacheKey = `patched:${mode}:${url}`;
       const cachedAtKey = `cachedAt:${mode}:${url}`;
       try {

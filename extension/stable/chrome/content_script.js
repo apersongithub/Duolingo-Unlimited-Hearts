@@ -1,11 +1,20 @@
-// Coordinates patch pipeline: hook early, enqueue targets, ask background for patched code.
-const CHUNK_REGEX = /(^|\/)(app|7220|6150|4370)[^/]*\.js(\?.*)?$/i;
+const CHUNK_REGEX = /(^|\/)(app|\d{3,5})[^/]*\.js(\?.*)?$/i;
 const processed = new Set();
 let selectedPatchMode = 1;
+let enableSpeechPatch = true;
 let userscriptBootInjected = false;
 
 // Key used by options page to signal a localStorage clear across open Duolingo tabs
 const CLEAR_LS_TOKEN_KEY = '__ext_clear_localstorage_token__';
+
+// Mode gating buffer
+let modeReady = false;
+let resolveModeReady;
+const modeReadyPromise = new Promise(res => (resolveModeReady = res));
+const pendingUrls = [];
+
+// Injector load promise
+let injectorReadyPromise = null;
 
 // Fetch remote default patch (used for initial seeding)
 async function fetchRemoteDefaultPatch() {
@@ -42,27 +51,40 @@ async function getSettingsPatchMode() {
 
   // First install: seed from remote (or fallback)
   if (typeof s.selectedPatch !== 'number') {
-    const remote = await fetchRemoteDefaultPatch();
+    const defaultMode = 1;
     s = {
       enableNotifications: true,
       major: { weeks: 0, days: 3, hours: 0, minutes: 0 },
       minor: { weeks: 1, days: 0, hours: 0, minutes: 0 },
-      selectedPatch: remote,
+      selectedPatch: defaultMode,
       syncDefaultPatch: true,
       userOverridePatch: false
     };
     await saveSettings(s);
-    return remote;
+    
+    // Kick off remote fetch passively
+    fetchRemoteDefaultPatch().then(async remote => {
+      if (remote !== defaultMode) {
+        s.selectedPatch = remote;
+        await saveSettings(s);
+        showRemoteChangedOverlay();
+      }
+    }).catch(() => {});
+    
+    return defaultMode;
   }
 
-  // If sync is enabled and no manual override, follow remote default
+  // If sync is enabled and no manual override, follow remote default passively
   if (s.syncDefaultPatch !== false && s.userOverridePatch !== true) {
-    const remote = await fetchRemoteDefaultPatch();
-    if (remote !== s.selectedPatch) {
-      s.selectedPatch = remote;
-      await saveSettings(s);
-    }
-    return remote;
+    const currentMode = s.selectedPatch;
+    fetchRemoteDefaultPatch().then(async remote => {
+      if (remote !== currentMode) {
+        s.selectedPatch = remote;
+        await saveSettings(s);
+        showRemoteChangedOverlay();
+      }
+    }).catch(() => {});
+    return currentMode;
   }
 
   // Otherwise return user selection
@@ -214,13 +236,22 @@ function tryBackgroundFetch(url) {
 }
 
 function injectInjector() {
-  if (document.getElementById('__ext_injector_script__')) return;
-  const s = document.createElement('script');
-  s.id = '__ext_injector_script__';
-  s.type = 'module';
-  s.src = chrome.runtime.getURL('injection.js');
-  s.async = false;
-  (document.head || document.documentElement).appendChild(s);
+  if (document.getElementById('__ext_injector_script__')) {
+    return injectorReadyPromise || Promise.resolve();
+  }
+  if (injectorReadyPromise) return injectorReadyPromise;
+
+  injectorReadyPromise = new Promise(resolve => {
+    const s = document.createElement('script');
+    s.id = '__ext_injector_script__';
+    s.type = 'module';
+    s.src = chrome.runtime.getURL('injection.js');
+    s.async = false;
+    s.onload = () => resolve();
+    (document.head || document.documentElement).appendChild(s);
+  });
+
+  return injectorReadyPromise;
 }
 
 function injectPageHook() {
@@ -233,7 +264,7 @@ function injectPageHook() {
 }
 
 function enqueue(url) {
-  window.postMessage({ source: 'ext-injector-enqueue', url, patchMode: selectedPatchMode }, '*');
+  window.postMessage({ source: 'ext-injector-enqueue', url, patchMode: selectedPatchMode, enableSpeechPatch }, '*');
 }
 
 function sendPatched(url, patchedCode) {
@@ -247,17 +278,20 @@ function sendPatched(url, patchedCode) {
 
 async function handleUrl(url) {
   if (!url || processed.has(url) || !CHUNK_REGEX.test(url)) return;
+  
+  if (!modeReady) {
+    pendingUrls.push(url);
+    return;
+  }
+  
   processed.add(url);
-  injectInjector();
+  await injectInjector();
   enqueue(url);
 
-  try {
-    const resp = await tryBackgroundFetch(url);
-    if (resp && resp.ok && resp.patched) sendPatched(url, resp.patched);
-    else sendPatched(url, null);
-  } catch {
-    sendPatched(url, null);
-  }
+  // We bypass the background MV3 service worker entirely for chunk fetching.
+  // We send null patchedCode, which signals injection.js to fetch and patch inline.
+  // This completely solves the white-screen timeout issues caused by the MV3 limitation.
+  sendPatched(url, null);
 }
 
 // NEW: live patch mode update handler
@@ -308,11 +342,23 @@ chrome.storage.onChanged.addListener((changes, area) => {
 (async () => {
   // Load selected patch mode ASAP and inject userscript bootstrap early if needed
   selectedPatchMode = await getSettingsPatchMode();
+  // Read speech patch setting
+  try {
+    const data = await loadSettings();
+    enableSpeechPatch = data?.enableSpeechPatch !== false;
+  } catch { enableSpeechPatch = true; }
+  
+  injectPageHook();
   injectUserscriptBootstrapIfNeeded(selectedPatchMode);
   injectCustomUI(selectedPatchMode);
+  
+  // Flush queue
+  modeReady = true;
+  resolveModeReady();
+  const backlog = [...pendingUrls];
+  pendingUrls.length = 0;
+  for (const bkUrl of backlog) await handleUrl(bkUrl);
 })();
-
-injectPageHook();
 
 window.addEventListener('ext-script-blocked', ev => {
   handleUrl(ev?.detail?.url);

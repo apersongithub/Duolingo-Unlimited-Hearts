@@ -286,3 +286,33 @@
 
      color: white;
    }
+
+   .badge {
+     font-weight: 600;
+     margin-left: 8px;
+     font-size: 11px;
+     padding: 2px 6px;
+     border-radius: 4px;
+     display: inline-block;
+     color: white;
+     letter-spacing: 0.5px;
+     vertical-align: middle;
+   }
+
+   .badge-hardcoded {
+     background-color: #e67e22;
+   }
+
+   .badge-network {
+     background-color: #16a085;
+   }
+
+   @media (prefers-color-scheme: dark) {
+     .badge-hardcoded {
+       background-color: #f39c12;
+     }
+
+     .badge-network {
+       background-color: #1abc9c;
+     }
+   }

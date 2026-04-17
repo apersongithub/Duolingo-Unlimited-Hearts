@@ -1,5 +1,6 @@
 const DEFAULT_SETTINGS = {
   enableNotifications: true,
+  enableSpeechPatch: true,
   major: { weeks: 0, days: 3, hours: 0, minutes: 0 },
   minor: { weeks: 1, days: 0, hours: 0, minutes: 0 },
   selectedPatch: null,
@@ -32,6 +33,7 @@ function markDefaultPatchStar(defaultPatch) {
 function applySettingsToUI(s, effectivePatch, defaultPatch) {
   setRadioChecked(effectivePatch);
   byId('syncDefaultPatch').checked = s.syncDefaultPatch !== false;
+  byId('enableSpeechPatch').checked = s.enableSpeechPatch !== false;
   byId('enableNotifications').checked = s.enableNotifications;
   byId('majorWeeks').value = s.major.weeks;
   byId('majorDays').value = s.major.days;
@@ -164,6 +166,7 @@ function registerAutosaveListeners(initialSettings) {
       const prev = await new Promise(res => chrome.storage.sync.get('settings', d => res(d?.settings || DEFAULT_SETTINGS)));
       const s = Object.assign({}, prev, {
         enableNotifications: byId('enableNotifications').checked,
+        enableSpeechPatch: byId('enableSpeechPatch').checked,
         major: {
           weeks: +byId('majorWeeks').value || 0,
           days: +byId('majorDays').value || 0,

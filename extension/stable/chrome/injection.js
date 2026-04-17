@@ -1,5 +1,5 @@
 // Orchestrates patch execution in page context
-import { applyPatches, isAppUrl, setPatchMode } from './shared/patches.js';
+import { applyPatches, isAppUrl, setPatchMode, setSpeechPatchEnabled } from './shared/patches.js';
 
 if (!window.__EXT_PATCH_INJECTED__) {
   window.__EXT_PATCH_INJECTED__ = true;
@@ -13,7 +13,7 @@ if (!window.__EXT_PATCH_INJECTED__) {
   setPatchMode(1);
 
   async function pageFetchText(url) {
-    const res = await fetch(url, { credentials: 'include', cache: 'no-store' });
+    const res = await fetch(url, { credentials: 'include', cache: 'default' });
     if (!res.ok) throw new Error('fetch failed ' + res.status);
     return res.text();
   }
@@ -56,15 +56,19 @@ if (!window.__EXT_PATCH_INJECTED__) {
   function flushQueue() {
     if (!appReady) return;
     let progressed = false;
+    
     for (const url of queue) {
       if (executed.has(url)) continue;
+      
       const code = codeMap.get(url);
       if (code && execPatched(url, code)) progressed = true;
     }
+    
     for (let i = queue.length - 1; i >= 0; i--) {
       if (executed.has(queue[i])) queue.splice(i, 1);
     }
-    if (progressed && queue.some(u => codeMap.get(u) && !executed.has(u))) flushQueue();
+    
+    if (progressed && queue.some(u => codeMap.has(u) && !executed.has(u))) flushQueue();
   }
 
   window.addEventListener('message', ev => {
@@ -80,17 +84,24 @@ if (!window.__EXT_PATCH_INJECTED__) {
 
     if (d.source === 'ext-injector-enqueue') {
       if (typeof d.patchMode === 'number') setPatchMode(d.patchMode);
+      if (typeof d.enableSpeechPatch === 'boolean') setSpeechPatchEnabled(d.enableSpeechPatch);
       if (d.url && !queue.includes(d.url)) queue.push(d.url);
       return;
     }
 
     if (d.source === 'ext-injector' && d.url) {
       const { url } = d;
+      
+      // Fast path: background script already patched it
       if (typeof d.patchedCode === 'string') {
         try {
           const patched = d.patchedCode;
           codeMap.set(url, patched);
-          if (isAppUrl(url) || appReady) execPatched(url, patched);
+          if (isAppUrl(url)) {
+            execPatched(url, patched);
+          } else {
+            flushQueue();
+          }
           window.postMessage({ source: 'ext-injector-result', url, ok: true }, '*');
         } catch {
           window.postMessage({ source: 'ext-injector-result', url, ok: false }, '*');
@@ -98,15 +109,23 @@ if (!window.__EXT_PATCH_INJECTED__) {
         return;
       }
 
+      // Inline fetch path: fetch and patch in page context
       (async () => {
         try {
           const original = await pageFetchText(url);
           const patched = applyPatches(url, original);
           codeMap.set(url, patched);
-          if (isAppUrl(url) || appReady) execPatched(url, patched);
+          if (isAppUrl(url)) {
+            execPatched(url, patched);
+          } else {
+            flushQueue();
+          }
           window.postMessage({ source: 'ext-injector-result', url, ok: true }, '*');
         } catch (err) {
           console.error('page fetch/patch failed', url, err);
+          // Insert a blank script so the queue doesn't stall forever on a failed fetch
+          codeMap.set(url, '/* fetch failed */');
+          if (!isAppUrl(url)) flushQueue();
           window.postMessage({ source: 'ext-injector-result', url, ok: false }, '*');
         }
       })();

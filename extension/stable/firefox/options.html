@@ -17,6 +17,13 @@
     </header>
     <div id="moneySaved"></div>
 
+    <div
+      style="color: #ff4b4b; background: rgba(255, 75, 75, 0.1); padding: 10px 14px; border-radius: 8px; border: 1px solid rgba(255, 75, 75, 0.2); margin-bottom: 20px; line-height: 1.4;">
+      <b>Disclaimer:</b> The primary functions of this extension do not work for users who already have an
+      active/authentic
+      Duolingo subscription. Please read the FAQ for more info.
+    </div>
+
     <div class="section">
       <h2>Patch Configuration</h2>
       <p class="hint">Select your preferred patch method. If one doesn't work, try another.</p>
@@ -26,10 +33,12 @@
           <img src="./images/mx.svg" width="35" height="35" alt="Icon"> Max Features
         </legend>
         <div class="form-group">
-          <label><input type="radio" id="patch1" name="patchChoice" class="patchChoice" checked> <span class="label-text">Patch 1 (Hardcoded)</span></label>
+          <label><input type="radio" id="patch1" name="patchChoice" class="patchChoice" checked> <span
+              class="label-text">Patch 1 <span class="badge badge-hardcoded">HARDCODED</span></span></label>
         </div>
         <div class="form-group">
-          <label><input type="radio" id="patch4" name="patchChoice" class="patchChoice"> <span class="label-text">Patch 2 (Network Interception)</span></label>
+          <label><input type="radio" id="patch4" name="patchChoice" class="patchChoice"> <span class="label-text">Patch
+              2 <span class="badge badge-network">NETWORK</span></span></label>
         </div>
       </fieldset>
 
@@ -38,16 +47,20 @@
           <img src="./images/su.svg" width="35" height="35" alt="Icon"> Super Features
         </legend>
         <div class="form-group">
-          <label><input type="radio" id="patch6" name="patchChoice" class="patchChoice"> <span class="label-text">Patch 1 (Hardcoded)</span></label>
+          <label><input type="radio" id="patch6" name="patchChoice" class="patchChoice"> <span class="label-text">Patch
+              1 <span class="badge badge-hardcoded">HARDCODED</span></span></label>
         </div>
         <div class="form-group">
-          <label><input type="radio" id="patch7" name="patchChoice" class="patchChoice"> <span class="label-text">Patch 2 (Hardcoded)</span></label>
+          <label><input type="radio" id="patch7" name="patchChoice" class="patchChoice"> <span class="label-text">Patch
+              2 <span class="badge badge-hardcoded">HARDCODED</span></span></label>
         </div>
         <div class="form-group">
-          <label><input type="radio" id="patch8" name="patchChoice" class="patchChoice"> <span class="label-text">Patch 3 (Network Interception)</span></label>
+          <label><input type="radio" id="patch8" name="patchChoice" class="patchChoice"> <span class="label-text">Patch
+              3 <span class="badge badge-network">NETWORK</span></span></label>
         </div>
         <div class="form-group">
-          <label><input type="radio" id="patch9" name="patchChoice" class="patchChoice"> <span class="label-text">Patch 4 (Network Interception)</span></label>
+          <label><input type="radio" id="patch9" name="patchChoice" class="patchChoice"> <span class="label-text">Patch
+              4 <span class="badge badge-network">NETWORK</span></span></label>
         </div>
       </fieldset>
 
@@ -56,13 +69,16 @@
           <img src="./images/uh.svg" width="35" height="35" alt="Icon"> Unlimited Hearts
         </legend>
         <div class="form-group">
-          <label><input type="radio" id="patch2" name="patchChoice" class="patchChoice"> <span class="label-text">Patch 1 (Hardcoded)</span></label>
+          <label><input type="radio" id="patch2" name="patchChoice" class="patchChoice"> <span class="label-text">Patch
+              1 <span class="badge badge-hardcoded">HARDCODED</span></span></label>
         </div>
         <div class="form-group">
-          <label><input type="radio" id="patch3" name="patchChoice" class="patchChoice"> <span class="label-text">Patch 2 (Hardcoded)</span></label>
+          <label><input type="radio" id="patch3" name="patchChoice" class="patchChoice"> <span class="label-text">Patch
+              2 <span class="badge badge-hardcoded">HARDCODED</span></span></label>
         </div>
         <div class="form-group">
-          <label><input type="radio" id="patch5" name="patchChoice" class="patchChoice"> <span class="label-text">Patch 3 (Network Interception)</span></label>
+          <label><input type="radio" id="patch5" name="patchChoice" class="patchChoice"> <span class="label-text">Patch
+              3 <span class="badge badge-network">NETWORK</span></span></label>
         </div>
       </fieldset>
 
@@ -77,6 +93,22 @@
         </div>
       </fieldset>
       <p class="hint">This allows patches to be changed automatically if anything breaks.</p>
+
+      <fieldset>
+        <legend>Speech Recognition</legend>
+        <div class="toggle-switch">
+          <span>Unlock speech practices for all browsers</span>
+          <label class="switch">
+            <input type="checkbox" id="enableSpeechPatch" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+      </fieldset>
+      <p class="hint">Bypasses Duolingo's browser restriction for speech exercises (hardcoded Max/Super patches only).
+        <b>Requires WebSpeech API support.</b> For non-chrome browsers, try this also: <a
+          href="https://github.com/apersongithub/Speech-Recognition-Polyfill?tab=readme-ov-file#installation-process"
+          target="_blank">Speech Recognition Polyfill</a>. Disable this option if issues occur.
+      </p>
     </div>
 
     <hr>
