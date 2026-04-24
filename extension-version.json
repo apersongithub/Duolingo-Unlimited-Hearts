@@ -2,6 +2,7 @@
   "version": "3.6",
   "PATCH": "1",
   "chromestupid": "false",
+  "chromeMode": "1",
   "releaseDate": "2026-04-16",
   "releaseNotes": "Fixed Practice Hub being broken due to a major update (This issue should be permanently fixed). I am finally pulling the plug, if you are using the Chrome Web Store, your extension is several versions behind because Google's Policies about paywall bypassing prevent me from updating it. Please update to the latest version from GitHub to get the latest features and fixes. Or don't, I don't care.",
   "EXTENSION_NAME": "Duolingo Max Extension",
