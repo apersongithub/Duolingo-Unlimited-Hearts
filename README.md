@@ -16,9 +16,9 @@
 
 
 > [!CAUTION]  
-> The **Chrome Web Store** is no longer supported due to rejections for bypassing paywalls.
+> The **Chrome Web Store** is no longer supported, users will only have the policy-supporting free API for explain my answer nothing else.
 > 
-> If you've installed from there, please switch to the **Manual Installation** as soon as possible for continued support.
+> Otherwise, please switch to the **Manual Installation** as soon as possible for continued support.
 > 
 > Yes, the alert you got from Duolingo for this extension is real.
 ## <img src="https://d35aaqx5ub95lt.cloudfront.net/images/leagues/7082c58e0bdbfbf9aec94191b704f549.svg" width="30px"> Gist
