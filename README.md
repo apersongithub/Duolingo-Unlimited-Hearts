@@ -2,7 +2,7 @@
 
 ![Chrome Extension Rating](https://img.shields.io/chrome-web-store/rating/jkcaeflmchplggcelmodjobeakgmhmdb?style=for-the-badge&label=Chrome%20Rating&logo=google-chrome&logoColor=white)
 ![Chrome Web Store Users](https://img.shields.io/chrome-web-store/users/jkcaeflmchplggcelmodjobeakgmhmdb?style=for-the-badge&label=USERS)
-![Chrome Web Store Version](https://img.shields.io/chrome-web-store/v/jkcaeflmchplggcelmodjobeakgmhmdb?style=for-the-badge&label=VERSION&color=red)
+![Chrome Web Store Version](https://img.shields.io/chrome-web-store/v/jkcaeflmchplggcelmodjobeakgmhmdb?style=for-the-badge&label=VERSION)
 
 ![Firefox Extension Rating](https://img.shields.io/amo/rating/duolingo-unlimited-hearts?style=for-the-badge&label=Firefox%20Rating&logo=firefox&logoColor=white)
 ![Firefox Extension Users](https://img.shields.io/amo/users/duolingo-unlimited-hearts?style=for-the-badge&label=USERS)
