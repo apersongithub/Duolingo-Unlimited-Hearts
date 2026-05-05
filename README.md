@@ -8,12 +8,14 @@
 ![Firefox Extension Users](https://img.shields.io/amo/users/duolingo-unlimited-hearts?style=for-the-badge&label=USERS)
 ![Firefox Extension Version](https://img.shields.io/amo/v/duolingo-unlimited-hearts?style=for-the-badge&label=VERSION)
 
+<img width="700" height="400" alt="dm" src="https://github.com/user-attachments/assets/334621aa-e08c-4edf-b09e-49a6e90f29c9" />
+<br>
+
 > For **educational purposes** only, obviously.
 > 
 > ***Previously known as Duolingo Unlimited Hearts***
 > 
 > *Not affilliated with Duolingo*
-
 
 > [!NOTE]  
 > The **Chrome Web Store** is supported again, you can get the latest version! 🎉
