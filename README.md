@@ -21,8 +21,7 @@
 > The **Chrome Web Store** is supported again, you can get the latest version! 🎉
 > 
 > Otherwise, the **Manual Installation** is still a good option.
-> 
-> Yes, the alert you got from Duolingo for this extension is real.
+
 ## <img src="https://d35aaqx5ub95lt.cloudfront.net/images/leagues/7082c58e0bdbfbf9aec94191b704f549.svg" width="30px"> Gist
 > [!IMPORTANT]
 > 
@@ -43,18 +42,17 @@
 > - **Available on** [Mozilla Add-ons Store](https://addons.mozilla.org/en-US/firefox/addon/duolingo-unlimited-hearts/) and [Chrome Web Store](https://chromewebstore.google.com/detail/duolingo-max/jkcaeflmchplggcelmodjobeakgmhmdb).
 >   - Supports Firefox for Android
 >   - *Keep in mind that these extension stores may take upto a week to provide an extension update on your browser due to the reviewal process and your browsers' extension update cycle (By default it is within a week)*
-> - ❗**NEW (Userscript Ports)**
+> - **Userscript Port (See below)**
 >   - Supports iPhone/iPad on Safari if you install the [Userscripts](https://apps.apple.com/us/app/userscripts/id1463298887) app *(Tutorial in the FAQ)*
->     - [Duolingo Max Userscript](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/raw/refs/heads/main/userscript/Duolingo%20Max.user.js)
->     - [Duolingo Super Userscript](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/raw/refs/heads/main/userscript/Duolingo%20Super.user.js)
->     - [Duolingo Unlimited Hearts Userscript](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/raw/refs/heads/main/userscript/Duolingo%20Unlimited%20Hearts.user.js)
->    - Also hosted on [Greasyfork](https://greasyfork.org/en/scripts?set=593926)
 
 | **Browser** | **Installation Steps** |
 |-------------|------------------------|
 | <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/Google_Chrome_icon_%28February_2022%29.svg" width="20px"> <img src="https://upload.wikimedia.org/wikipedia/commons/9/98/Microsoft_Edge_logo_%282019%29.svg" width="20px"> <img src="https://brave.com/static-assets/images/brave-logo-sans-text.svg" width="18px"> <img src="https://upload.wikimedia.org/wikipedia/commons/4/49/Opera_2015_icon.svg" width="20px"> | **Recommended:** [Chrome Web Store](https://chromewebstore.google.com/detail/duolingo-max/jkcaeflmchplggcelmodjobeakgmhmdb)<br> - Click **Add to Chrome** <br> - ✅ Done<br>- ⭐ Rate the addon <br><br>**Alternative:** Manual Option [*Stuck?*](https://www.youtube.com/watch?v=XCQ00MlTXj8)<br>- Download the latest **Chrome** extension from the [GitHub Releases](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/releases)<br>- Go to `chrome://extensions`<br>- Enable **Developer mode** (top right)<br>- Drag and drop the ZIP file onto the extensions page<br>- ✅ Done |
  | <img src="https://upload.wikimedia.org/wikipedia/commons/a/a0/Firefox_logo%2C_2019.svg" width="20px"> <img src="https://c.clc2l.com/c/thumbnail96webp/t/t/o/tor-browser-QaPeUi.png" width="20px"> <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/LibreWolf_icon.svg" width="20px"> <img src="https://www.waterfox.com/favicons/favicon-96x96.png" width="20px"> | **Recommended:** [Mozilla Add-ons Store](https://addons.mozilla.org/en-US/firefox/addon/duolingo-unlimited-hearts/)<br> - Click **Add to Firefox** <br> - ✅ Done<br>- ⭐ Rate the addon<br><br>**Alternative:** Manual Option<br>- Download the latest **Firefox** extension from the [GitHub Releases](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/releases)<br>- Click **Continue Installation** when prompted<br>- ✅ Done |
 
+| **Script Manager** | **Installation Steps** |
+|-------------|------------------------|
+| <img src="https://www.tampermonkey.net/images/icon48.png" width="20px"> <img src="https://avatars.githubusercontent.com/u/13635071?s=200&v=4" width="20px"> <img src="https://addons.mozilla.org/user-media/addon_icons/0/748-64.png?modified=1531822767" width="20px"> <img src="https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/47/be/20/47be20a2-fedd-cf0b-3a35-476ae727ae01/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/400x400ia-75.webp" width="20px"> | - Install a userscript manager such as Violentmonkey <br>- Navigate to [GreasyFork](https://greasyfork.org/en/scripts/552441-duolingo-max)<br>- Click **Install Version**<br>- ✅ Done<br>- ⭐ Rate the userscript |
 
 ## <img src="https://d35aaqx5ub95lt.cloudfront.net/vendor/3390675b86eeeab0b4119ccfcb5b186e.svg" width="30px"> [Roadmap](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/wiki/Release-Roadmap)
 
