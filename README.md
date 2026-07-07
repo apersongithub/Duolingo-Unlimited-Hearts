@@ -43,16 +43,29 @@
 >   - Supports Firefox for Android
 >   - *Keep in mind that these extension stores may take upto a week to provide an extension update on your browser due to the reviewal process and your browsers' extension update cycle (By default it is within a week)*
 > - **Userscript Port (See below)**
->   - Supports iPhone/iPad on Safari if you install the [Userscripts](https://apps.apple.com/us/app/userscripts/id1463298887) app *(Tutorial in the FAQ)*
+>   - Supports iPhone/iPad on Safari if you install the [Userscripts](https://apps.apple.com/us/app/userscripts/id1463298887) app *(Tutorial Below)*
 
 | **Browser** | **Installation Steps** |
 |-------------|------------------------|
 | <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/Google_Chrome_icon_%28February_2022%29.svg" width="20px"> <img src="https://upload.wikimedia.org/wikipedia/commons/9/98/Microsoft_Edge_logo_%282019%29.svg" width="20px"> <img src="https://brave.com/static-assets/images/brave-logo-sans-text.svg" width="18px"> <img src="https://upload.wikimedia.org/wikipedia/commons/4/49/Opera_2015_icon.svg" width="20px"> | **Recommended:** [Chrome Web Store](https://chromewebstore.google.com/detail/duolingo-max/jkcaeflmchplggcelmodjobeakgmhmdb)<br> - Click **Add to Chrome** <br> - ✅ Done<br>- ⭐ Rate the addon <br><br>**Alternative:** Manual Option [*Stuck?*](https://www.youtube.com/watch?v=XCQ00MlTXj8)<br>- Download the latest **Chrome** extension from the [GitHub Releases](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/releases)<br>- Go to `chrome://extensions`<br>- Enable **Developer mode** (top right)<br>- Drag and drop the ZIP file onto the extensions page<br>- ✅ Done |
  | <img src="https://upload.wikimedia.org/wikipedia/commons/a/a0/Firefox_logo%2C_2019.svg" width="20px"> <img src="https://c.clc2l.com/c/thumbnail96webp/t/t/o/tor-browser-QaPeUi.png" width="20px"> <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/LibreWolf_icon.svg" width="20px"> <img src="https://www.waterfox.com/favicons/favicon-96x96.png" width="20px"> | **Recommended:** [Mozilla Add-ons Store](https://addons.mozilla.org/en-US/firefox/addon/duolingo-unlimited-hearts/)<br> - Click **Add to Firefox** <br> - ✅ Done<br>- ⭐ Rate the addon<br><br>**Alternative:** Manual Option<br>- Download the latest **Firefox** extension from the [GitHub Releases](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/releases)<br>- Click **Continue Installation** when prompted<br>- ✅ Done |
 
-| **Script Manager** | **Installation Steps** |
-|-------------|------------------------|
-| <img src="https://www.tampermonkey.net/images/icon48.png" width="20px"> <img src="https://avatars.githubusercontent.com/u/13635071?s=200&v=4" width="20px"> <img src="https://addons.mozilla.org/user-media/addon_icons/0/748-64.png?modified=1531822767" width="20px"> <img src="https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/47/be/20/47be20a2-fedd-cf0b-3a35-476ae727ae01/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/400x400ia-75.webp" width="20px"> | - Install a userscript manager such as Violentmonkey <br>- Navigate to [GreasyFork](https://greasyfork.org/en/scripts/552441-duolingo-max)<br>- Click **Install Version**<br>- ✅ Done<br>- ⭐ Rate the userscript |
+| **Userscript** | **Installation Steps** |
+|----------------|------------------------|
+| <img src="https://www.tampermonkey.net/images/icon48.png" width="20px"> <img src="https://avatars.githubusercontent.com/u/13635071?s=200&v=4" width="20px"> <img src="https://addons.mozilla.org/user-media/addon_icons/0/748-64.png?modified=1531822767" width="20px"> <img src="https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/47/be/20/47be20a2-fedd-cf0b-3a35-476ae727ae01/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/400x400ia-75.webp" width="20px"> | - Install a userscript manager such as Violentmonkey <br>- Navigate to my Greasyfork page for [Duolingo Max](https://greasyfork.org/en/scripts/552441-duolingo-max) or my github repository's [userscript folder](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/tree/main/userscript)<br>- Click **Install Version or Raw**<br>- ✅ Done<br>- ⭐ Rate the userscript |
+
+| **Mobile** | **Method 1 (Recommended)** | **Method 2 (Sideloading)** |
+|------------|----------------------------|----------------------------|
+| <img src="https://upload.wikimedia.org/wikipedia/commons/7/74/Apple_logo_dark_grey.svg" width="60px">  | - Install the [Userscripts App](https://apps.apple.com/us/app/userscripts/id1463298887) (Tampermonkey for iOS)<br>- Download my [Duolingo Max userscript](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/blob/main/userscript/Duolingo%20Max.user.js)<br>- Import the userscript into the Userscript App/Extension <br>- Open Duolingo (web) on Safari<br>- ✅ Done *(You may have to refresh the page)* | - Install a tool like [SideStore](https://sidestore.io/) and follow their full guide (arguably lengthy process) <br>- Download a modded Duolingo IPA from [AppDB](https://appdb.to/) or similar <br>- Import the IPA into SideStore (don't install it via AppDB certificate as you have SideStore) <br>- ✅ Done <br><br> *⚠️ Do your research and be cautious about what you install because they weren't created by me.*  |
+| <img src="https://developer.android.com/static/images/logos/android.svg" width="60px">  | - Install [Firefox](https://play.google.com/store/apps/details?id=org.mozilla.firefox) from the Play Store <br>- Install Duolingo Max from the [Mozilla Add-ons Store](https://addons.mozilla.org/en-US/firefox/addon/duolingo-unlimited-hearts/) <br>- ✅ Done <br>- ⭐ Rate the addon <br><br> *💡 Other Android browsers with extension support like Microsoft Edge *may* also work, although they haven't been tested.* | - Enable [Install unknown apps](https://www.wikihow.com/Allow-Apps-from-Unknown-Sources-on-Android) for your installer app<br>- Download a modded Duolingo APK from forums or an app store like [Aptoide](https://en.aptoide.com/) <br>- ✅ Done <br><br> *⚠️ Do your research and be cautious about what you install because they weren't created by me.* |
+
+> PS: If someone can test if the Duolingo Max extension works on the following...
+>
+> - *[Orion Browser](https://orionbrowser.com/) (iPadOS/iOS)*
+> 
+> - *Safari (MacOS)*
+>
+> **Please make an issue and let me know.**
 
 ## <img src="https://d35aaqx5ub95lt.cloudfront.net/vendor/3390675b86eeeab0b4119ccfcb5b186e.svg" width="30px"> [Roadmap](https://github.com/apersongithub/Duolingo-Unlimited-Hearts/wiki/Release-Roadmap)
 
