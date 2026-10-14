@@ -8,6 +8,10 @@
 ![Firefox Extension Users](https://img.shields.io/amo/users/duolingo-unlimited-hearts?style=for-the-badge&label=USERS)
 ![Firefox Extension Version](https://img.shields.io/amo/v/duolingo-unlimited-hearts?style=for-the-badge&label=VERSION)
 
+![Greasy Fork Rating](https://img.shields.io/greasyfork/rating-count/552441?style=for-the-badge&logo=greasyfork&label=Greasy%20Fork%20Rating)
+![Greasy Fork Downloads](https://img.shields.io/greasyfork/dt/552441?style=for-the-badge&label=INSTALLS)
+![Greasy Fork Version](https://img.shields.io/greasyfork/v/552441?style=for-the-badge&label=VERSION)
+
 <img width="700" height="400" alt="dm" src="https://github.com/user-attachments/assets/334621aa-e08c-4edf-b09e-49a6e90f29c9" />
 <br>
 
